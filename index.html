@@ -1,0 +1,346 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Eros Health Index</title>
+  <style>
+    :root { color-scheme: dark; --bg:#0e1116; --panel:#171c23; --panel2:#1d2430; --text:#edf1f7; --muted:#9aa6b5; --line:#2d3745; --good:#8fd6a5; --warn:#e8c47a; --bad:#e28b8b; --accent:#c7b7ff; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; background:radial-gradient(circle at 20% 0%, #1b2030, var(--bg) 38%); color:var(--text); }
+    main { width:min(1180px, 94vw); margin:0 auto; padding:44px 0 80px; }
+    h1 { font-size:clamp(2.2rem, 6vw, 5.4rem); line-height:.92; margin:0; letter-spacing:-.05em; max-width:900px; }
+    .sub { color:var(--muted); font-size:1.08rem; max-width:760px; margin:18px 0 30px; line-height:1.6; }
+
+    .market-strip { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px; margin:26px 0 28px; }
+    .ticker-card { padding:18px 18px 16px; overflow:hidden; }
+    .ticker-head { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; margin-bottom:10px; }
+    .ticker-symbol { font-size:.82rem; color:var(--muted); letter-spacing:.15em; text-transform:uppercase; }
+    .ticker-name { font-size:1.05rem; font-weight:650; margin-top:3px; }
+    .ticker-quote { text-align:right; }
+    .ticker-value { font-size:2.6rem; line-height:.95; letter-spacing:-.06em; }
+    .ticker-delta { font-size:.85rem; margin-top:5px; }
+    .ticker-delta.good { color:var(--good); }
+    .ticker-delta.bad { color:var(--bad); }
+    .ticker-delta.flat { color:var(--muted); }
+    .ticker-meta { display:flex; flex-wrap:wrap; gap:7px 12px; align-items:center; margin-top:10px; color:var(--muted); font-size:.72rem; }
+    .status-badge { display:inline-flex; align-items:center; gap:6px; border:1px solid var(--line); border-radius:999px; padding:3px 8px; letter-spacing:.08em; font-size:.64rem; }
+    .status-badge.live::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--good); box-shadow:0 0 10px var(--good); }
+    .status-badge.demo::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--warn); }
+    .market-canvas { height:180px; background:#10151c; }
+    .chart-wrap { position:relative; }
+    .chart-hover-line { position:absolute; top:12px; bottom:22px; width:1px; background:rgba(237,241,247,.28); pointer-events:none; display:none; }
+    .chart-tooltip { position:absolute; z-index:5; min-width:190px; max-width:240px; padding:10px 11px; border:1px solid #3a4656; border-radius:10px; background:rgba(12,16,21,.96); box-shadow:0 10px 30px rgba(0,0,0,.35); color:var(--text); font-size:.72rem; line-height:1.45; pointer-events:none; display:none; backdrop-filter:blur(4px); }
+    .chart-tooltip .tt-date { font-weight:700; font-size:.78rem; margin-bottom:5px; }
+    .chart-tooltip .tt-row { display:flex; justify-content:space-between; gap:14px; color:#c9d1dc; }
+    .chart-tooltip .tt-row strong { color:var(--text); font-weight:650; }
+    .chart-tooltip .tt-up { color:var(--bad); }
+    .chart-tooltip .tt-down { color:var(--good); }
+    .chart-tooltip .tt-trend { color:var(--accent); }
+    .goon-legend { color:var(--muted); font-size:.68rem; line-height:1.35; margin-top:9px; }
+    .goon-legend .up { color:var(--bad); }
+    .goon-legend .down { color:var(--good); }
+    .goon-legend .ema { color:var(--accent); }
+    .range-buttons { display:flex; gap:6px; margin-left:auto; }
+    .range-buttons button { appearance:none; border:1px solid var(--line); background:#10151c; color:var(--muted); border-radius:999px; padding:3px 8px; font:inherit; font-size:.68rem; cursor:pointer; }
+    .range-buttons button.active { color:var(--text); border-color:#5a6472; background:#1b222c; }
+    .hero { display:grid; grid-template-columns: 280px 1fr; gap:24px; align-items:stretch; }
+    .card { background:linear-gradient(180deg, rgba(29,36,48,.95), rgba(23,28,35,.95)); border:1px solid var(--line); border-radius:20px; padding:22px; box-shadow:0 18px 55px rgba(0,0,0,.22); }
+    .scorebox { display:flex; flex-direction:column; justify-content:space-between; min-height:250px; }
+    .eyebrow { color:var(--muted); text-transform:uppercase; letter-spacing:.14em; font-size:.74rem; }
+    .bigscore { font-size:6rem; line-height:.9; letter-spacing:-.08em; margin:24px 0 8px; }
+    .grade { font-size:1rem; color:var(--warn); }
+    .groups { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; align-content:center; }
+    .group h3 { margin:0 0 10px; font-size:.95rem; font-weight:600; }
+    .group .n { font-size:2.2rem; letter-spacing:-.04em; }
+    .bar { height:8px; border-radius:999px; background:#0c1015; overflow:hidden; margin-top:12px; border:1px solid #222b36; }
+    .bar span { display:block; height:100%; background:linear-gradient(90deg, var(--bad), var(--warn), var(--good)); border-radius:inherit; }
+    .section-title { display:flex; justify-content:space-between; gap:20px; align-items:end; margin:42px 0 14px; }
+    .section-title h2 { margin:0; font-size:1.55rem; }
+    .section-title p { margin:0; color:var(--muted); font-size:.9rem; }
+    .metrics { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; }
+    .advice-grid { display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:14px; }
+    .advice-column { display:grid; gap:14px; align-content:start; }
+    .advice-column > h3 { margin:0 0 2px; font-size:.82rem; color:var(--muted); text-transform:uppercase; letter-spacing:.14em; }
+    .advice-card h3 { margin:5px 0 10px; font-size:1.35rem; letter-spacing:-.02em; }
+    .advice-action { font-size:1rem; line-height:1.5; margin:0 0 12px; }
+    .advice-why { color:#b7c0cc; font-size:.82rem; line-height:1.45; margin:0 0 10px; }
+    .evidence { border-top:1px solid var(--line); padding-top:10px; margin-top:10px; color:var(--muted); font-size:.78rem; line-height:1.5; }
+    .source-links { display:flex; flex-wrap:wrap; gap:8px 12px; margin-top:9px; }
+    .source-links a { font-size:.76rem; }
+    .metric { padding:18px; }
+    .metric-top { display:flex; gap:14px; align-items:flex-start; justify-content:space-between; }
+    .metric h3 { margin:4px 0 6px; font-size:1.02rem; line-height:1.35; }
+    .metric .meta { color:var(--muted); font-size:.78rem; }
+    .value { text-align:right; white-space:nowrap; font-size:1.55rem; letter-spacing:-.04em; }
+    .metric-score { margin-top:14px; display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center; }
+    .metric-score small { color:var(--muted); }
+    .note { color:#b7c0cc; font-size:.82rem; line-height:1.45; margin-top:11px; }
+    .pill { display:inline-block; border:1px solid var(--line); padding:3px 8px; border-radius:999px; color:var(--muted); font-size:.68rem; margin-right:5px; }
+    .live { color:var(--good); }
+    .snapshot { color:var(--warn); }
+    .excluded { opacity:.72; }
+    .trend-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; }
+    canvas { width:100%; height:180px; background:#11161d; border-radius:12px; border:1px solid var(--line); }
+    .method { line-height:1.6; color:#c5ced9; }
+    code { background:#10151c; padding:2px 5px; border-radius:5px; }
+    a { color:var(--accent); text-decoration:none; }
+    a:hover { text-decoration:underline; }
+    footer { margin-top:46px; color:var(--muted); font-size:.8rem; }
+    @media (max-width:850px) { .market-strip,.hero{grid-template-columns:1fr}.groups,.trend-grid,.advice-grid{grid-template-columns:1fr}.metrics{grid-template-columns:1fr}.bigscore{font-size:5rem} }
+  </style>
+</head>
+<body>
+<main>
+  <div class="eyebrow">Prototype v0.3.3 · transparent composite</div>
+  <h1>Eros Health Index</h1>
+  <p class="sub">A deliberately arguable instrument for tracking whether human desire is moving toward embodied relationship, durable pair-bonding and generativity—or toward synthetic substitution and disconnection.</p>
+
+  <section class="market-strip" aria-label="Eros market trackers">
+    <article class="card ticker-card">
+      <div class="ticker-head">
+        <div><div class="ticker-symbol">EHI</div><div class="ticker-name">Eros Health Index</div></div>
+        <div class="ticker-quote"><div id="ehiTickerValue" class="ticker-value">—</div><div id="ehiTickerDelta" class="ticker-delta flat">No prior snapshot</div></div>
+      </div>
+      <canvas id="ehiTickerChart" class="market-canvas"></canvas>
+      <div class="ticker-meta"><span class="status-badge live">STRUCTURAL</span><span>Higher is healthier · slow-moving composite</span></div>
+    </article>
+
+    <article class="card ticker-card">
+      <div class="ticker-head">
+        <div><div class="ticker-symbol">GOON</div><div class="ticker-name">The Gooning Index</div></div>
+        <div class="ticker-quote"><div id="goonTickerValue" class="ticker-value">—</div><div id="goonTickerDelta" class="ticker-delta flat">Loading pulse…</div></div>
+      </div>
+      <div id="goonChartWrap" class="chart-wrap">
+        <canvas id="goonTickerChart" class="market-canvas"></canvas>
+        <div id="goonHoverLine" class="chart-hover-line" aria-hidden="true"></div>
+        <div id="goonTooltip" class="chart-tooltip" role="status" aria-live="polite"></div>
+      </div>
+      <div class="goon-legend"><span class="up">Red</span> = pressure rose · <span class="down">green</span> = pressure fell · wick = middle 50% basket range · <span class="ema">trend line = adaptive EMA</span></div>
+      <div class="ticker-meta"><span id="goonMode" class="status-badge demo">DEMO</span><span id="goonAge">Higher is worse · aggregate digital pressure</span><div id="goonRangeButtons" class="range-buttons"><button data-days="7" type="button">7D</button><button data-days="14" class="active" type="button">14D</button><button data-days="30" type="button">30D</button></div></div>
+    </article>
+  </section>
+
+  <section class="hero">
+    <div class="card scorebox">
+      <div><div class="eyebrow">US-leaning composite</div><div id="index" class="bigscore">—</div><div id="grade" class="grade">Loading…</div></div>
+      <div class="meta" id="updated"></div>
+    </div>
+    <div class="card groups" id="groups"></div>
+  </section>
+
+  <div class="section-title"><div><div class="eyebrow">Eros field guide</div><h2>Do something useful</h2></div><p>Short advice generated from the current signals. Evidence links open the underlying research.</p></div>
+  <section class="advice-grid" id="advice"></section>
+
+  <div class="section-title"><div><div class="eyebrow">Signals</div><h2>What is moving the needle</h2></div><p>Every score exposes its anchors and weight.</p></div>
+  <section class="metrics" id="metrics"></section>
+
+  <div class="section-title"><div><div class="eyebrow">Live-series adapters</div><h2>Longitudinal context</h2></div><p>Populated after an online refresh.</p></div>
+  <section class="trend-grid" id="trends"></section>
+
+  <div class="section-title"><div><div class="eyebrow">Method</div><h2>No sacred number</h2></div></div>
+  <section class="card method">
+    <p>The headline score is a weighted mean of included US metrics. Each metric is linearly normalized between a visible low anchor and high anchor, then reversed when lower values are considered healthier. Scores are clipped to 0–100.</p>
+    <p>This is an interpretive dashboard, not a validated psychological scale. A different theory of healthy eros should change the anchors, weights, exclusions, or even the metric list. That is a feature, not a bug.</p>
+    <p>Refresh with <code>python update_data.py</code>. Run locally with <code>python -m http.server 8000</code> and open <code>http://localhost:8000</code>.</p>
+  </section>
+  <footer id="warnings"></footer>
+</main>
+<script src="data.js"></script>
+<script>
+const scoreClass = s => s >= 65 ? 'live' : s >= 40 ? 'snapshot' : '';
+const grade = s => s >= 75 ? 'Strong integration' : s >= 60 ? 'Improving integration' : s >= 45 ? 'Mixed / unstable' : s >= 30 ? 'High alienation' : 'Severe disconnection';
+
+function formatSigned(n, suffix='') {
+  if (n == null || Number.isNaN(Number(n))) return '—';
+  const x=Number(n); const arrow=x>0?'▲':x<0?'▼':'•'; const sign=x>0?'+':'';
+  return `${arrow} ${sign}${x.toFixed(1)}${suffix}`;
+}
+function drawMarketSeries(canvas, rows, lineColor='#c7b7ff') {
+  const ctx=canvas.getContext('2d'); const dpr=devicePixelRatio||1;
+  const w=canvas.clientWidth, h=canvas.clientHeight; canvas.width=w*dpr; canvas.height=h*dpr; ctx.scale(dpr,dpr); ctx.clearRect(0,0,w,h);
+  if(!rows || rows.length<2){ ctx.fillStyle='#8d98a7'; ctx.font='12px system-ui'; ctx.fillText('History will build as the updater runs.',14,24); return; }
+  const pad=12, ys=rows.map(r=>Number(r.value)).filter(Number.isFinite), minY=Math.min(...ys), maxY=Math.max(...ys), span=Math.max(.01,maxY-minY);
+  const pts=rows.map((r,i)=>({x:pad+i/(rows.length-1)*(w-pad*2), y:h-pad-(Number(r.value)-minY)/span*(h-pad*2)}));
+  ctx.strokeStyle='#27313e'; ctx.lineWidth=1; for(let y=0;y<3;y++){const yy=pad+y*(h-pad*2)/2;ctx.beginPath();ctx.moveTo(pad,yy);ctx.lineTo(w-pad,yy);ctx.stroke();}
+  ctx.strokeStyle=lineColor; ctx.lineWidth=2.2; ctx.beginPath(); pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y)); ctx.stroke();
+  const last=pts[pts.length-1]; ctx.fillStyle=lineColor; ctx.beginPath(); ctx.arc(last.x,last.y,3.5,0,Math.PI*2); ctx.fill();
+}
+function ema(values, period=3) {
+  if(!values.length) return [];
+  const alpha=2/(period+1); const out=[values[0]];
+  for(let i=1;i<values.length;i++) out.push(alpha*values[i]+(1-alpha)*out[i-1]);
+  return out;
+}
+function normalizeGoonRows(rows) {
+  return (rows||[]).map((r,i)=>{
+    const close=Number(r.close ?? r.value); const prior=i?Number(rows[i-1].close ?? rows[i-1].value):close;
+    const open=Number.isFinite(Number(r.open))?Number(r.open):prior;
+    const highRaw=Number(r.high), lowRaw=Number(r.low);
+    const high=Number.isFinite(highRaw)?Math.max(highRaw,open,close):Math.max(open,close);
+    const low=Number.isFinite(lowRaw)?Math.min(lowRaw,open,close):Math.min(open,close);
+    return {...r,open,high,low,close};
+  }).filter(r=>[r.open,r.high,r.low,r.close].every(Number.isFinite));
+}
+function drawGoonCandles(canvas, rows, emaPeriod=0) {
+  const ctx=canvas.getContext('2d'); const dpr=devicePixelRatio||1;
+  const w=canvas.clientWidth, h=canvas.clientHeight; canvas.width=w*dpr; canvas.height=h*dpr; ctx.scale(dpr,dpr); ctx.clearRect(0,0,w,h);
+  if(!rows || rows.length<2){ctx.fillStyle='#8d98a7';ctx.font='12px system-ui';ctx.fillText('GOON history needs at least two observations.',14,24);return null;}
+  const clean=normalizeGoonRows(rows);
+  if(clean.length<2){ctx.fillStyle='#8d98a7';ctx.font='12px system-ui';ctx.fillText('No usable candle data.',14,24);return null;}
+  const left=14,right=42,top=12,bottom=22, chartW=w-left-right, chartH=h-top-bottom;
+  let minY=Math.min(...clean.map(r=>r.low)), maxY=Math.max(...clean.map(r=>r.high));
+  const rawSpan=Math.max(.1,maxY-minY); minY-=rawSpan*.08; maxY+=rawSpan*.08; const span=maxY-minY;
+  const yFor=v=>top+(maxY-v)/span*chartH;
+  const step=chartW/clean.length; const bodyW=Math.max(3,Math.min(12,step*.58));
+  ctx.font='10px system-ui'; ctx.textAlign='left'; ctx.textBaseline='middle';
+  for(let i=0;i<4;i++){
+    const value=maxY-(span*i/3), y=yFor(value);
+    ctx.strokeStyle='#27313e';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right+4,y);ctx.stroke();
+    ctx.fillStyle='#7f8a99';ctx.fillText(value.toFixed(1),w-right+8,y);
+  }
+  clean.forEach((r,i)=>{
+    const x=left+step*(i+.5), rising=r.close>r.open, falling=r.close<r.open;
+    const color=rising?'#e28b8b':falling?'#8fd6a5':'#9aa6b5';
+    ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=1.25;
+    ctx.beginPath();ctx.moveTo(x,yFor(r.high));ctx.lineTo(x,yFor(r.low));ctx.stroke();
+    const yOpen=yFor(r.open), yClose=yFor(r.close), bodyTop=Math.min(yOpen,yClose), bodyH=Math.max(1.5,Math.abs(yClose-yOpen));
+    ctx.fillRect(x-bodyW/2,bodyTop,bodyW,bodyH);
+  });
+  const trend=emaPeriod>1?ema(clean.map(r=>r.close),emaPeriod):[];
+  if(trend.length){
+    ctx.save();
+    ctx.globalAlpha=.62;
+    ctx.strokeStyle='#c7b7ff';ctx.lineWidth=1.55;ctx.beginPath();
+    trend.forEach((value,i)=>{const x=left+step*(i+.5),y=yFor(value);i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();
+    const lastX=left+step*(clean.length-.5), lastY=yFor(trend[trend.length-1]);
+    ctx.fillStyle='#c7b7ff';ctx.beginPath();ctx.arc(lastX,lastY,2.4,0,Math.PI*2);ctx.fill();
+    ctx.restore();
+  }
+  const firstDate=new Date(clean[0].timestamp), lastDate=new Date(clean[clean.length-1].timestamp);
+  const dateFmt=d=>d.toLocaleDateString(undefined,{month:'short',day:'numeric'});
+  ctx.fillStyle='#7f8a99';ctx.font='10px system-ui';ctx.textBaseline='alphabetic';ctx.textAlign='left';ctx.fillText(dateFmt(firstDate),left,h-5);
+  ctx.textAlign='right';ctx.fillText(dateFmt(lastDate),w-right+4,h-5);
+  return {clean,trend,emaPeriod,left,right,top,bottom,step,w,h};
+}
+function wireGoonTooltip(canvas, wrap, line, tooltip, getState) {
+  if(canvas.dataset.tooltipWired==='1') return;
+  canvas.dataset.tooltipWired='1';
+  const hide=()=>{line.style.display='none';tooltip.style.display='none';};
+  canvas.addEventListener('mouseleave',hide);
+  canvas.addEventListener('mousemove',event=>{
+    const state=getState();
+    if(!state?.clean?.length) return hide();
+    const rect=canvas.getBoundingClientRect();
+    const localX=event.clientX-rect.left;
+    const idx=Math.max(0,Math.min(state.clean.length-1,Math.floor((localX-state.left)/state.step)));
+    const r=state.clean[idx];
+    const x=state.left+state.step*(idx+.5);
+    const change=r.close-r.open;
+    const date=new Date(r.timestamp).toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+    const directionClass=change>0?'tt-up':change<0?'tt-down':'';
+    const direction=change>0?'▲':change<0?'▼':'•';
+    const trendValue=state.trend?.[idx];
+    tooltip.innerHTML=`
+      <div class="tt-date">${date}</div>
+      <div class="tt-row"><span>GOON close</span><strong>${r.close.toFixed(1)}</strong></div>
+      <div class="tt-row"><span>Previous</span><strong>${r.open.toFixed(1)}</strong></div>
+      <div class="tt-row"><span>Daily change</span><strong class="${directionClass}">${direction} ${change>0?'+':''}${change.toFixed(1)}</strong></div>
+      <div class="tt-row"><span>Middle range low</span><strong>${r.low.toFixed(1)}</strong></div>
+      <div class="tt-row"><span>Middle range high</span><strong>${r.high.toFixed(1)}</strong></div>
+      ${Number.isFinite(trendValue)?`<div class="tt-row tt-trend"><span>${state.emaPeriod}-day trend</span><strong>${trendValue.toFixed(1)}</strong></div>`:''}`;
+    line.style.display='block'; line.style.left=`${x}px`;
+    tooltip.style.display='block';
+    const tw=tooltip.offsetWidth||210, th=tooltip.offsetHeight||150;
+    const desiredX=x+14; const maxX=Math.max(6,wrap.clientWidth-tw-6);
+    const tx=Math.min(Math.max(6,desiredX),maxX);
+    const ty=Math.min(Math.max(6,event.clientY-rect.top-th/2),Math.max(6,wrap.clientHeight-th-6));
+    tooltip.style.left=`${tx}px`; tooltip.style.top=`${ty}px`;
+  });
+}
+function subsetDays(rows, days) {
+  if(!rows?.length) return [];
+  const end=new Date(rows[rows.length-1].timestamp).getTime();
+  const floor=end-(days-1)*24*3600*1000;
+  return rows.filter(r=>new Date(r.timestamp).getTime()>=floor);
+}
+function goonEmaPeriod(days) {
+  if(days<=7) return 0;
+  if(days<=14) return 3;
+  return 5;
+}
+function renderMarketTrackers(data) {
+  const ehiRows=data.ehi_history||[];
+  document.getElementById('ehiTickerValue').textContent=data.index?.toFixed(1)??'—';
+  const ehiDelta=ehiRows.length>1?Number(ehiRows[ehiRows.length-1].value)-Number(ehiRows[0].value):null;
+  const ehiDeltaEl=document.getElementById('ehiTickerDelta');
+  ehiDeltaEl.textContent=ehiDelta==null?'No prior snapshot':formatSigned(ehiDelta,' pts');
+  ehiDeltaEl.className='ticker-delta '+(ehiDelta==null||ehiDelta===0?'flat':ehiDelta>0?'good':'bad');
+  requestAnimationFrame(()=>drawMarketSeries(document.getElementById('ehiTickerChart'),ehiRows,'#8fd6a5'));
+
+  const goon=data.goon||{}; const rows=goon.series||[]; const value=Number(goon.value); const delta=Number(goon.change_24h);
+  document.getElementById('goonTickerValue').textContent=Number.isFinite(value)?value.toFixed(1):'—';
+  const deltaEl=document.getElementById('goonTickerDelta'); deltaEl.textContent=Number.isFinite(delta)?formatSigned(delta,' pts'):'No pulse';
+  deltaEl.className='ticker-delta '+(!Number.isFinite(delta)||delta===0?'flat':delta>0?'bad':'good');
+  const mode=document.getElementById('goonMode'); const isLive=goon.mode==='live'; mode.textContent=isLive?'LIVE':'DEMO'; mode.className='status-badge '+(isLive?'live':'demo');
+  const age=document.getElementById('goonAge');
+  age.textContent=isLive&&goon.last_updated?`Tranco updated through ${new Date(goon.last_updated).toLocaleDateString()}`:'Demo movement · add a private GOON basket for observed data';
+  const chart=document.getElementById('goonTickerChart'); let selectedDays=14;
+  const legend=document.querySelector('.goon-legend .ema');
+  const rangeRoot=document.getElementById('goonRangeButtons');
+  const wrap=document.getElementById('goonChartWrap');
+  const hoverLine=document.getElementById('goonHoverLine');
+  const tooltip=document.getElementById('goonTooltip');
+  let goonChartState=null;
+  const redraw=()=>{
+    const period=goonEmaPeriod(selectedDays);
+    goonChartState=drawGoonCandles(chart,subsetDays(rows,selectedDays),period);
+    hoverLine.style.display='none'; tooltip.style.display='none';
+    if(legend) legend.textContent=period>1?`trend line = ${period}-day EMA`:'trend line hidden at 7D';
+  };
+  wireGoonTooltip(chart,wrap,hoverLine,tooltip,()=>goonChartState);
+  requestAnimationFrame(redraw);
+  rangeRoot?.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{
+    selectedDays=Number(btn.dataset.days);
+    rangeRoot.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b===btn));
+    redraw();
+  }));
+}
+const esc = s => String(s ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+function drawSeries(canvas, rows) {
+  const ctx = canvas.getContext('2d'); const dpr = devicePixelRatio || 1;
+  const w = canvas.clientWidth, h = canvas.clientHeight; canvas.width = w*dpr; canvas.height = h*dpr; ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,w,h); if (!rows || rows.length < 2) { ctx.fillStyle='#8d98a7'; ctx.font='13px system-ui'; ctx.fillText('Run online refresh to populate this series.',16,28); return; }
+  const pad=24, xs=rows.map(r=>r.year), ys=rows.map(r=>r.value), minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys), spanY=Math.max(.001,maxY-minY);
+  ctx.strokeStyle='#344050'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(pad,h-pad); ctx.lineTo(w-pad,h-pad); ctx.stroke();
+  ctx.strokeStyle='#c7b7ff'; ctx.lineWidth=2; ctx.beginPath(); rows.forEach((r,i)=>{ const x=pad+(r.year-minX)/(maxX-minX)*(w-pad*2); const y=h-pad-(r.value-minY)/spanY*(h-pad*2); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }); ctx.stroke();
+  ctx.fillStyle='#9aa6b5'; ctx.font='11px system-ui'; ctx.fillText(String(minX),pad,h-7); ctx.fillText(String(maxX),w-pad-28,h-7); ctx.fillText(maxY.toFixed(1),4,pad+4); ctx.fillText(minY.toFixed(1),4,h-pad);
+}
+const dataPromise = window.EROS_DATA ? Promise.resolve(window.EROS_DATA) : fetch('data.json').then(r=>{ if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); });
+dataPromise.then(data=>{
+  renderMarketTrackers(data);
+  document.getElementById('index').textContent = data.index?.toFixed(1) ?? '—';
+  document.getElementById('grade').textContent = data.index == null ? 'No composite' : grade(data.index);
+  document.getElementById('updated').textContent = 'Updated ' + new Date(data.generated_at).toLocaleString();
+  const adviceRoot=document.getElementById('advice');
+  [['men','For men'],['women','For women']].forEach(([key,label])=>{
+    const col=document.createElement('div'); col.className='advice-column'; col.innerHTML=`<h3>${esc(label)}</h3>`;
+    (data.advice?.[key]||[]).forEach(a=>{
+      const links=(a.sources||[]).map(src=>`<a href="${esc(src.url)}" target="_blank" rel="noopener">${esc(src.label)} ↗</a>`).join('');
+      col.insertAdjacentHTML('beforeend',`<article class="card advice-card"><div class="eyebrow">Priority ${esc(a.priority)}</div><h3>${esc(a.title)}</h3><p class="advice-action">${esc(a.action)}</p><p class="advice-why"><strong>Why this is showing:</strong> ${esc(a.why)}</p><div class="evidence">${esc(a.evidence_note)}<div class="source-links">${links}</div></div></article>`);
+    });
+    adviceRoot.appendChild(col);
+  });
+  const groups=document.getElementById('groups'); Object.entries(data.group_scores||{}).forEach(([name,s])=>{ groups.insertAdjacentHTML('beforeend',`<div class="group"><h3>${esc(name)}</h3><div class="n ${scoreClass(s)}">${s.toFixed(1)}</div><div class="bar"><span style="width:${s}%"></span></div></div>`); });
+  const metrics=document.getElementById('metrics'); data.metrics.forEach(m=>{
+    const mode=m.refresh_mode==='snapshot'?'SNAPSHOT':m.refresh_mode==='auto_page'?'AUTO PAGE':'LIVE API';
+    const inc=m.include_in_index?'':' · EXCLUDED FROM HEADLINE';
+    metrics.insertAdjacentHTML('beforeend',`<article class="card metric ${m.include_in_index?'':'excluded'}"><div class="metric-top"><div><span class="pill">${esc(m.group)}</span><span class="pill">${esc(m.region)}</span><h3>${esc(m.label)}</h3><div class="meta">${esc(m.source_name)} · ${esc(m.year)} · ${mode}${inc}</div></div><div class="value">${esc(m.value)} <small>${esc(m.unit)}</small></div></div><div class="metric-score"><div class="bar"><span style="width:${m.score??0}%"></span></div><small>${m.score==null?'—':m.score.toFixed(1)} / 100</small></div><div class="note">${esc(m.note)} Anchors: ${m.low_anchor} → ${m.high_anchor}; ${m.direction.replace('_',' ')}; weight ${m.weight}.</div><div class="note"><a href="${esc(m.source_url)}" target="_blank" rel="noopener">Source</a></div></article>`);
+  });
+  const trendDefs=[['young_adult_partnered_pct','Young adults partnered (%)'],['young_adult_living_alone_pct','Young adults living alone (%)'],['us_total_fertility_rate','US total fertility rate']];
+  const trends=document.getElementById('trends'); trendDefs.forEach(([key,title],i)=>{ trends.insertAdjacentHTML('beforeend',`<article class="card"><h3>${esc(title)}</h3><canvas id="chart${i}"></canvas></article>`); requestAnimationFrame(()=>drawSeries(document.getElementById('chart'+i),data.series?.[key]||[])); });
+  const warnings=document.getElementById('warnings'); if(data.refresh_errors?.length){ warnings.innerHTML='<strong>Partial refresh warnings:</strong> '+data.refresh_errors.map(esc).join(' · '); }
+}).catch(err=>{ document.getElementById('grade').textContent='Could not load data.json: '+err; });
+</script>
+</body>
+</html>

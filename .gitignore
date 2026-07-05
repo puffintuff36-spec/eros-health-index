@@ -1,0 +1,7 @@
+census_api_key.txt
+cloudflare_api_token.txt
+__pycache__/
+*.pyc
+
+# private GOON basket
+goon_basket.txt
