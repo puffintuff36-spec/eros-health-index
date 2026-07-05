@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-05T23:00:08.641138+00:00",
+  "generated_at": "2026-07-05T23:11:20.721283+00:00",
   "title": "Eros Health Index",
   "subtitle": "A transparent prototype for tracking embodied connection, synthetic substitution, and generativity.",
   "metrics": [
@@ -535,256 +535,449 @@
     ]
   },
   "goon": {
-    "mode": "demo",
+    "mode": "live",
+    "signal_kind": "stratified_timeseries",
+    "method_version": "stratified-v2",
     "label": "The Gooning Index",
     "ticker": "GOON",
-    "description": "Demo movement only. Add a private stratified goon_basket.txt for observed category-balanced daily pressure.",
-    "source_name": "Tranco (demo until basket is configured)",
-    "source_url": "https://tranco-list.eu/",
-    "last_updated": null,
+    "description": "One category-balanced daily digital-pressure signal derived from a private stratified basket and Tranco rank histories. Absolute popularity dominates; a smaller own-history trend term and conservative novelty/intensity/interaction/extremity weighting add resolution. Candle bodies show overall GOON movement; wicks show the middle 50% of adjusted domain pressure. Higher is worse for Eros; individual domains and ranks are not published.",
+    "source_name": "Tranco",
+    "source_url": "https://tranco-list.eu/api_documentation",
+    "last_updated": "2026-07-04T00:00:00Z",
+    "basket_size": 21,
+    "domains_reporting": 21,
+    "categories_reporting": 4,
+    "category_targets": {
+      "mainstream_tube": {
+        "label": "Mainstream tube/video",
+        "share": 0.45
+      },
+      "illustrated_niche": {
+        "label": "Illustrated fandom / niche",
+        "share": 0.2
+      },
+      "hentai_animation": {
+        "label": "Hentai / animation",
+        "share": 0.15
+      },
+      "interactive": {
+        "label": "Live / interactive",
+        "share": 0.15
+      }
+    },
     "series": [
       {
-        "timestamp": "2026-06-06T00:00:00+00:00",
-        "open": 58.0,
-        "high": 61.0,
-        "low": 55.3,
-        "close": 58.0,
-        "value": 58.0
+        "timestamp": "2026-05-25T00:00:00Z",
+        "open": 49.7,
+        "high": 53.35,
+        "low": 46.17,
+        "close": 49.7,
+        "value": 49.7,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-07T00:00:00+00:00",
-        "open": 58.0,
-        "high": 62.7,
-        "low": 54.98,
-        "close": 59.35,
-        "value": 59.35
+        "timestamp": "2026-05-26T00:00:00Z",
+        "open": 49.7,
+        "high": 53.35,
+        "low": 46.19,
+        "close": 49.68,
+        "value": 49.68,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-08T00:00:00+00:00",
-        "open": 59.35,
-        "high": 64.07,
-        "low": 56.08,
-        "close": 60.44,
-        "value": 60.44
+        "timestamp": "2026-05-27T00:00:00Z",
+        "open": 49.68,
+        "high": 53.37,
+        "low": 46.19,
+        "close": 49.64,
+        "value": 49.64,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-09T00:00:00+00:00",
-        "open": 60.44,
-        "high": 64.88,
-        "low": 57.04,
-        "close": 61.1,
-        "value": 61.1
+        "timestamp": "2026-05-28T00:00:00Z",
+        "open": 49.64,
+        "high": 53.4,
+        "low": 46.2,
+        "close": 49.64,
+        "value": 49.64,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-10T00:00:00+00:00",
-        "open": 61.1,
-        "high": 65.04,
-        "low": 57.7,
-        "close": 61.27,
-        "value": 61.27
+        "timestamp": "2026-05-29T00:00:00Z",
+        "open": 49.64,
+        "high": 53.28,
+        "low": 46.2,
+        "close": 49.65,
+        "value": 49.65,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-11T00:00:00+00:00",
-        "open": 61.27,
-        "high": 64.88,
-        "low": 57.76,
-        "close": 61.01,
-        "value": 61.01
+        "timestamp": "2026-05-30T00:00:00Z",
+        "open": 49.65,
+        "high": 53.03,
+        "low": 46.22,
+        "close": 49.65,
+        "value": 49.65,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-12T00:00:00+00:00",
-        "open": 61.01,
-        "high": 64.33,
-        "low": 57.5,
-        "close": 60.49,
-        "value": 60.49
+        "timestamp": "2026-05-31T00:00:00Z",
+        "open": 49.65,
+        "high": 52.83,
+        "low": 46.23,
+        "close": 49.63,
+        "value": 49.63,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-13T00:00:00+00:00",
-        "open": 60.49,
-        "high": 63.46,
-        "low": 57.26,
-        "close": 59.94,
-        "value": 59.94
+        "timestamp": "2026-06-01T00:00:00Z",
+        "open": 49.63,
+        "high": 52.73,
+        "low": 46.34,
+        "close": 49.7,
+        "value": 49.7,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-14T00:00:00+00:00",
-        "open": 59.94,
-        "high": 62.56,
-        "low": 57.15,
-        "close": 59.5,
-        "value": 59.5
+        "timestamp": "2026-06-02T00:00:00Z",
+        "open": 49.7,
+        "high": 52.69,
+        "low": 46.43,
+        "close": 49.76,
+        "value": 49.76,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-15T00:00:00+00:00",
-        "open": 59.5,
-        "high": 61.85,
-        "low": 57.17,
-        "close": 59.28,
-        "value": 59.28
+        "timestamp": "2026-06-03T00:00:00Z",
+        "open": 49.76,
+        "high": 52.74,
+        "low": 46.45,
+        "close": 49.8,
+        "value": 49.8,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-16T00:00:00+00:00",
-        "open": 59.28,
-        "high": 61.49,
-        "low": 57.25,
-        "close": 59.24,
-        "value": 59.24
+        "timestamp": "2026-06-04T00:00:00Z",
+        "open": 49.8,
+        "high": 52.67,
+        "low": 46.46,
+        "close": 49.86,
+        "value": 49.86,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-17T00:00:00+00:00",
-        "open": 59.24,
-        "high": 61.48,
-        "low": 57.23,
-        "close": 59.25,
-        "value": 59.25
+        "timestamp": "2026-06-05T00:00:00Z",
+        "open": 49.86,
+        "high": 52.7,
+        "low": 46.52,
+        "close": 49.9,
+        "value": 49.9,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-18T00:00:00+00:00",
-        "open": 59.25,
-        "high": 61.66,
-        "low": 56.98,
-        "close": 59.15,
-        "value": 59.15
+        "timestamp": "2026-06-06T00:00:00Z",
+        "open": 49.9,
+        "high": 52.75,
+        "low": 46.64,
+        "close": 49.94,
+        "value": 49.94,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-19T00:00:00+00:00",
-        "open": 59.15,
-        "high": 61.85,
-        "low": 56.35,
-        "close": 58.79,
-        "value": 58.79
+        "timestamp": "2026-06-07T00:00:00Z",
+        "open": 49.94,
+        "high": 52.69,
+        "low": 46.68,
+        "close": 49.96,
+        "value": 49.96,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-20T00:00:00+00:00",
-        "open": 58.79,
-        "high": 61.85,
-        "low": 55.36,
-        "close": 58.12,
-        "value": 58.12
+        "timestamp": "2026-06-08T00:00:00Z",
+        "open": 49.96,
+        "high": 52.76,
+        "low": 46.73,
+        "close": 49.99,
+        "value": 49.99,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-21T00:00:00+00:00",
-        "open": 58.12,
-        "high": 61.52,
-        "low": 54.13,
-        "close": 57.2,
-        "value": 57.2
+        "timestamp": "2026-06-09T00:00:00Z",
+        "open": 49.99,
+        "high": 52.73,
+        "low": 46.53,
+        "close": 49.88,
+        "value": 49.88,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-22T00:00:00+00:00",
-        "open": 57.2,
-        "high": 60.87,
-        "low": 52.91,
-        "close": 56.21,
-        "value": 56.21
+        "timestamp": "2026-06-10T00:00:00Z",
+        "open": 49.88,
+        "high": 52.69,
+        "low": 45.72,
+        "close": 49.81,
+        "value": 49.81,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-23T00:00:00+00:00",
-        "open": 56.21,
-        "high": 60.0,
-        "low": 51.96,
-        "close": 55.37,
-        "value": 55.37
+        "timestamp": "2026-06-11T00:00:00Z",
+        "open": 49.81,
+        "high": 52.7,
+        "low": 45.7,
+        "close": 49.76,
+        "value": 49.76,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-24T00:00:00+00:00",
-        "open": 55.37,
-        "high": 59.13,
-        "low": 51.54,
-        "close": 54.92,
-        "value": 54.92
+        "timestamp": "2026-06-12T00:00:00Z",
+        "open": 49.76,
+        "high": 52.77,
+        "low": 45.67,
+        "close": 49.71,
+        "value": 49.71,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-25T00:00:00+00:00",
-        "open": 54.92,
-        "high": 58.56,
-        "low": 51.71,
-        "close": 54.99,
-        "value": 54.99
+        "timestamp": "2026-06-13T00:00:00Z",
+        "open": 49.71,
+        "high": 52.77,
+        "low": 45.42,
+        "close": 49.65,
+        "value": 49.65,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-26T00:00:00+00:00",
-        "open": 54.99,
-        "high": 58.87,
-        "low": 52.06,
-        "close": 55.61,
-        "value": 55.61
+        "timestamp": "2026-06-14T00:00:00Z",
+        "open": 49.65,
+        "high": 52.75,
+        "low": 45.21,
+        "close": 49.62,
+        "value": 49.62,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-27T00:00:00+00:00",
-        "open": 55.61,
-        "high": 59.55,
-        "low": 53.0,
-        "close": 56.65,
-        "value": 56.65
+        "timestamp": "2026-06-15T00:00:00Z",
+        "open": 49.62,
+        "high": 52.8,
+        "low": 44.97,
+        "close": 49.62,
+        "value": 49.62,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-28T00:00:00+00:00",
-        "open": 56.65,
-        "high": 60.46,
-        "low": 54.34,
-        "close": 57.89,
-        "value": 57.89
+        "timestamp": "2026-06-16T00:00:00Z",
+        "open": 49.62,
+        "high": 52.74,
+        "low": 44.73,
+        "close": 49.58,
+        "value": 49.58,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-29T00:00:00+00:00",
-        "open": 57.89,
-        "high": 61.41,
-        "low": 55.81,
-        "close": 59.09,
-        "value": 59.09
+        "timestamp": "2026-06-17T00:00:00Z",
+        "open": 49.58,
+        "high": 52.82,
+        "low": 44.21,
+        "close": 49.58,
+        "value": 49.58,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-06-30T00:00:00+00:00",
-        "open": 59.09,
-        "high": 62.23,
-        "low": 57.11,
-        "close": 60.03,
-        "value": 60.03
+        "timestamp": "2026-06-18T00:00:00Z",
+        "open": 49.58,
+        "high": 52.82,
+        "low": 44.16,
+        "close": 49.61,
+        "value": 49.61,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-07-01T00:00:00+00:00",
-        "open": 60.03,
-        "high": 62.84,
-        "low": 58.0,
-        "close": 60.59,
-        "value": 60.59
+        "timestamp": "2026-06-19T00:00:00Z",
+        "open": 49.61,
+        "high": 52.83,
+        "low": 44.14,
+        "close": 49.62,
+        "value": 49.62,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-07-02T00:00:00+00:00",
-        "open": 60.59,
-        "high": 63.24,
-        "low": 58.38,
-        "close": 60.78,
-        "value": 60.78
+        "timestamp": "2026-06-20T00:00:00Z",
+        "open": 49.62,
+        "high": 52.82,
+        "low": 44.13,
+        "close": 49.63,
+        "value": 49.63,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-07-03T00:00:00+00:00",
-        "open": 60.78,
-        "high": 63.55,
-        "low": 58.24,
-        "close": 60.73,
-        "value": 60.73
+        "timestamp": "2026-06-21T00:00:00Z",
+        "open": 49.63,
+        "high": 52.96,
+        "low": 44.13,
+        "close": 49.63,
+        "value": 49.63,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-07-04T00:00:00+00:00",
-        "open": 60.73,
-        "high": 63.86,
-        "low": 57.79,
-        "close": 60.61,
-        "value": 60.61
+        "timestamp": "2026-06-22T00:00:00Z",
+        "open": 49.63,
+        "high": 52.91,
+        "low": 44.16,
+        "close": 49.66,
+        "value": 49.66,
+        "coverage": 21,
+        "category_coverage": 4
       },
       {
-        "timestamp": "2026-07-05T00:00:00+00:00",
-        "open": 60.61,
-        "high": 64.07,
-        "low": 57.46,
-        "close": 60.57,
-        "value": 60.57
+        "timestamp": "2026-06-23T00:00:00Z",
+        "open": 49.66,
+        "high": 53.0,
+        "low": 44.15,
+        "close": 49.62,
+        "value": 49.62,
+        "coverage": 21,
+        "category_coverage": 4
+      },
+      {
+        "timestamp": "2026-06-24T00:00:00Z",
+        "open": 49.62,
+        "high": 53.08,
+        "low": 44.1,
+        "close": 49.57,
+        "value": 49.57,
+        "coverage": 21,
+        "category_coverage": 4
+      },
+      {
+        "timestamp": "2026-06-25T00:00:00Z",
+        "open": 49.57,
+        "high": 53.06,
+        "low": 44.05,
+        "close": 49.55,
+        "value": 49.55,
+        "coverage": 21,
+        "category_coverage": 4
+      },
+      {
+        "timestamp": "2026-06-26T00:00:00Z",
+        "open": 49.55,
+        "high": 53.03,
+        "low": 44.05,
+        "close": 49.51,
+        "value": 49.51,
+        "coverage": 21,
+        "category_coverage": 4
+      },
+      {
+        "timestamp": "2026-06-27T00:00:00Z",
+        "open": 49.51,
+        "high": 53.0,
+        "low": 44.06,
+        "close": 49.49,
+        "value": 49.49,
+        "coverage": 21,
+        "category_coverage": 4
+      },
+      {
+        "timestamp": "2026-06-28T00:00:00Z",
+        "open": 49.49,
+        "high": 52.92,
+        "low": 44.07,
+        "close": 49.48,
+        "value": 49.48,
+        "coverage": 21,
+        "category_coverage": 4
+      },
+      {
+        "timestamp": "2026-06-29T00:00:00Z",
+        "open": 49.48,
+        "high": 52.89,
+        "low": 44.08,
+        "close": 49.53,
+        "value": 49.53,
+        "coverage": 21,
+        "category_coverage": 4
+      },
+      {
+        "timestamp": "2026-06-30T00:00:00Z",
+        "open": 49.53,
+        "high": 52.89,
+        "low": 44.05,
+        "close": 49.54,
+        "value": 49.54,
+        "coverage": 21,
+        "category_coverage": 4
+      },
+      {
+        "timestamp": "2026-07-01T00:00:00Z",
+        "open": 49.54,
+        "high": 52.89,
+        "low": 44.11,
+        "close": 49.51,
+        "value": 49.51,
+        "coverage": 21,
+        "category_coverage": 4
+      },
+      {
+        "timestamp": "2026-07-02T00:00:00Z",
+        "open": 49.51,
+        "high": 52.89,
+        "low": 44.03,
+        "close": 49.49,
+        "value": 49.49,
+        "coverage": 21,
+        "category_coverage": 4
+      },
+      {
+        "timestamp": "2026-07-03T00:00:00Z",
+        "open": 49.49,
+        "high": 52.89,
+        "low": 44.04,
+        "close": 49.46,
+        "value": 49.46,
+        "coverage": 21,
+        "category_coverage": 4
+      },
+      {
+        "timestamp": "2026-07-04T00:00:00Z",
+        "open": 49.46,
+        "high": 52.86,
+        "low": 44.06,
+        "close": 49.45,
+        "value": 49.45,
+        "coverage": 21,
+        "category_coverage": 4
       }
     ],
-    "value": 60.6,
+    "value": 49.5,
     "change_24h": -0.0
   },
   "refresh_errors": [],
@@ -1080,7 +1273,7 @@
       "method_version": "ehi-backcast-v1"
     },
     {
-      "timestamp": "2026-07-05T23:00:08.641138+00:00",
+      "timestamp": "2026-07-05T23:11:20.721283+00:00",
       "value": 33.5,
       "kind": "observed",
       "coverage": 1.0,
