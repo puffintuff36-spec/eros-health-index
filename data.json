@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-05T20:17:29.291048+00:00",
+  "generated_at": "2026-07-05T21:07:29.348383+00:00",
   "title": "Eros Health Index",
   "subtitle": "A transparent prototype for tracking embodied connection, synthetic substitution, and generativity.",
   "metrics": [
@@ -1272,6 +1272,10 @@
     },
     {
       "timestamp": "2026-07-05T20:17:29.291048+00:00",
+      "value": 33.5
+    },
+    {
+      "timestamp": "2026-07-05T21:07:29.348383+00:00",
       "value": 33.5
     }
   ]
