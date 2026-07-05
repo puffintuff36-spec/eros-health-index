@@ -1,4 +1,4 @@
-# v0.3.4: stratified GOON basket, conservative trait weighting, and category-balanced aggregation
+# v0.3.5: GOON v2 extremity model, normalized history merge, and EHI backcast support
 #!/usr/bin/env python3
 """Refresh the Eros Health Index data file from public sources.
 
@@ -35,7 +35,7 @@ ROOT = Path(__file__).resolve().parent
 SEED = ROOT / "seed_data.json"
 OUT = ROOT / "data.json"
 OUT_JS = ROOT / "data.js"
-USER_AGENT = "ErosHealthIndex/0.3.4 (+public research dashboard)"
+USER_AGENT = "ErosHealthIndex/0.3.5 (+public research dashboard)"
 CENSUS_KEY_FILE = ROOT / "census_api_key.txt"
 GOON_BASKET_FILE = ROOT / "goon_basket.txt"
 
@@ -47,23 +47,23 @@ GOON_BASKET_FILE = ROOT / "goon_basket.txt"
 GOON_CATEGORY_PROFILES: dict[str, dict[str, float | str]] = {
     "mainstream_tube": {
         "label": "Mainstream tube/video", "share": 0.45,
-        "novelty": 0.45, "intensity": 0.35, "interaction": 0.10,
+        "novelty": 0.45, "intensity": 0.35, "interaction": 0.10, "extremity": 0.30,
     },
     "illustrated_niche": {
         "label": "Illustrated fandom / niche", "share": 0.20,
-        "novelty": 0.85, "intensity": 0.60, "interaction": 0.10,
+        "novelty": 0.85, "intensity": 0.60, "interaction": 0.10, "extremity": 0.70,
     },
     "hentai_animation": {
         "label": "Hentai / animation", "share": 0.15,
-        "novelty": 0.75, "intensity": 0.55, "interaction": 0.10,
+        "novelty": 0.75, "intensity": 0.55, "interaction": 0.10, "extremity": 0.60,
     },
     "interactive": {
         "label": "Live / interactive", "share": 0.15,
-        "novelty": 0.55, "intensity": 0.40, "interaction": 0.90,
+        "novelty": 0.55, "intensity": 0.40, "interaction": 0.90, "extremity": 0.35,
     },
     "synthetic": {
         "label": "Synthetic / personalized", "share": 0.05,
-        "novelty": 0.90, "intensity": 0.55, "interaction": 0.95,
+        "novelty": 0.90, "intensity": 0.55, "interaction": 0.95, "extremity": 0.45,
     },
 }
 
@@ -127,7 +127,7 @@ def _coerce_trait(raw: Any, fallback: float) -> float:
 
 def _make_goon_domain(domain: str, category: str | None = None,
                       novelty: Any = None, intensity: Any = None,
-                      interaction: Any = None) -> dict[str, Any]:
+                      interaction: Any = None, extremity: Any = None) -> dict[str, Any]:
     domain = _clean_domain(domain) or ""
     category_key = GOON_CATEGORY_ALIASES.get((category or "").strip().lower())
     if not category_key:
@@ -139,6 +139,7 @@ def _make_goon_domain(domain: str, category: str | None = None,
         "novelty": _coerce_trait(novelty, float(profile["novelty"])),
         "intensity": _coerce_trait(intensity, float(profile["intensity"])),
         "interaction": _coerce_trait(interaction, float(profile["interaction"])),
+        "extremity": _coerce_trait(extremity, float(profile["extremity"])),
     }
 
 
@@ -146,7 +147,7 @@ def get_goon_domain_basket() -> list[dict[str, Any]]:
     """Return private GOON basket entries from env var or local text file.
 
     Supported structured syntax (one entry per line):
-        domain|category|novelty|intensity|interaction
+        domain|category|novelty|intensity|interaction|extremity
 
     Numeric traits are optional 0-1 values. Legacy plain domain lists and the
     earlier comma-separated secret format remain supported.
@@ -177,16 +178,16 @@ def get_goon_domain_basket() -> list[dict[str, Any]]:
             parts = [part.strip() for part in line.split("|")]
             domain = _clean_domain(parts[0]) if parts else None
             if domain:
-                padded = parts + [None] * (5 - len(parts))
-                add(_make_goon_domain(domain, padded[1], padded[2], padded[3], padded[4]))
+                padded = parts + [None] * (6 - len(parts))
+                add(_make_goon_domain(domain, padded[1], padded[2], padded[3], padded[4], padded[5]))
             continue
 
         comma_parts = [part.strip() for part in line.split(",")]
         if len(comma_parts) >= 2 and comma_parts[1].lower() in known_categories:
             domain = _clean_domain(comma_parts[0])
             if domain:
-                padded = comma_parts + [None] * (5 - len(comma_parts))
-                add(_make_goon_domain(domain, padded[1], padded[2], padded[3], padded[4]))
+                padded = comma_parts + [None] * (6 - len(comma_parts))
+                add(_make_goon_domain(domain, padded[1], padded[2], padded[3], padded[4], padded[5]))
             continue
 
         for token in re.split(r"[\s,;]+", line):
@@ -606,12 +607,16 @@ def _domain_goon_pressure(history: dict[str, float], entry: dict[str, Any]) -> d
     mad = float(statistics.median(deviations)) if deviations else 0.0
     robust_scale = max(1.0, 1.4826 * mad)
 
+    # Extremity separates the far end more clearly while remaining subordinate
+    # to observed popularity pressure.
+    extremity_effect = float(entry["extremity"]) ** 1.35
     trait_score = (
-        0.45 * float(entry["novelty"])
-        + 0.35 * float(entry["intensity"])
-        + 0.20 * float(entry["interaction"])
+        0.30 * float(entry["novelty"])
+        + 0.15 * float(entry["intensity"])
+        + 0.25 * float(entry["interaction"])
+        + 0.30 * extremity_effect
     )
-    max_uplift = 0.12 * clamp(trait_score, 0.0, 1.0)
+    max_uplift = 0.14 * clamp(trait_score, 0.0, 1.0)
 
     adjusted: dict[str, float] = {}
     for date, absolute in raw_pressures.items():
@@ -643,7 +648,7 @@ def refresh_goon_index(data: dict[str, Any]) -> None:
     balancing prevents a niche from gaining more influence merely because more
     domains were listed for it. Individual domains are blended from absolute rank
     pressure, a smaller own-history trend component, and a conservative architecture
-    uplift based on novelty, intensity, and interaction descriptors.
+    uplift based on novelty, intensity, interaction, and explicit extremity descriptors.
     """
     entries = get_goon_domain_basket()
     if not entries:
@@ -773,10 +778,10 @@ def refresh_goon_index(data: dict[str, Any]) -> None:
     data["goon"] = {
         "mode": "live",
         "signal_kind": "stratified_timeseries",
-        "method_version": "stratified-v1",
+        "method_version": "stratified-v2",
         "label": "The Gooning Index",
         "ticker": "GOON",
-        "description": "One category-balanced daily digital-pressure signal derived from a private stratified basket and Tranco rank histories. Absolute popularity dominates; a smaller own-history trend term and conservative novelty/intensity/interaction weighting add resolution. Candle bodies show overall GOON movement; wicks show the middle 50% of adjusted domain pressure. Higher is worse for Eros; individual domains and ranks are not published.",
+        "description": "One category-balanced daily digital-pressure signal derived from a private stratified basket and Tranco rank histories. Absolute popularity dominates; a smaller own-history trend term and conservative novelty/intensity/interaction/extremity weighting add resolution. Candle bodies show overall GOON movement; wicks show the middle 50% of adjusted domain pressure. Higher is worse for Eros; individual domains and ranks are not published.",
         "source_name": "Tranco",
         "source_url": "https://tranco-list.eu/api_documentation",
         "last_updated": output_rows[-1]["timestamp"],
@@ -790,35 +795,315 @@ def refresh_goon_index(data: dict[str, Any]) -> None:
 
 
 
+def _canonical_utc_day(value: Any) -> str | None:
+    """Return YYYY-MM-DD for an ISO timestamp, normalizing equivalent UTC forms."""
+    if value is None:
+        return None
+    text = str(value).strip()
+    if not text:
+        return None
+    try:
+        parsed = dt.datetime.fromisoformat(text.replace("Z", "+00:00"))
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=dt.UTC)
+        return parsed.astimezone(dt.UTC).date().isoformat()
+    except ValueError:
+        match = re.match(r"^(\d{4}-\d{2}-\d{2})", text)
+        if not match:
+            return None
+        try:
+            return dt.date.fromisoformat(match.group(1)).isoformat()
+        except ValueError:
+            return None
+
+
 def merge_goon_history(data: dict[str, Any], previous: dict[str, Any] | None) -> None:
-    """Carry forward observed GOON history and merge newly fetched daily observations."""
+    """Merge live GOON history by UTC calendar day without crossing method versions."""
     goon = data.get("goon")
     if not isinstance(goon, dict) or goon.get("mode") != "live":
         return
+
     current_rows = goon.get("series") if isinstance(goon.get("series"), list) else []
     old_rows: list[dict[str, Any]] = []
+
     if previous and isinstance(previous.get("goon"), dict):
-        prior = previous["goon"].get("series")
-        if isinstance(prior, list):
-            old_rows = [row for row in prior if isinstance(row, dict) and row.get("timestamp") is not None]
-    merged: dict[str, dict[str, Any]] = {str(row["timestamp"]): row for row in old_rows}
-    for row in current_rows:
-        if isinstance(row, dict) and row.get("timestamp") is not None:
-            merged[str(row["timestamp"])] = row
-    goon["series"] = ensure_goon_candles([merged[key] for key in sorted(merged)][-365:])
+        prior_goon = previous["goon"]
+        prior_method = prior_goon.get("method_version")
+        current_method = goon.get("method_version")
+        methods_compatible = (
+            prior_method == current_method
+            if prior_method or current_method
+            else True
+        )
+        prior = prior_goon.get("series")
+        if methods_compatible and isinstance(prior, list):
+            old_rows = [
+                row for row in prior
+                if isinstance(row, dict) and row.get("timestamp") is not None
+            ]
+
+    merged: dict[str, dict[str, Any]] = {}
+    for row in [*old_rows, *current_rows]:
+        if not isinstance(row, dict):
+            continue
+        day = _canonical_utc_day(row.get("timestamp"))
+        if day is None:
+            continue
+        clean = dict(row)
+        clean["timestamp"] = f"{day}T00:00:00Z"
+        merged[day] = clean
+
+    goon["series"] = ensure_goon_candles(
+        [merged[day] for day in sorted(merged)][-365:]
+    )
     finalize_goon_summary(data)
 
 
-def update_ehi_history(data: dict[str, Any], previous: dict[str, Any] | None = None) -> None:
-    history: list[dict[str, Any]] = []
-    if previous and isinstance(previous.get("ehi_history"), list):
-        history = [row for row in previous["ehi_history"] if isinstance(row, dict)]
-    if data.get("index") is not None:
-        history.append({
-            "timestamp": data["generated_at"],
-            "value": float(data["index"]),
+# Official national marriage rates per 1,000 population, CDC/NCHS.
+# Source: https://www.cdc.gov/nchs/data/dvs/marriage-divorce/
+EHI_BACKCAST_MARRIAGE_RATE: dict[int, float] = {
+    2010: 6.8,
+    2011: 6.8,
+    2012: 6.8,
+    2013: 6.8,
+    2014: 6.9,
+    2015: 6.9,
+    2016: 7.0,
+    2017: 6.9,
+    2018: 6.5,
+    2019: 6.1,
+    2020: 5.1,
+    2021: 6.0,
+    2022: 6.2,
+    2023: 6.1,
+}
+
+# Pew Research Center survey waves: share of U.S. teens saying they are online
+# almost constantly. Values between waves are linearly interpolated for the
+# annual backcast; the raw wave years remain listed here for auditability.
+EHI_BACKCAST_ALWAYS_ONLINE: dict[int, float] = {
+    2015: 24.0,
+    2018: 45.0,
+    2022: 46.0,
+    2024: 46.0,
+    2025: 40.0,
+}
+
+EHI_BACKCAST_COMPONENTS: dict[str, dict[str, Any]] = {
+    "young_adult_partnered_pct": {
+        "weight": 1.5,
+        "direction": "higher_better",
+        "low_anchor": 25.0,
+        "high_anchor": 45.0,
+    },
+    "us_total_fertility_rate": {
+        "weight": 1.1,
+        "direction": "higher_better",
+        "low_anchor": 1.3,
+        "high_anchor": 2.3,
+    },
+    "marriage_rate": {
+        "weight": 1.0,
+        "direction": "higher_better",
+        "low_anchor": 4.0,
+        "high_anchor": 10.0,
+    },
+    "almost_constant_online": {
+        "weight": 0.8,
+        "direction": "lower_better",
+        "low_anchor": 10.0,
+        "high_anchor": 50.0,
+    },
+}
+
+
+def _series_year_map(data: dict[str, Any], series_id: str) -> dict[int, float]:
+    output: dict[int, float] = {}
+    rows = data.get("series", {}).get(series_id, [])
+    if not isinstance(rows, list):
+        return output
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        try:
+            year = int(row["year"])
+            value = float(row["value"])
+        except (KeyError, TypeError, ValueError):
+            continue
+        output[year] = value
+    return output
+
+
+def _interpolate_annual(
+    points: dict[int, float],
+    year: int,
+    *,
+    forward_carry_years: int = 0,
+) -> float | None:
+    """Interpolate between observed annual/survey points; optionally short-carry tails."""
+    if not points:
+        return None
+    if year in points:
+        return float(points[year])
+
+    years = sorted(points)
+    lower = max((item for item in years if item < year), default=None)
+    upper = min((item for item in years if item > year), default=None)
+
+    if lower is not None and upper is not None:
+        fraction = (year - lower) / (upper - lower)
+        return float(points[lower] + (points[upper] - points[lower]) * fraction)
+
+    last = years[-1]
+    if year > last and year - last <= forward_carry_years:
+        return float(points[last])
+    return None
+
+
+def carry_forward_series(data: dict[str, Any], previous: dict[str, Any] | None) -> None:
+    """Keep cached longitudinal series when one upstream refresh fails temporarily."""
+    if not previous or not isinstance(previous.get("series"), dict):
+        return
+    series = data.setdefault("series", {})
+    for key, prior_rows in previous["series"].items():
+        current_rows = series.get(key)
+        if (
+            (not isinstance(current_rows, list) or not current_rows)
+            and isinstance(prior_rows, list)
+        ):
+            series[key] = prior_rows
+
+
+def _backcast_component_score(value: float, config: dict[str, Any]) -> float:
+    lo = float(config["low_anchor"])
+    hi = float(config["high_anchor"])
+    raw = (float(value) - lo) / (hi - lo) * 100.0
+    if config["direction"] == "lower_better":
+        raw = 100.0 - raw
+    return clamp(raw)
+
+
+def build_ehi_backcast(data: dict[str, Any]) -> list[dict[str, Any]]:
+    """Build annual reconstructed EHI points from a fixed, historically available core.
+
+    This is deliberately not the full contemporary EHI basket projected backward.
+    It uses the same four core signal families each year so the historical line has
+    a stable composition. Coverage and component names are published with each row.
+    """
+    partnered = _series_year_map(data, "young_adult_partnered_pct")
+    fertility = _series_year_map(data, "us_total_fertility_rate")
+    current_year = dt.datetime.now(dt.UTC).year
+    total_weight = sum(float(cfg["weight"]) for cfg in EHI_BACKCAST_COMPONENTS.values())
+    rows: list[dict[str, Any]] = []
+
+    for year in range(2015, current_year):
+        values = {
+            "young_adult_partnered_pct": _interpolate_annual(
+                partnered, year, forward_carry_years=1
+            ),
+            "us_total_fertility_rate": _interpolate_annual(
+                fertility, year, forward_carry_years=2
+            ),
+            "marriage_rate": _interpolate_annual(
+                EHI_BACKCAST_MARRIAGE_RATE, year, forward_carry_years=2
+            ),
+            "almost_constant_online": _interpolate_annual(
+                EHI_BACKCAST_ALWAYS_ONLINE, year, forward_carry_years=1
+            ),
+        }
+
+        numerator = 0.0
+        used_weight = 0.0
+        used_components: list[str] = []
+        component_values: dict[str, float] = {}
+
+        for key, value in values.items():
+            if value is None:
+                continue
+            cfg = EHI_BACKCAST_COMPONENTS[key]
+            weight = float(cfg["weight"])
+            score = _backcast_component_score(float(value), cfg)
+            numerator += score * weight
+            used_weight += weight
+            used_components.append(key)
+            component_values[key] = round(float(value), 3)
+
+        coverage = used_weight / total_weight if total_weight else 0.0
+        if len(used_components) < 3 or coverage < 0.65:
+            continue
+
+        rows.append({
+            "timestamp": f"{year}-07-01T00:00:00Z",
+            "value": round(numerator / used_weight, 1),
+            "kind": "backcast",
+            "coverage": round(coverage, 3),
+            "components": used_components,
+            "component_values": component_values,
+            "method_version": "ehi-backcast-v1",
         })
-    data["ehi_history"] = history[-240:]
+
+    return rows
+
+
+def update_ehi_history(data: dict[str, Any], previous: dict[str, Any] | None = None) -> None:
+    """Merge annual backcast points with observed full-basket EHI snapshots."""
+    backcast = build_ehi_backcast(data)
+    merged: dict[str, dict[str, Any]] = {}
+
+    for row in backcast:
+        day = _canonical_utc_day(row.get("timestamp"))
+        if day:
+            merged[day] = row
+
+    if previous and isinstance(previous.get("ehi_history"), list):
+        for row in previous["ehi_history"]:
+            if not isinstance(row, dict) or row.get("kind") == "backcast":
+                continue
+            day = _canonical_utc_day(row.get("timestamp"))
+            if day:
+                merged[day] = dict(row)
+
+    if data.get("index") is not None:
+        day = _canonical_utc_day(data.get("generated_at"))
+        if day:
+            merged[day] = {
+                "timestamp": data["generated_at"],
+                "value": float(data["index"]),
+                "kind": "observed",
+                "coverage": 1.0,
+                "method_version": "headline-ehi-v1",
+            }
+
+    data["ehi_history"] = [merged[day] for day in sorted(merged)][-500:]
+    data["ehi_history_meta"] = {
+        "mode": "backcast_plus_observed",
+        "method_version": "ehi-backcast-v1",
+        "note": (
+            "Annual reconstructed points use a fixed four-signal core: young-adult "
+            "partnering, total fertility, national marriage rate, and teen almost-constant "
+            "internet use. Current observed snapshots use the full headline EHI basket. "
+            "Backcast rows publish coverage and components and should not be read as "
+            "historical observations of metrics that did not yet exist."
+        ),
+        "sources": [
+            {
+                "label": "U.S. Census Bureau ACS living-arrangements series",
+                "url": "https://api.census.gov/data.html",
+            },
+            {
+                "label": "World Bank total fertility rate",
+                "url": "https://api.worldbank.org/",
+            },
+            {
+                "label": "CDC/NCHS national marriage and divorce rates",
+                "url": "https://www.cdc.gov/nchs/fastats/marriage-divorce.htm",
+            },
+            {
+                "label": "Pew Research Center teen internet-use survey waves",
+                "url": "https://www.pewresearch.org/internet/",
+            },
+        ],
+    }
 
 def refresh_census_series(data: dict[str, Any]) -> None:
     partnered: list[dict[str, float | int]] = []
@@ -948,6 +1233,7 @@ def main() -> int:
         finalize_goon_summary(data)
 
     merge_goon_history(data, previous)
+    carry_forward_series(data, previous)
     data["generated_at"] = dt.datetime.now(dt.UTC).isoformat()
     data["refresh_errors"] = errors
     calculate_index(data)

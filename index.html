@@ -92,7 +92,7 @@
 </head>
 <body>
 <main>
-  <div class="eyebrow">Prototype v0.3.4 · transparent composite</div>
+  <div class="eyebrow">Prototype v0.3.5 · transparent composite</div>
   <h1>Eros Health Index</h1>
   <p class="sub">A deliberately arguable instrument for tracking whether human desire is moving toward embodied relationship, durable pair-bonding and generativity—or toward synthetic substitution and disconnection.</p>
 
@@ -103,7 +103,7 @@
         <div class="ticker-quote"><div id="ehiTickerValue" class="ticker-value">—</div><div id="ehiTickerDelta" class="ticker-delta flat">No prior snapshot</div></div>
       </div>
       <canvas id="ehiTickerChart" class="market-canvas"></canvas>
-      <div class="ticker-meta"><span class="status-badge live">STRUCTURAL</span><span>Higher is healthier · slow-moving composite</span></div>
+      <div class="ticker-meta"><span class="status-badge live">STRUCTURAL</span><span>Higher is healthier · reconstructed history + observed snapshots</span></div>
     </article>
 
     <article class="card ticker-card">
@@ -140,8 +140,8 @@
 
   <div class="section-title"><div><div class="eyebrow">Method</div><h2>No sacred number</h2></div></div>
   <section class="card method">
-    <p>The headline EHI score is a weighted mean of included US metrics. Each metric is linearly normalized between a visible low anchor and high anchor, then reversed when lower values are considered healthier. Scores are clipped to 0–100.</p>
-    <p>GOON is calculated separately. Private domain histories are converted to pressure, blended mostly from absolute popularity with a smaller own-history trend term, then conservatively adjusted for novelty, intensity and interaction architecture. Domains are aggregated inside categories first; category target shares are then combined into one GOON number. This prevents a niche from gaining more voting power just because more sites from that niche were listed.</p>
+    <p>The headline EHI score is a weighted mean of included US metrics. Each metric is linearly normalized between a visible low anchor and high anchor, then reversed when lower values are considered healthier. Scores are clipped to 0–100. The historical EHI line combines annual reconstructed fixed-core points with observed full-basket snapshots; backcast rows are explicitly labeled in data.json and do not pretend that newer metrics existed in earlier years.</p>
+    <p>GOON is calculated separately. Private domain histories are converted to pressure, blended mostly from absolute popularity with a smaller own-history trend term, then conservatively adjusted for novelty, intensity, extremity and interaction architecture. Domains are aggregated inside categories first; category target shares are then combined into one GOON number. This prevents a niche from gaining more voting power just because more sites from that niche were listed.</p>
     <p>Trait weighting describes content/platform architecture, not the moral worth or identity of users. A single unusual fantasy is not treated as evidence of real-world intent or pathology. The index is designed to watch population-level patterns and systems, not label individuals.</p>
     <p>This is an interpretive dashboard, not a validated psychological scale. A different theory of healthy eros should change the anchors, weights, exclusions, or even the metric list. That is a feature, not a bug.</p>
     <p>Refresh with <code>python update_data.py</code>. Run locally with <code>python -m http.server 8000</code> and open <code>http://localhost:8000</code>.</p>

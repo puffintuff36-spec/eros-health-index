@@ -1,11 +1,11 @@
-# Eros Health Index — prototype v0.3
+# Eros Health Index — prototype v0.3.5
 
 A small static dashboard plus Python refresher. The goal is not to pretend that “the Awakening” can be scientifically measured; it is to build a transparent civilizational pulse meter from observable proxies.
 
 ## What it tracks
 
-- **EHI:** the slow-moving structural composite built from partnership, marriage, fertility, digital substitution, and related signals.
-- **GOON:** a daily aggregate digital-pressure tracker. In demo mode it uses clearly marked sample motion; with a private local basket it refreshes from Tranco historical domain ranks and publishes only the aggregate.
+- **EHI:** the slow-moving structural composite built from partnership, marriage, fertility, digital substitution, and related signals, with annual backcast rows clearly separated from observed snapshots.
+- **GOON:** a daily aggregate digital-pressure tracker. In demo mode it uses clearly marked sample motion; with a private local basket it refreshes from Tranco historical domain ranks and publishes only the aggregate v0.3.5 signal.
 - **Embodied connection:** partnership and marriage aspiration/expectation.
 - **Synthetic substitution:** AI-companion substitution and extreme digital saturation.
 - **Generativity:** marriage and fertility signals.
@@ -50,7 +50,7 @@ Then open `http://localhost:8000`.
 
 ### EHI
 
-The EHI tracker is the same structural score used by the main dashboard. Every updater run adds a timestamped EHI snapshot to `data.json`, so its small history line builds gradually on your machine.
+The EHI tracker is the same structural score used by the main dashboard. Its history combines annual reconstructed fixed-core rows with observed full-basket snapshots from updater runs. Backcast rows in `data.json` are marked with `kind: "backcast"`, coverage, component names, and `method_version: "ehi-backcast-v1"`; observed snapshots are marked with `kind: "observed"` and `method_version: "headline-ehi-v1"`.
 
 Higher EHI is healthier.
 
@@ -64,9 +64,10 @@ The live adapter:
 
 - queries Tranco for at least 30 days of daily historical ranks for each domain in the private local basket;
 - converts lower (more popular) ranks into pressure values;
-- averages the private basket into one aggregate series;
+- aggregates the private basket inside target-share categories before producing one public series;
 - smooths the line with a short exponential moving average;
-- converts those ranks into one log-scaled pressure series and writes only that aggregate GOON series into public dashboard data.
+- applies a conservative architecture uplift using novelty, intensity, interaction, and explicit extremity descriptors;
+- writes only the aggregate GOON series into public dashboard data.
 
 The browser offers 7D and 30D views. If no private basket is configured, the dashboard says `DEMO` clearly and uses deterministic sample movement so the UI can still be tested locally.
 
@@ -93,13 +94,13 @@ The anchors and weights are explicitly editable in `seed_data.json`. They are in
 3. **Auto-page adapters** conservatively parse selected CDC/NCHS headline values.
 4. **Snapshots** store survey-wave findings where the publisher does not provide a stable current-value API. These should be replaced when a comparable new wave appears.
 
-The script keeps partial results when one source fails and records failures in `refresh_errors`. A failed or unavailable Radar refresh falls back to visibly labeled demo motion rather than pretending sample data is live.
+The script keeps partial results when one source fails and records failures in `refresh_errors`. Cached longitudinal series are carried forward when an upstream refresh temporarily fails, so the historical EHI spine is not deleted by a partial run. A failed or unavailable GOON refresh falls back to visibly labeled demo motion rather than pretending sample data is live.
 
 ## Important methodological limits
 
 The metrics come from different populations, years, and sampling designs. The headline composite is therefore a theory-driven monitoring tool, not a validated clinical or sociological scale. Cross-country signals are displayed but excluded from the US headline score. Intent measures are weighted below direct behavior measures.
 
-GOON is also a proxy. Tranco domain rank is not the same thing as raw visits, minutes watched, or unique porn consumers. The exact conversion from rank to pressure is transparent in `rank_to_pressure()` and should be treated as an interpretable index design choice, not natural law.
+GOON is also a proxy. Tranco domain rank is not the same thing as raw visits, minutes watched, or unique porn consumers. The exact conversion from rank to pressure is transparent in `rank_to_pressure()`, and the v0.3.5 extremity trait is a bounded architecture modifier rather than a substitute for observed popularity.
 
 ## Census API key
 
@@ -118,9 +119,9 @@ The updater also accepts an environment variable named `CENSUS_API_KEY`.
 
 ## GOON basket for observed data
 
-The local package includes `goon_basket.txt`. The updater reads that file, queries Tranco's official historical-rank endpoint sequentially, and writes only the aggregate signal to `data.json` / `data.js`. Tranco documents a one-query-per-second API limit, so a refresh with eight basket domains takes several seconds.
+Local observed refreshes can use a private `goon_basket.txt`. The updater reads that file, queries Tranco's official historical-rank endpoint sequentially, and writes only the aggregate signal to `data.json` / `data.js`. Tranco documents a one-query-per-second API limit, so larger baskets take longer to refresh.
 
-`goon_basket.txt` is ignored by Git. For GitHub Actions later, use a repository secret named `GOON_DOMAIN_BASKET` containing comma-separated domains instead of committing the file.
+`goon_basket.txt` is ignored by Git. For GitHub Actions, use a repository secret named `GOON_DOMAIN_BASKET` instead of committing the file. Structured rows may include `domain|category|novelty|intensity|interaction|extremity`; older five-field rows remain supported.
 
 The public dashboard shows only the aggregate GOON line.
 
