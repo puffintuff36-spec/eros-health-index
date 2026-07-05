@@ -1,5 +1,11 @@
 name: Refresh Eros Health Index data
 on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - data.json
+      - data.js
   schedule:
     - cron: '17 8 * * *'
   workflow_dispatch:
