@@ -103,7 +103,7 @@
         <div class="ticker-quote"><div id="ehiTickerValue" class="ticker-value">—</div><div id="ehiTickerDelta" class="ticker-delta flat">No prior snapshot</div></div>
       </div>
       <canvas id="ehiTickerChart" class="market-canvas"></canvas>
-      <div class="ticker-meta"><span class="status-badge live">STRUCTURAL</span><span>Higher is healthier · reconstructed history + observed snapshots</span></div>
+      <div class="ticker-meta"><span class="status-badge live">STRUCTURAL</span><span id="ehiHistoryMeta">Higher is healthier · reconstructed history + observed snapshots</span></div>
     </article>
 
     <article class="card ticker-card">
@@ -278,6 +278,12 @@ function renderMarketTrackers(data) {
   const ehiDeltaEl=document.getElementById('ehiTickerDelta');
   ehiDeltaEl.textContent=ehiDelta==null?'No prior snapshot':formatSigned(ehiDelta,' pts');
   ehiDeltaEl.className='ticker-delta '+(ehiDelta==null||ehiDelta===0?'flat':ehiDelta>0?'good':'bad');
+  const ehiMeta=document.getElementById('ehiHistoryMeta');
+  const firstEhi=ehiRows[0], lastEhi=ehiRows[ehiRows.length-1];
+  if(ehiMeta && firstEhi && lastEhi){
+    const yearOf=row=>new Date(row.timestamp).getUTCFullYear();
+    ehiMeta.textContent=`${yearOf(firstEhi)} ${firstEhi.kind||'history'} ${Number(firstEhi.value).toFixed(1)} → ${yearOf(lastEhi)} ${lastEhi.kind||'current'} ${Number(lastEhi.value).toFixed(1)}`;
+  }
   requestAnimationFrame(()=>drawMarketSeries(document.getElementById('ehiTickerChart'),ehiRows,'#8fd6a5'));
 
   const goon=data.goon||{}; const rows=goon.series||[]; const value=Number(goon.value); const delta=Number(goon.change_24h);
@@ -320,7 +326,18 @@ function drawSeries(canvas, rows) {
   ctx.strokeStyle='#c7b7ff'; ctx.lineWidth=2; ctx.beginPath(); rows.forEach((r,i)=>{ const x=pad+(r.year-minX)/(maxX-minX)*(w-pad*2); const y=h-pad-(r.value-minY)/spanY*(h-pad*2); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }); ctx.stroke();
   ctx.fillStyle='#9aa6b5'; ctx.font='11px system-ui'; ctx.fillText(String(minX),pad,h-7); ctx.fillText(String(maxX),w-pad-28,h-7); ctx.fillText(maxY.toFixed(1),4,pad+4); ctx.fillText(minY.toFixed(1),4,h-pad);
 }
-const dataPromise = window.EROS_DATA ? Promise.resolve(window.EROS_DATA) : fetch('data.json').then(r=>{ if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); });
+function loadErosData() {
+  const freshJson=()=>fetch(`data.json?ts=${Date.now()}`,{cache:'no-store'})
+    .then(r=>{ if(!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); });
+  if(location.protocol==='http:'||location.protocol==='https:') {
+    return freshJson().catch(err=>{
+      if(window.EROS_DATA) return window.EROS_DATA;
+      throw err;
+    });
+  }
+  return window.EROS_DATA ? Promise.resolve(window.EROS_DATA) : freshJson();
+}
+const dataPromise = loadErosData();
 dataPromise.then(data=>{
   renderMarketTrackers(data);
   document.getElementById('index').textContent = data.index?.toFixed(1) ?? '—';
