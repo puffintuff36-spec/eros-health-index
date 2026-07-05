@@ -1,4 +1,4 @@
-# v0.3.1: GOON candlestick presentation and robust daily aggregation
+# v0.3.4: stratified GOON basket, conservative trait weighting, and category-balanced aggregation
 #!/usr/bin/env python3
 """Refresh the Eros Health Index data file from public sources.
 
@@ -35,9 +35,64 @@ ROOT = Path(__file__).resolve().parent
 SEED = ROOT / "seed_data.json"
 OUT = ROOT / "data.json"
 OUT_JS = ROOT / "data.js"
-USER_AGENT = "ErosHealthIndex/0.1 (+local research dashboard)"
+USER_AGENT = "ErosHealthIndex/0.3.4 (+public research dashboard)"
 CENSUS_KEY_FILE = ROOT / "census_api_key.txt"
 GOON_BASKET_FILE = ROOT / "goon_basket.txt"
+
+# GOON is one public number, but the private basket can be stratified internally.
+# Categories have target shares so a category does not gain voting power merely
+# because the basket contains more domains from that category. Trait values are
+# deliberately conservative 0-1 descriptors of platform/content architecture,
+# not moral labels or diagnoses of users.
+GOON_CATEGORY_PROFILES: dict[str, dict[str, float | str]] = {
+    "mainstream_tube": {
+        "label": "Mainstream tube/video", "share": 0.45,
+        "novelty": 0.45, "intensity": 0.35, "interaction": 0.10,
+    },
+    "illustrated_niche": {
+        "label": "Illustrated fandom / niche", "share": 0.20,
+        "novelty": 0.85, "intensity": 0.60, "interaction": 0.10,
+    },
+    "hentai_animation": {
+        "label": "Hentai / animation", "share": 0.15,
+        "novelty": 0.75, "intensity": 0.55, "interaction": 0.10,
+    },
+    "interactive": {
+        "label": "Live / interactive", "share": 0.15,
+        "novelty": 0.55, "intensity": 0.40, "interaction": 0.90,
+    },
+    "synthetic": {
+        "label": "Synthetic / personalized", "share": 0.05,
+        "novelty": 0.90, "intensity": 0.55, "interaction": 0.95,
+    },
+}
+
+GOON_CATEGORY_ALIASES = {
+    "mainstream": "mainstream_tube", "tube": "mainstream_tube",
+    "mainstream_tube": "mainstream_tube",
+    "niche": "illustrated_niche", "fandom": "illustrated_niche",
+    "rule34": "illustrated_niche", "illustrated_niche": "illustrated_niche",
+    "hentai": "hentai_animation", "animation": "hentai_animation",
+    "hentai_animation": "hentai_animation",
+    "cam": "interactive", "live": "interactive", "interactive": "interactive",
+    "ai": "synthetic", "synthetic": "synthetic",
+}
+
+KNOWN_DOMAIN_CATEGORY = {
+    "chaturbate.com": "interactive",
+    "stripchat.com": "interactive",
+    "myfreecams.com": "interactive",
+    "camsoda.com": "interactive",
+    "bongacams.com": "interactive",
+    "cam4.com": "interactive",
+    "rule34.xxx": "illustrated_niche",
+    "rule34video.com": "illustrated_niche",
+    "e621.net": "illustrated_niche",
+    "gelbooru.com": "illustrated_niche",
+    "nhentai.net": "hentai_animation",
+    "hanime.tv": "hentai_animation",
+    "hentai2read.com": "hentai_animation",
+}
 
 # The public dashboard never exposes individual domain-level results. The local
 # updater reads a private basket, queries Tranco history, and publishes only one
@@ -57,21 +112,89 @@ def get_census_api_key() -> str | None:
     return None
 
 
-def get_goon_domain_basket() -> list[str]:
-    """Return the private GOON domain basket from env var or local text file."""
+def _clean_domain(raw: str) -> str | None:
+    token = raw.strip().lower()
+    token = re.sub(r"^https?://", "", token).split("/", 1)[0].strip(".")
+    return token if re.fullmatch(r"[a-z0-9.-]+\.[a-z]{2,}", token) else None
+
+
+def _coerce_trait(raw: Any, fallback: float) -> float:
+    try:
+        return clamp(float(raw), 0.0, 1.0)
+    except (TypeError, ValueError):
+        return fallback
+
+
+def _make_goon_domain(domain: str, category: str | None = None,
+                      novelty: Any = None, intensity: Any = None,
+                      interaction: Any = None) -> dict[str, Any]:
+    domain = _clean_domain(domain) or ""
+    category_key = GOON_CATEGORY_ALIASES.get((category or "").strip().lower())
+    if not category_key:
+        category_key = KNOWN_DOMAIN_CATEGORY.get(domain, "mainstream_tube")
+    profile = GOON_CATEGORY_PROFILES[category_key]
+    return {
+        "domain": domain,
+        "category": category_key,
+        "novelty": _coerce_trait(novelty, float(profile["novelty"])),
+        "intensity": _coerce_trait(intensity, float(profile["intensity"])),
+        "interaction": _coerce_trait(interaction, float(profile["interaction"])),
+    }
+
+
+def get_goon_domain_basket() -> list[dict[str, Any]]:
+    """Return private GOON basket entries from env var or local text file.
+
+    Supported structured syntax (one entry per line):
+        domain|category|novelty|intensity|interaction
+
+    Numeric traits are optional 0-1 values. Legacy plain domain lists and the
+    earlier comma-separated secret format remain supported.
+    """
     raw = os.environ.get("GOON_DOMAIN_BASKET", "").strip()
     if not raw and GOON_BASKET_FILE.exists():
         raw = GOON_BASKET_FILE.read_text(encoding="utf-8")
-    domains: list[str] = []
-    cleaned_lines = [line.split("#", 1)[0] for line in raw.splitlines()]
-    for token in re.split(r"[\s,;]+", "\n".join(cleaned_lines)):
-        token = token.strip().lower()
-        if not token:
+
+    entries: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    known_categories = set(GOON_CATEGORY_ALIASES)
+
+    def add(entry: dict[str, Any]) -> None:
+        domain = entry.get("domain")
+        if domain and domain not in seen:
+            entries.append(entry)
+            seen.add(domain)
+
+    for raw_line in raw.splitlines():
+        line = raw_line.split("#", 1)[0].strip()
+        if not line:
             continue
-        token = re.sub(r"^https?://", "", token).split("/", 1)[0].strip(".")
-        if re.fullmatch(r"[a-z0-9.-]+\.[a-z]{2,}", token) and token not in domains:
-            domains.append(token)
-    return domains
+
+        # Pipe-delimited lines are always structured. Comma-delimited lines are
+        # structured only when the second field names a known category; this
+        # preserves compatibility with old comma-separated domain secrets.
+        if "|" in line:
+            parts = [part.strip() for part in line.split("|")]
+            domain = _clean_domain(parts[0]) if parts else None
+            if domain:
+                padded = parts + [None] * (5 - len(parts))
+                add(_make_goon_domain(domain, padded[1], padded[2], padded[3], padded[4]))
+            continue
+
+        comma_parts = [part.strip() for part in line.split(",")]
+        if len(comma_parts) >= 2 and comma_parts[1].lower() in known_categories:
+            domain = _clean_domain(comma_parts[0])
+            if domain:
+                padded = comma_parts + [None] * (5 - len(comma_parts))
+                add(_make_goon_domain(domain, padded[1], padded[2], padded[3], padded[4]))
+            continue
+
+        for token in re.split(r"[\s,;]+", line):
+            domain = _clean_domain(token)
+            if domain:
+                add(_make_goon_domain(domain))
+
+    return entries
 
 
 class _TextExtractor(HTMLParser):
@@ -466,21 +589,69 @@ def finalize_goon_summary(data: dict[str, Any]) -> None:
     goon["change_24h"] = round(current - baseline, 1)
 
 
-def refresh_goon_index(data: dict[str, Any]) -> None:
-    """Build an anonymous daily GOON pressure signal from Tranco rank histories.
+def _domain_goon_pressure(history: dict[str, float], entry: dict[str, Any]) -> dict[str, float]:
+    """Convert one domain's rank history into conservative adjusted pressure.
 
-    Tranco exposes at least 30 days of daily rank history per domain. The updater
-    queries the private local basket sequentially (respecting the documented
-    one-query-per-second limit), converts rank to a log pressure contribution,
-    and publishes only the aggregate series.
+    Absolute popularity remains dominant. A smaller robust-trend component asks
+    whether the domain is unusually elevated relative to its own recent history.
+    Trait weighting can move a score only partway toward 100 and is intentionally
+    capped; it represents platform/content architecture, not a judgment of users.
     """
-    domains = get_goon_domain_basket()
-    if not domains:
+    import math
+
+    raw_pressures = {date: rank_to_pressure(rank) for date, rank in history.items()}
+    values = list(raw_pressures.values())
+    center = float(statistics.median(values))
+    deviations = [abs(value - center) for value in values]
+    mad = float(statistics.median(deviations)) if deviations else 0.0
+    robust_scale = max(1.0, 1.4826 * mad)
+
+    trait_score = (
+        0.45 * float(entry["novelty"])
+        + 0.35 * float(entry["intensity"])
+        + 0.20 * float(entry["interaction"])
+    )
+    max_uplift = 0.12 * clamp(trait_score, 0.0, 1.0)
+
+    adjusted: dict[str, float] = {}
+    for date, absolute in raw_pressures.items():
+        z = (absolute - center) / robust_scale
+        trend = 50.0 + 25.0 * math.tanh(z / 2.0)
+        blended = 0.80 * absolute + 0.20 * trend
+        adjusted[date] = clamp(blended + (100.0 - blended) * max_uplift)
+    return adjusted
+
+
+def _weighted_category_mean(category_values: dict[str, float]) -> float:
+    available = {
+        key: value for key, value in category_values.items()
+        if key in GOON_CATEGORY_PROFILES and value == value
+    }
+    if not available:
+        raise ValueError("No category values available")
+    total_weight = sum(float(GOON_CATEGORY_PROFILES[key]["share"]) for key in available)
+    return sum(
+        value * float(GOON_CATEGORY_PROFILES[key]["share"])
+        for key, value in available.items()
+    ) / total_weight
+
+
+def refresh_goon_index(data: dict[str, Any]) -> None:
+    """Build one anonymous GOON signal from a stratified private Tranco basket.
+
+    The public close is a target-share-weighted mean of category medians. Category
+    balancing prevents a niche from gaining more influence merely because more
+    domains were listed for it. Individual domains are blended from absolute rank
+    pressure, a smaller own-history trend component, and a conservative architecture
+    uplift based on novelty, intensity, and interaction descriptors.
+    """
+    entries = get_goon_domain_basket()
+    if not entries:
         data["goon"] = {
             "mode": "demo",
             "label": "The Gooning Index",
             "ticker": "GOON",
-            "description": "Demo movement only. Add a private goon_basket.txt for observed daily aggregate pressure.",
+            "description": "Demo movement only. Add a private stratified goon_basket.txt for observed category-balanced daily pressure.",
             "source_name": "Tranco (demo until basket is configured)",
             "source_url": "https://tranco-list.eu/",
             "last_updated": None,
@@ -491,8 +662,10 @@ def refresh_goon_index(data: dict[str, Any]) -> None:
 
     histories: dict[str, dict[str, float]] = {}
     diagnostics: list[str] = []
+    entry_by_domain = {entry["domain"]: entry for entry in entries}
 
-    for index, domain in enumerate(domains):
+    for index, entry in enumerate(entries):
+        domain = str(entry["domain"])
         url = "https://tranco-list.eu/api/ranks/domain/" + urllib.parse.quote(domain, safe="")
         try:
             payload = fetch_json(url)
@@ -501,10 +674,10 @@ def refresh_goon_index(data: dict[str, Any]) -> None:
         except urllib.error.URLError as exc:
             diagnostics.append(f"{domain}: network error {exc.reason}")
         else:
-            rows = payload.get("ranks", []) if isinstance(payload, dict) else []
+            api_rows = payload.get("ranks", []) if isinstance(payload, dict) else []
             parsed: dict[str, float] = {}
-            if isinstance(rows, list):
-                for row in rows:
+            if isinstance(api_rows, list):
+                for row in api_rows:
                     if not isinstance(row, dict):
                         continue
                     date = str(row.get("date", "")).strip()
@@ -520,56 +693,98 @@ def refresh_goon_index(data: dict[str, Any]) -> None:
                 diagnostics.append(f"{domain}: no rank history")
 
         # Tranco documents a one-query-per-second API limit.
-        if index < len(domains) - 1:
+        if index < len(entries) - 1:
             time.sleep(1.05)
 
-    minimum_domains = max(2, (len(domains) + 1) // 2)
+    minimum_domains = max(4, (len(entries) + 1) // 2)
     if len(histories) < minimum_domains:
-        detail = "; ".join(diagnostics[:8]) or "no usable histories returned"
+        detail = "; ".join(diagnostics[:10]) or "no usable histories returned"
         raise RuntimeError(
-            f"Tranco returned usable history for only {len(histories)}/{len(domains)} basket domains; "
+            f"Tranco returned usable history for only {len(histories)}/{len(entries)} basket domains; "
             f"need at least {minimum_domains}. {detail}"
         )
 
+    adjusted_histories = {
+        domain: _domain_goon_pressure(history, entry_by_domain[domain])
+        for domain, history in histories.items()
+    }
+    categories: dict[str, list[str]] = {}
+    for domain in histories:
+        categories.setdefault(str(entry_by_domain[domain]["category"]), []).append(domain)
+
     dates = sorted({date for history in histories.values() for date in history})
-    rows: list[dict[str, Any]] = []
-    coverage_floor = max(2, (len(histories) + 1) // 2)
+    output_rows: list[dict[str, Any]] = []
     previous_close: float | None = None
+
     for date in dates:
-        ranks = [history[date] for history in histories.values() if date in history]
-        if len(ranks) < coverage_floor:
+        category_scores: dict[str, float] = {}
+        all_domain_scores: list[float] = []
+        domains_reporting = 0
+
+        for category, domains in categories.items():
+            values = [
+                adjusted_histories[domain][date]
+                for domain in domains
+                if date in adjusted_histories[domain]
+            ]
+            category_floor = max(1, (len(domains) + 1) // 2)
+            if len(values) < category_floor:
+                continue
+            category_scores[category] = float(statistics.median(values))
+            all_domain_scores.extend(values)
+            domains_reporting += len(values)
+
+        if not category_scores or len(all_domain_scores) < 2:
             continue
-        pressures = sorted(rank_to_pressure(rank) for rank in ranks)
-        close = float(statistics.median(pressures))
+
+        close = _weighted_category_mean(category_scores)
         open_value = close if previous_close is None else previous_close
-        q1, _, q3 = statistics.quantiles(pressures, n=4, method="inclusive")
-        rows.append({
+        sorted_scores = sorted(all_domain_scores)
+        if len(sorted_scores) >= 2:
+            q1, _, q3 = statistics.quantiles(sorted_scores, n=4, method="inclusive")
+        else:
+            q1 = q3 = sorted_scores[0]
+
+        output_rows.append({
             "timestamp": f"{date}T00:00:00Z",
             "open": round(open_value, 2),
             "high": round(max(q3, open_value, close), 2),
             "low": round(min(q1, open_value, close), 2),
             "close": round(close, 2),
             "value": round(close, 2),
-            "coverage": len(ranks),
+            "coverage": domains_reporting,
+            "category_coverage": len(category_scores),
         })
         previous_close = close
 
-    if len(rows) < 2:
-        detail = "; ".join(diagnostics[:8]) or "insufficient overlapping dates"
+    if len(output_rows) < 2:
+        detail = "; ".join(diagnostics[:10]) or "insufficient overlapping dates"
         raise RuntimeError(f"Tranco returned insufficient overlapping history for GOON. {detail}")
+
+    target_categories = {
+        key: {
+            "label": str(profile["label"]),
+            "share": float(profile["share"]),
+        }
+        for key, profile in GOON_CATEGORY_PROFILES.items()
+        if key in categories
+    }
 
     data["goon"] = {
         "mode": "live",
-        "signal_kind": "timeseries",
+        "signal_kind": "stratified_timeseries",
+        "method_version": "stratified-v1",
         "label": "The Gooning Index",
         "ticker": "GOON",
-        "description": "Aggregate daily adult-domain popularity pressure derived from a private basket and Tranco rank histories. Candle bodies show median basket movement; wicks show the basket interquartile pressure range. Higher is worse for Eros; individual domains and ranks are not published.",
+        "description": "One category-balanced daily digital-pressure signal derived from a private stratified basket and Tranco rank histories. Absolute popularity dominates; a smaller own-history trend term and conservative novelty/intensity/interaction weighting add resolution. Candle bodies show overall GOON movement; wicks show the middle 50% of adjusted domain pressure. Higher is worse for Eros; individual domains and ranks are not published.",
         "source_name": "Tranco",
         "source_url": "https://tranco-list.eu/api_documentation",
-        "last_updated": rows[-1]["timestamp"],
-        "basket_size": len(domains),
+        "last_updated": output_rows[-1]["timestamp"],
+        "basket_size": len(entries),
         "domains_reporting": len(histories),
-        "series": rows[-60:],
+        "categories_reporting": len(categories),
+        "category_targets": target_categories,
+        "series": output_rows[-60:],
     }
     finalize_goon_summary(data)
 
@@ -724,7 +939,7 @@ def main() -> int:
             "mode": "demo",
             "label": "The Gooning Index",
             "ticker": "GOON",
-            "description": "Demo movement only. Add a private goon_basket.txt for observed daily aggregate rank pressure.",
+            "description": "Demo movement only. Add a private stratified goon_basket.txt for observed category-balanced daily pressure.",
             "source_name": "Tranco (demo until basket is configured)",
             "source_url": "https://tranco-list.eu/",
             "last_updated": None,

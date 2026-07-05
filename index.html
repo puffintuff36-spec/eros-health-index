@@ -92,7 +92,7 @@
 </head>
 <body>
 <main>
-  <div class="eyebrow">Prototype v0.3.3 · transparent composite</div>
+  <div class="eyebrow">Prototype v0.3.4 · transparent composite</div>
   <h1>Eros Health Index</h1>
   <p class="sub">A deliberately arguable instrument for tracking whether human desire is moving toward embodied relationship, durable pair-bonding and generativity—or toward synthetic substitution and disconnection.</p>
 
@@ -116,7 +116,7 @@
         <div id="goonHoverLine" class="chart-hover-line" aria-hidden="true"></div>
         <div id="goonTooltip" class="chart-tooltip" role="status" aria-live="polite"></div>
       </div>
-      <div class="goon-legend"><span class="up">Red</span> = pressure rose · <span class="down">green</span> = pressure fell · wick = middle 50% basket range · <span class="ema">trend line = adaptive EMA</span></div>
+      <div class="goon-legend"><span class="up">Red</span> = pressure rose · <span class="down">green</span> = pressure fell · wick = middle 50% adjusted domain pressure · <span class="ema">trend line = adaptive EMA</span></div>
       <div class="ticker-meta"><span id="goonMode" class="status-badge demo">DEMO</span><span id="goonAge">Higher is worse · aggregate digital pressure</span><div id="goonRangeButtons" class="range-buttons"><button data-days="7" type="button">7D</button><button data-days="14" class="active" type="button">14D</button><button data-days="30" type="button">30D</button></div></div>
     </article>
   </section>
@@ -140,7 +140,9 @@
 
   <div class="section-title"><div><div class="eyebrow">Method</div><h2>No sacred number</h2></div></div>
   <section class="card method">
-    <p>The headline score is a weighted mean of included US metrics. Each metric is linearly normalized between a visible low anchor and high anchor, then reversed when lower values are considered healthier. Scores are clipped to 0–100.</p>
+    <p>The headline EHI score is a weighted mean of included US metrics. Each metric is linearly normalized between a visible low anchor and high anchor, then reversed when lower values are considered healthier. Scores are clipped to 0–100.</p>
+    <p>GOON is calculated separately. Private domain histories are converted to pressure, blended mostly from absolute popularity with a smaller own-history trend term, then conservatively adjusted for novelty, intensity and interaction architecture. Domains are aggregated inside categories first; category target shares are then combined into one GOON number. This prevents a niche from gaining more voting power just because more sites from that niche were listed.</p>
+    <p>Trait weighting describes content/platform architecture, not the moral worth or identity of users. A single unusual fantasy is not treated as evidence of real-world intent or pathology. The index is designed to watch population-level patterns and systems, not label individuals.</p>
     <p>This is an interpretive dashboard, not a validated psychological scale. A different theory of healthy eros should change the anchors, weights, exclusions, or even the metric list. That is a feature, not a bug.</p>
     <p>Refresh with <code>python update_data.py</code>. Run locally with <code>python -m http.server 8000</code> and open <code>http://localhost:8000</code>.</p>
   </section>
@@ -284,7 +286,9 @@ function renderMarketTrackers(data) {
   deltaEl.className='ticker-delta '+(!Number.isFinite(delta)||delta===0?'flat':delta>0?'bad':'good');
   const mode=document.getElementById('goonMode'); const isLive=goon.mode==='live'; mode.textContent=isLive?'LIVE':'DEMO'; mode.className='status-badge '+(isLive?'live':'demo');
   const age=document.getElementById('goonAge');
-  age.textContent=isLive&&goon.last_updated?`Tranco updated through ${new Date(goon.last_updated).toLocaleDateString()}`:'Demo movement · add a private GOON basket for observed data';
+  age.textContent=isLive&&goon.last_updated
+    ? `Tranco through ${new Date(goon.last_updated).toLocaleDateString()} · ${goon.domains_reporting??'—'}/${goon.basket_size??'—'} domains · ${goon.categories_reporting??'—'} categories`
+    : 'Demo movement · add a private GOON basket for observed data';
   const chart=document.getElementById('goonTickerChart'); let selectedDays=14;
   const legend=document.querySelector('.goon-legend .ema');
   const rangeRoot=document.getElementById('goonRangeButtons');
