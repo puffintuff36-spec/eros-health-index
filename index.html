@@ -40,6 +40,7 @@
     .goon-legend { color:var(--muted); font-size:.68rem; line-height:1.35; margin-top:9px; }
     .goon-legend .up { color:var(--bad); }
     .goon-legend .down { color:var(--good); }
+    .goon-legend .band { color:var(--accent); }
     .goon-legend .ema { color:var(--accent); }
     .range-buttons { display:flex; gap:6px; margin-left:auto; }
     .range-buttons button { appearance:none; border:1px solid var(--line); background:#10151c; color:var(--muted); border-radius:999px; padding:3px 8px; font:inherit; font-size:.68rem; cursor:pointer; }
@@ -87,7 +88,7 @@
     a { color:var(--accent); text-decoration:none; }
     a:hover { text-decoration:underline; }
     footer { margin-top:46px; color:var(--muted); font-size:.8rem; }
-    @media (max-width:850px) { .market-strip,.hero{grid-template-columns:1fr}.groups,.trend-grid,.advice-grid{grid-template-columns:1fr}.metrics{grid-template-columns:1fr}.bigscore{font-size:5rem} }
+    @media (max-width:850px) { .market-strip,.hero{grid-template-columns:1fr}.groups,.trend-grid,.advice-grid{grid-template-columns:1fr}.metrics{grid-template-columns:1fr}.bigscore{font-size:5rem}.metric-top{flex-wrap:wrap}.value{text-align:left;white-space:normal}.metric-score{grid-template-columns:1fr}.metric-score small{justify-self:start} }
   </style>
 </head>
 <body>
@@ -120,7 +121,7 @@
         <div id="goonHoverLine" class="chart-hover-line" aria-hidden="true"></div>
         <div id="goonTooltip" class="chart-tooltip" role="status" aria-live="polite"></div>
       </div>
-      <div class="goon-legend"><span class="up">Red</span> = pressure rose · <span class="down">green</span> = pressure fell · wick = middle 50% adjusted domain pressure · <span class="ema">trend line = adaptive EMA</span></div>
+      <div class="goon-legend"><span class="up">Red</span> = pressure rose · <span class="down">green</span> = pressure fell · candle = aggregate day move · <span class="band">violet band</span> = middle 50% adjusted domain spread · <span class="ema">trend line = adaptive EMA</span></div>
       <div class="ticker-meta"><span id="goonMode" class="status-badge demo">DEMO</span><span id="goonAge">Higher is worse · aggregate digital pressure</span><div id="goonRangeButtons" class="range-buttons"><button data-days="7" type="button">7D</button><button data-days="14" class="active" type="button">14D</button><button data-days="30" type="button">30D</button></div></div>
     </article>
   </section>
@@ -224,25 +225,49 @@ function drawGoonCandles(canvas, rows, emaPeriod=0) {
   const clean=normalizeGoonRows(rows);
   if(clean.length<2){ctx.fillStyle='#8d98a7';ctx.font='12px system-ui';ctx.fillText('No usable candle data.',14,24);return null;}
   const left=14,right=42,top=12,bottom=22, chartW=w-left-right, chartH=h-top-bottom;
-  let minY=Math.min(...clean.map(r=>r.low)), maxY=Math.max(...clean.map(r=>r.high));
-  const rawSpan=Math.max(.1,maxY-minY); minY-=rawSpan*.08; maxY+=rawSpan*.08; const span=maxY-minY;
+  const trend=emaPeriod>1?ema(clean.map(r=>r.close),emaPeriod):[];
+  const actionValues=clean.flatMap(r=>[r.open,r.close]).concat(trend);
+  let minY=Math.min(...actionValues), maxY=Math.max(...actionValues);
+  const rawSpan=Math.max(.06,maxY-minY);
+  const padding=Math.max(rawSpan*.2,.04);
+  minY-=padding; maxY+=padding; const span=maxY-minY;
   const yFor=v=>top+(maxY-v)/span*chartH;
   const step=chartW/clean.length; const bodyW=Math.max(3,Math.min(12,step*.58));
+  const maxSpread=Math.max(.001,...clean.map(r=>r.high-r.low));
+  const spreadHalf=r=>Math.min(chartH*.3,Math.max(6,((r.high-r.low)/maxSpread)*chartH*.17));
   ctx.font='10px system-ui'; ctx.textAlign='left'; ctx.textBaseline='middle';
   for(let i=0;i<4;i++){
     const value=maxY-(span*i/3), y=yFor(value);
     ctx.strokeStyle='#27313e';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right+4,y);ctx.stroke();
     ctx.fillStyle='#7f8a99';ctx.fillText(value.toFixed(1),w-right+8,y);
   }
+  const bandUpper=clean.map((r,i)=>({x:left+step*(i+.5),y:Math.max(top,yFor(r.close)-spreadHalf(r))}));
+  const bandLower=clean.map((r,i)=>({x:left+step*(i+.5),y:Math.min(h-bottom,yFor(r.close)+spreadHalf(r))}));
+  ctx.save();
+  ctx.fillStyle='rgba(199,183,255,.09)';
+  ctx.beginPath();
+  bandUpper.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
+  [...bandLower].reverse().forEach(p=>ctx.lineTo(p.x,p.y));
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle='rgba(199,183,255,.22)';ctx.lineWidth=1;
+  [bandUpper,bandLower].forEach(points=>{ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.stroke();});
+  ctx.restore();
+  const lastY=yFor(clean[clean.length-1].close);
+  ctx.save();
+  ctx.setLineDash([4,4]);ctx.strokeStyle='rgba(237,241,247,.22)';ctx.lineWidth=1;
+  ctx.beginPath();ctx.moveTo(left,lastY);ctx.lineTo(w-right+4,lastY);ctx.stroke();
+  ctx.restore();
   clean.forEach((r,i)=>{
     const x=left+step*(i+.5), rising=r.close>r.open, falling=r.close<r.open;
     const color=rising?'#e28b8b':falling?'#8fd6a5':'#9aa6b5';
     ctx.strokeStyle=color;ctx.fillStyle=color;ctx.lineWidth=1.25;
-    ctx.beginPath();ctx.moveTo(x,yFor(r.high));ctx.lineTo(x,yFor(r.low));ctx.stroke();
+    const wickPad=Math.min(chartH*.08,Math.max(3,spreadHalf(r)*.22));
     const yOpen=yFor(r.open), yClose=yFor(r.close), bodyTop=Math.min(yOpen,yClose), bodyH=Math.max(1.5,Math.abs(yClose-yOpen));
-    ctx.fillRect(x-bodyW/2,bodyTop,bodyW,bodyH);
+    const visualBodyH=Math.max(4,bodyH);
+    const visualBodyTop=Math.min(h-bottom-visualBodyH,Math.max(top,bodyTop-(visualBodyH-bodyH)/2));
+    ctx.beginPath();ctx.moveTo(x,Math.max(top,bodyTop-wickPad));ctx.lineTo(x,Math.min(h-bottom,bodyTop+bodyH+wickPad));ctx.stroke();
+    ctx.fillRect(x-bodyW/2,visualBodyTop,bodyW,visualBodyH);
   });
-  const trend=emaPeriod>1?ema(clean.map(r=>r.close),emaPeriod):[];
   if(trend.length){
     ctx.save();
     ctx.globalAlpha=.62;

@@ -127,15 +127,16 @@ The public dashboard shows only the aggregate GOON line.
 
 ## GOON candle semantics
 
-The GOON chart uses custom daily candles rather than financial OHLC data:
+The GOON chart uses market-style daily candles rather than financial OHLC data:
 
 - candle open = previous day aggregate GOON close
 - candle close = current day median basket pressure
-- wick = interquartile (middle 50%) basket pressure range for that day
+- candle body/wick = aggregate day movement, scaled for readable close action
+- violet band = compressed interquartile (middle 50%) basket pressure spread for that day
 - red = GOON pressure rose; green = GOON pressure fell
 - purple line = 3-day exponential moving average of daily closes
 
-This is a presentation of daily domain-ranking pressure, not a financial market and not intraday traffic.
+The tooltip reports the full middle-range low and high values. The band is visually compressed so cross-domain spread does not flatten the aggregate daily move. This is a presentation of daily domain-ranking pressure, not a financial market and not intraday traffic.
 
 
 ## GOON chart ranges
@@ -150,7 +151,7 @@ Move the pointer anywhere across the GOON chart. The chart snaps to the nearest 
 - GOON close
 - previous daily value
 - daily change
-- middle-range low and high values represented by the wick
+- middle-range low and high values represented by the spread band
 - EMA value when the selected range displays a trend line
 
 The vertical guide line follows the selected day; the tooltip stays within the chart card.
