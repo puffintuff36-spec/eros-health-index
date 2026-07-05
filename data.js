@@ -1,5 +1,5 @@
 window.EROS_DATA = {
-  "generated_at": "2026-07-05T22:03:12.058349+00:00",
+  "generated_at": "2026-07-05T23:00:08.641138+00:00",
   "title": "Eros Health Index",
   "subtitle": "A transparent prototype for tracking embodied connection, synthetic substitution, and generativity.",
   "metrics": [
@@ -535,157 +535,14 @@ window.EROS_DATA = {
     ]
   },
   "goon": {
-    "mode": "live",
-    "signal_kind": "stratified_timeseries",
-    "method_version": "stratified-v1",
+    "mode": "demo",
     "label": "The Gooning Index",
     "ticker": "GOON",
-    "description": "One category-balanced daily digital-pressure signal derived from a private stratified basket and Tranco rank histories. Absolute popularity dominates; a smaller own-history trend term and conservative novelty/intensity/interaction weighting add resolution. Candle bodies show overall GOON movement; wicks show the middle 50% of adjusted domain pressure. Higher is worse for Eros; individual domains and ranks are not published.",
-    "source_name": "Tranco",
-    "source_url": "https://tranco-list.eu/api_documentation",
-    "last_updated": "2026-07-04T00:00:00Z",
-    "basket_size": 21,
-    "domains_reporting": 21,
-    "categories_reporting": 4,
-    "category_targets": {
-      "mainstream_tube": {
-        "label": "Mainstream tube/video",
-        "share": 0.45
-      },
-      "illustrated_niche": {
-        "label": "Illustrated fandom / niche",
-        "share": 0.2
-      },
-      "hentai_animation": {
-        "label": "Hentai / animation",
-        "share": 0.15
-      },
-      "interactive": {
-        "label": "Live / interactive",
-        "share": 0.15
-      }
-    },
+    "description": "Demo movement only. Add a private stratified goon_basket.txt for observed category-balanced daily pressure.",
+    "source_name": "Tranco (demo until basket is configured)",
+    "source_url": "https://tranco-list.eu/",
+    "last_updated": null,
     "series": [
-      {
-        "timestamp": "2026-05-25T00:00:00Z",
-        "open": 49.72,
-        "high": 53.17,
-        "low": 45.84,
-        "close": 49.72,
-        "value": 49.72,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-05-26T00:00:00Z",
-        "open": 49.72,
-        "high": 53.11,
-        "low": 45.87,
-        "close": 49.7,
-        "value": 49.7,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-05-27T00:00:00Z",
-        "open": 49.7,
-        "high": 53.11,
-        "low": 45.87,
-        "close": 49.66,
-        "value": 49.66,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-05-28T00:00:00Z",
-        "open": 49.66,
-        "high": 53.14,
-        "low": 45.87,
-        "close": 49.65,
-        "value": 49.65,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-05-29T00:00:00Z",
-        "open": 49.65,
-        "high": 53.16,
-        "low": 45.87,
-        "close": 49.67,
-        "value": 49.67,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-05-30T00:00:00Z",
-        "open": 49.67,
-        "high": 53.06,
-        "low": 45.89,
-        "close": 49.67,
-        "value": 49.67,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-05-31T00:00:00Z",
-        "open": 49.67,
-        "high": 52.89,
-        "low": 45.91,
-        "close": 49.66,
-        "value": 49.66,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-06-01T00:00:00Z",
-        "open": 49.66,
-        "high": 52.89,
-        "low": 46.02,
-        "close": 49.7,
-        "value": 49.7,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-06-02T00:00:00Z",
-        "open": 49.7,
-        "high": 52.86,
-        "low": 46.1,
-        "close": 49.76,
-        "value": 49.76,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-06-03T00:00:00Z",
-        "open": 49.76,
-        "high": 52.91,
-        "low": 46.12,
-        "close": 49.81,
-        "value": 49.81,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-06-04T00:00:00Z",
-        "open": 49.81,
-        "high": 52.76,
-        "low": 46.14,
-        "close": 49.87,
-        "value": 49.87,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-06-05T00:00:00Z",
-        "open": 49.87,
-        "high": 52.71,
-        "low": 46.19,
-        "close": 49.91,
-        "value": 49.91,
-        "coverage": 21,
-        "category_coverage": 4
-      },
       {
         "timestamp": "2026-06-06T00:00:00+00:00",
         "open": 58.0,
@@ -693,16 +550,6 @@ window.EROS_DATA = {
         "low": 55.3,
         "close": 58.0,
         "value": 58.0
-      },
-      {
-        "timestamp": "2026-06-06T00:00:00Z",
-        "open": 49.91,
-        "high": 52.73,
-        "low": 46.32,
-        "close": 49.95,
-        "value": 49.95,
-        "coverage": 21,
-        "category_coverage": 4
       },
       {
         "timestamp": "2026-06-07T00:00:00+00:00",
@@ -713,32 +560,12 @@ window.EROS_DATA = {
         "value": 59.35
       },
       {
-        "timestamp": "2026-06-07T00:00:00Z",
-        "open": 49.95,
-        "high": 52.71,
-        "low": 46.36,
-        "close": 49.98,
-        "value": 49.98,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
         "timestamp": "2026-06-08T00:00:00+00:00",
         "open": 59.35,
         "high": 64.07,
         "low": 56.08,
         "close": 60.44,
         "value": 60.44
-      },
-      {
-        "timestamp": "2026-06-08T00:00:00Z",
-        "open": 49.98,
-        "high": 52.92,
-        "low": 46.41,
-        "close": 50.01,
-        "value": 50.01,
-        "coverage": 21,
-        "category_coverage": 4
       },
       {
         "timestamp": "2026-06-09T00:00:00+00:00",
@@ -749,32 +576,12 @@ window.EROS_DATA = {
         "value": 61.1
       },
       {
-        "timestamp": "2026-06-09T00:00:00Z",
-        "open": 50.01,
-        "high": 52.75,
-        "low": 46.2,
-        "close": 49.87,
-        "value": 49.87,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
         "timestamp": "2026-06-10T00:00:00+00:00",
         "open": 61.1,
         "high": 65.04,
         "low": 57.7,
         "close": 61.27,
         "value": 61.27
-      },
-      {
-        "timestamp": "2026-06-10T00:00:00Z",
-        "open": 49.87,
-        "high": 52.78,
-        "low": 45.76,
-        "close": 49.83,
-        "value": 49.83,
-        "coverage": 21,
-        "category_coverage": 4
       },
       {
         "timestamp": "2026-06-11T00:00:00+00:00",
@@ -785,32 +592,12 @@ window.EROS_DATA = {
         "value": 61.01
       },
       {
-        "timestamp": "2026-06-11T00:00:00Z",
-        "open": 49.83,
-        "high": 52.78,
-        "low": 45.72,
-        "close": 49.78,
-        "value": 49.78,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
         "timestamp": "2026-06-12T00:00:00+00:00",
         "open": 61.01,
         "high": 64.33,
         "low": 57.5,
         "close": 60.49,
         "value": 60.49
-      },
-      {
-        "timestamp": "2026-06-12T00:00:00Z",
-        "open": 49.78,
-        "high": 52.8,
-        "low": 45.47,
-        "close": 49.73,
-        "value": 49.73,
-        "coverage": 21,
-        "category_coverage": 4
       },
       {
         "timestamp": "2026-06-13T00:00:00+00:00",
@@ -821,32 +608,12 @@ window.EROS_DATA = {
         "value": 59.94
       },
       {
-        "timestamp": "2026-06-13T00:00:00Z",
-        "open": 49.73,
-        "high": 52.78,
-        "low": 45.09,
-        "close": 49.67,
-        "value": 49.67,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
         "timestamp": "2026-06-14T00:00:00+00:00",
         "open": 59.94,
         "high": 62.56,
         "low": 57.15,
         "close": 59.5,
         "value": 59.5
-      },
-      {
-        "timestamp": "2026-06-14T00:00:00Z",
-        "open": 49.67,
-        "high": 52.75,
-        "low": 44.88,
-        "close": 49.64,
-        "value": 49.64,
-        "coverage": 21,
-        "category_coverage": 4
       },
       {
         "timestamp": "2026-06-15T00:00:00+00:00",
@@ -857,32 +624,12 @@ window.EROS_DATA = {
         "value": 59.28
       },
       {
-        "timestamp": "2026-06-15T00:00:00Z",
-        "open": 49.64,
-        "high": 52.8,
-        "low": 44.64,
-        "close": 49.64,
-        "value": 49.64,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
         "timestamp": "2026-06-16T00:00:00+00:00",
         "open": 59.28,
         "high": 61.49,
         "low": 57.25,
         "close": 59.24,
         "value": 59.24
-      },
-      {
-        "timestamp": "2026-06-16T00:00:00Z",
-        "open": 49.64,
-        "high": 52.8,
-        "low": 44.4,
-        "close": 49.6,
-        "value": 49.6,
-        "coverage": 21,
-        "category_coverage": 4
       },
       {
         "timestamp": "2026-06-17T00:00:00+00:00",
@@ -893,32 +640,12 @@ window.EROS_DATA = {
         "value": 59.25
       },
       {
-        "timestamp": "2026-06-17T00:00:00Z",
-        "open": 49.6,
-        "high": 52.86,
-        "low": 43.87,
-        "close": 49.6,
-        "value": 49.6,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
         "timestamp": "2026-06-18T00:00:00+00:00",
         "open": 59.25,
         "high": 61.66,
         "low": 56.98,
         "close": 59.15,
         "value": 59.15
-      },
-      {
-        "timestamp": "2026-06-18T00:00:00Z",
-        "open": 49.6,
-        "high": 52.88,
-        "low": 43.82,
-        "close": 49.63,
-        "value": 49.63,
-        "coverage": 21,
-        "category_coverage": 4
       },
       {
         "timestamp": "2026-06-19T00:00:00+00:00",
@@ -929,32 +656,12 @@ window.EROS_DATA = {
         "value": 58.79
       },
       {
-        "timestamp": "2026-06-19T00:00:00Z",
-        "open": 49.63,
-        "high": 52.88,
-        "low": 43.8,
-        "close": 49.63,
-        "value": 49.63,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
         "timestamp": "2026-06-20T00:00:00+00:00",
         "open": 58.79,
         "high": 61.85,
         "low": 55.36,
         "close": 58.12,
         "value": 58.12
-      },
-      {
-        "timestamp": "2026-06-20T00:00:00Z",
-        "open": 49.63,
-        "high": 52.99,
-        "low": 43.79,
-        "close": 49.64,
-        "value": 49.64,
-        "coverage": 21,
-        "category_coverage": 4
       },
       {
         "timestamp": "2026-06-21T00:00:00+00:00",
@@ -965,32 +672,12 @@ window.EROS_DATA = {
         "value": 57.2
       },
       {
-        "timestamp": "2026-06-21T00:00:00Z",
-        "open": 49.64,
-        "high": 53.12,
-        "low": 43.79,
-        "close": 49.65,
-        "value": 49.65,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
         "timestamp": "2026-06-22T00:00:00+00:00",
         "open": 57.2,
         "high": 60.87,
         "low": 52.91,
         "close": 56.21,
         "value": 56.21
-      },
-      {
-        "timestamp": "2026-06-22T00:00:00Z",
-        "open": 49.65,
-        "high": 53.1,
-        "low": 43.82,
-        "close": 49.66,
-        "value": 49.66,
-        "coverage": 21,
-        "category_coverage": 4
       },
       {
         "timestamp": "2026-06-23T00:00:00+00:00",
@@ -1001,32 +688,12 @@ window.EROS_DATA = {
         "value": 55.37
       },
       {
-        "timestamp": "2026-06-23T00:00:00Z",
-        "open": 49.66,
-        "high": 53.17,
-        "low": 43.81,
-        "close": 49.63,
-        "value": 49.63,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
         "timestamp": "2026-06-24T00:00:00+00:00",
         "open": 55.37,
         "high": 59.13,
         "low": 51.54,
         "close": 54.92,
         "value": 54.92
-      },
-      {
-        "timestamp": "2026-06-24T00:00:00Z",
-        "open": 49.63,
-        "high": 53.19,
-        "low": 43.76,
-        "close": 49.58,
-        "value": 49.58,
-        "coverage": 21,
-        "category_coverage": 4
       },
       {
         "timestamp": "2026-06-25T00:00:00+00:00",
@@ -1037,32 +704,12 @@ window.EROS_DATA = {
         "value": 54.99
       },
       {
-        "timestamp": "2026-06-25T00:00:00Z",
-        "open": 49.58,
-        "high": 53.17,
-        "low": 43.71,
-        "close": 49.55,
-        "value": 49.55,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
         "timestamp": "2026-06-26T00:00:00+00:00",
         "open": 54.99,
         "high": 58.87,
         "low": 52.06,
         "close": 55.61,
         "value": 55.61
-      },
-      {
-        "timestamp": "2026-06-26T00:00:00Z",
-        "open": 49.55,
-        "high": 53.16,
-        "low": 43.71,
-        "close": 49.52,
-        "value": 49.52,
-        "coverage": 21,
-        "category_coverage": 4
       },
       {
         "timestamp": "2026-06-27T00:00:00+00:00",
@@ -1073,32 +720,12 @@ window.EROS_DATA = {
         "value": 56.65
       },
       {
-        "timestamp": "2026-06-27T00:00:00Z",
-        "open": 49.52,
-        "high": 53.14,
-        "low": 43.72,
-        "close": 49.5,
-        "value": 49.5,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
         "timestamp": "2026-06-28T00:00:00+00:00",
         "open": 56.65,
         "high": 60.46,
         "low": 54.34,
         "close": 57.89,
         "value": 57.89
-      },
-      {
-        "timestamp": "2026-06-28T00:00:00Z",
-        "open": 49.5,
-        "high": 53.09,
-        "low": 43.73,
-        "close": 49.49,
-        "value": 49.49,
-        "coverage": 21,
-        "category_coverage": 4
       },
       {
         "timestamp": "2026-06-29T00:00:00+00:00",
@@ -1109,32 +736,12 @@ window.EROS_DATA = {
         "value": 59.09
       },
       {
-        "timestamp": "2026-06-29T00:00:00Z",
-        "open": 49.49,
-        "high": 53.06,
-        "low": 43.74,
-        "close": 49.53,
-        "value": 49.53,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
         "timestamp": "2026-06-30T00:00:00+00:00",
         "open": 59.09,
         "high": 62.23,
         "low": 57.11,
         "close": 60.03,
         "value": 60.03
-      },
-      {
-        "timestamp": "2026-06-30T00:00:00Z",
-        "open": 49.53,
-        "high": 53.06,
-        "low": 43.71,
-        "close": 49.55,
-        "value": 49.55,
-        "coverage": 21,
-        "category_coverage": 4
       },
       {
         "timestamp": "2026-07-01T00:00:00+00:00",
@@ -1145,32 +752,12 @@ window.EROS_DATA = {
         "value": 60.59
       },
       {
-        "timestamp": "2026-07-01T00:00:00Z",
-        "open": 49.55,
-        "high": 53.06,
-        "low": 43.77,
-        "close": 49.52,
-        "value": 49.52,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
         "timestamp": "2026-07-02T00:00:00+00:00",
         "open": 60.59,
         "high": 63.24,
         "low": 58.38,
         "close": 60.78,
         "value": 60.78
-      },
-      {
-        "timestamp": "2026-07-02T00:00:00Z",
-        "open": 49.52,
-        "high": 53.06,
-        "low": 43.62,
-        "close": 49.5,
-        "value": 49.5,
-        "coverage": 21,
-        "category_coverage": 4
       },
       {
         "timestamp": "2026-07-03T00:00:00+00:00",
@@ -1181,32 +768,12 @@ window.EROS_DATA = {
         "value": 60.73
       },
       {
-        "timestamp": "2026-07-03T00:00:00Z",
-        "open": 49.5,
-        "high": 53.06,
-        "low": 43.64,
-        "close": 49.47,
-        "value": 49.47,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
         "timestamp": "2026-07-04T00:00:00+00:00",
         "open": 60.73,
         "high": 63.86,
         "low": 57.79,
         "close": 60.61,
         "value": 60.61
-      },
-      {
-        "timestamp": "2026-07-04T00:00:00Z",
-        "open": 49.47,
-        "high": 53.03,
-        "low": 43.66,
-        "close": 49.45,
-        "value": 49.45,
-        "coverage": 21,
-        "category_coverage": 4
       },
       {
         "timestamp": "2026-07-05T00:00:00+00:00",
@@ -1218,7 +785,7 @@ window.EROS_DATA = {
       }
     ],
     "value": 60.6,
-    "change_24h": 11.1
+    "change_24h": -0.0
   },
   "refresh_errors": [],
   "index": 33.5,
@@ -1304,44 +871,243 @@ window.EROS_DATA = {
   },
   "ehi_history": [
     {
-      "timestamp": "2026-07-05T19:07:13.089172+00:00",
-      "value": 33.5
+      "timestamp": "2015-07-01T00:00:00Z",
+      "value": 50.8,
+      "kind": "backcast",
+      "coverage": 1.0,
+      "components": [
+        "young_adult_partnered_pct",
+        "us_total_fertility_rate",
+        "marriage_rate",
+        "almost_constant_online"
+      ],
+      "component_values": {
+        "young_adult_partnered_pct": 33.46,
+        "us_total_fertility_rate": 1.843,
+        "marriage_rate": 6.9,
+        "almost_constant_online": 24.0
+      },
+      "method_version": "ehi-backcast-v1"
     },
     {
-      "timestamp": "2026-07-05T19:31:29.411154+00:00",
-      "value": 33.5
+      "timestamp": "2016-07-01T00:00:00Z",
+      "value": 46.6,
+      "kind": "backcast",
+      "coverage": 1.0,
+      "components": [
+        "young_adult_partnered_pct",
+        "us_total_fertility_rate",
+        "marriage_rate",
+        "almost_constant_online"
+      ],
+      "component_values": {
+        "young_adult_partnered_pct": 32.95,
+        "us_total_fertility_rate": 1.821,
+        "marriage_rate": 7.0,
+        "almost_constant_online": 31.0
+      },
+      "method_version": "ehi-backcast-v1"
     },
     {
-      "timestamp": "2026-07-05T19:36:49.130741+00:00",
-      "value": 33.5
+      "timestamp": "2017-07-01T00:00:00Z",
+      "value": 41.8,
+      "kind": "backcast",
+      "coverage": 1.0,
+      "components": [
+        "young_adult_partnered_pct",
+        "us_total_fertility_rate",
+        "marriage_rate",
+        "almost_constant_online"
+      ],
+      "component_values": {
+        "young_adult_partnered_pct": 33.05,
+        "us_total_fertility_rate": 1.766,
+        "marriage_rate": 6.9,
+        "almost_constant_online": 38.0
+      },
+      "method_version": "ehi-backcast-v1"
     },
     {
-      "timestamp": "2026-07-05T19:43:38.984084+00:00",
-      "value": 33.5
+      "timestamp": "2018-07-01T00:00:00Z",
+      "value": 37.0,
+      "kind": "backcast",
+      "coverage": 1.0,
+      "components": [
+        "young_adult_partnered_pct",
+        "us_total_fertility_rate",
+        "marriage_rate",
+        "almost_constant_online"
+      ],
+      "component_values": {
+        "young_adult_partnered_pct": 33.51,
+        "us_total_fertility_rate": 1.73,
+        "marriage_rate": 6.5,
+        "almost_constant_online": 45.0
+      },
+      "method_version": "ehi-backcast-v1"
     },
     {
-      "timestamp": "2026-07-05T19:54:58.996726+00:00",
-      "value": 33.5
+      "timestamp": "2019-07-01T00:00:00Z",
+      "value": 34.8,
+      "kind": "backcast",
+      "coverage": 1.0,
+      "components": [
+        "young_adult_partnered_pct",
+        "us_total_fertility_rate",
+        "marriage_rate",
+        "almost_constant_online"
+      ],
+      "component_values": {
+        "young_adult_partnered_pct": 33.54,
+        "us_total_fertility_rate": 1.706,
+        "marriage_rate": 6.1,
+        "almost_constant_online": 45.25
+      },
+      "method_version": "ehi-backcast-v1"
     },
     {
-      "timestamp": "2026-07-05T19:57:16.175437+00:00",
-      "value": 33.5
+      "timestamp": "2020-07-01T00:00:00Z",
+      "value": 30.9,
+      "kind": "backcast",
+      "coverage": 1.0,
+      "components": [
+        "young_adult_partnered_pct",
+        "us_total_fertility_rate",
+        "marriage_rate",
+        "almost_constant_online"
+      ],
+      "component_values": {
+        "young_adult_partnered_pct": 34.5,
+        "us_total_fertility_rate": 1.641,
+        "marriage_rate": 5.1,
+        "almost_constant_online": 45.5
+      },
+      "method_version": "ehi-backcast-v1"
     },
     {
-      "timestamp": "2026-07-05T20:07:24.502419+00:00",
-      "value": 33.5
+      "timestamp": "2021-07-01T00:00:00Z",
+      "value": 36.4,
+      "kind": "backcast",
+      "coverage": 1.0,
+      "components": [
+        "young_adult_partnered_pct",
+        "us_total_fertility_rate",
+        "marriage_rate",
+        "almost_constant_online"
+      ],
+      "component_values": {
+        "young_adult_partnered_pct": 35.46,
+        "us_total_fertility_rate": 1.664,
+        "marriage_rate": 6.0,
+        "almost_constant_online": 45.75
+      },
+      "method_version": "ehi-backcast-v1"
     },
     {
-      "timestamp": "2026-07-05T20:17:29.291048+00:00",
-      "value": 33.5
+      "timestamp": "2022-07-01T00:00:00Z",
+      "value": 37.9,
+      "kind": "backcast",
+      "coverage": 1.0,
+      "components": [
+        "young_adult_partnered_pct",
+        "us_total_fertility_rate",
+        "marriage_rate",
+        "almost_constant_online"
+      ],
+      "component_values": {
+        "young_adult_partnered_pct": 36.03,
+        "us_total_fertility_rate": 1.657,
+        "marriage_rate": 6.2,
+        "almost_constant_online": 46.0
+      },
+      "method_version": "ehi-backcast-v1"
     },
     {
-      "timestamp": "2026-07-05T21:07:29.348383+00:00",
-      "value": 33.5
+      "timestamp": "2023-07-01T00:00:00Z",
+      "value": 36.3,
+      "kind": "backcast",
+      "coverage": 1.0,
+      "components": [
+        "young_adult_partnered_pct",
+        "us_total_fertility_rate",
+        "marriage_rate",
+        "almost_constant_online"
+      ],
+      "component_values": {
+        "young_adult_partnered_pct": 35.91,
+        "us_total_fertility_rate": 1.617,
+        "marriage_rate": 6.1,
+        "almost_constant_online": 46.0
+      },
+      "method_version": "ehi-backcast-v1"
     },
     {
-      "timestamp": "2026-07-05T22:03:12.058349+00:00",
-      "value": 33.5
+      "timestamp": "2024-07-01T00:00:00Z",
+      "value": 35.5,
+      "kind": "backcast",
+      "coverage": 1.0,
+      "components": [
+        "young_adult_partnered_pct",
+        "us_total_fertility_rate",
+        "marriage_rate",
+        "almost_constant_online"
+      ],
+      "component_values": {
+        "young_adult_partnered_pct": 35.31,
+        "us_total_fertility_rate": 1.627,
+        "marriage_rate": 6.1,
+        "almost_constant_online": 46.0
+      },
+      "method_version": "ehi-backcast-v1"
+    },
+    {
+      "timestamp": "2025-07-01T00:00:00Z",
+      "value": 38.2,
+      "kind": "backcast",
+      "coverage": 1.0,
+      "components": [
+        "young_adult_partnered_pct",
+        "us_total_fertility_rate",
+        "marriage_rate",
+        "almost_constant_online"
+      ],
+      "component_values": {
+        "young_adult_partnered_pct": 35.31,
+        "us_total_fertility_rate": 1.627,
+        "marriage_rate": 6.1,
+        "almost_constant_online": 40.0
+      },
+      "method_version": "ehi-backcast-v1"
+    },
+    {
+      "timestamp": "2026-07-05T23:00:08.641138+00:00",
+      "value": 33.5,
+      "kind": "observed",
+      "coverage": 1.0,
+      "method_version": "headline-ehi-v1"
     }
-  ]
+  ],
+  "ehi_history_meta": {
+    "mode": "backcast_plus_observed",
+    "method_version": "ehi-backcast-v1",
+    "note": "Annual reconstructed points use a fixed four-signal core: young-adult partnering, total fertility, national marriage rate, and teen almost-constant internet use. Current observed snapshots use the full headline EHI basket. Backcast rows publish coverage and components and should not be read as historical observations of metrics that did not yet exist.",
+    "sources": [
+      {
+        "label": "U.S. Census Bureau ACS living-arrangements series",
+        "url": "https://api.census.gov/data.html"
+      },
+      {
+        "label": "World Bank total fertility rate",
+        "url": "https://api.worldbank.org/"
+      },
+      {
+        "label": "CDC/NCHS national marriage and divorce rates",
+        "url": "https://www.cdc.gov/nchs/fastats/marriage-divorce.htm"
+      },
+      {
+        "label": "Pew Research Center teen internet-use survey waves",
+        "url": "https://www.pewresearch.org/internet/"
+      }
+    ]
+  }
 };
