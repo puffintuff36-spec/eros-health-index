@@ -33,7 +33,7 @@
     .chart-tooltip { position:absolute; z-index:5; min-width:190px; max-width:240px; padding:10px 11px; border:1px solid #3a4656; border-radius:10px; background:rgba(12,16,21,.96); box-shadow:0 10px 30px rgba(0,0,0,.35); color:var(--text); font-size:.72rem; line-height:1.45; pointer-events:none; display:none; backdrop-filter:blur(4px); }
     .chart-tooltip .tt-date { font-weight:700; font-size:.78rem; margin-bottom:5px; }
     .chart-tooltip .tt-row { display:flex; justify-content:space-between; gap:14px; color:#c9d1dc; }
-    .chart-tooltip .tt-row strong { color:var(--text); font-weight:650; }
+    .chart-tooltip .tt-row strong { color:var(--text); font-weight:650; text-align:right; overflow-wrap:anywhere; }
     .chart-tooltip .tt-up { color:var(--bad); }
     .chart-tooltip .tt-down { color:var(--good); }
     .chart-tooltip .tt-trend { color:var(--accent); }
@@ -102,8 +102,12 @@
         <div><div class="ticker-symbol">EHI</div><div class="ticker-name">Eros Health Index</div></div>
         <div class="ticker-quote"><div id="ehiTickerValue" class="ticker-value">—</div><div id="ehiTickerDelta" class="ticker-delta flat">No prior snapshot</div></div>
       </div>
-      <canvas id="ehiTickerChart" class="market-canvas"></canvas>
-      <div class="ticker-meta"><span class="status-badge live">STRUCTURAL</span><span id="ehiHistoryMeta">Higher is healthier · reconstructed history + observed snapshots</span></div>
+      <div id="ehiChartWrap" class="chart-wrap">
+        <canvas id="ehiTickerChart" class="market-canvas"></canvas>
+        <div id="ehiHoverLine" class="chart-hover-line" aria-hidden="true"></div>
+        <div id="ehiTooltip" class="chart-tooltip" role="status" aria-live="polite"></div>
+      </div>
+      <div class="ticker-meta"><span class="status-badge live">STRUCTURAL</span><span id="ehiHistoryMeta">Higher is healthier · reconstructed history + observed snapshots</span><div id="ehiRangeButtons" class="range-buttons"><button data-years="5" type="button">5Y</button><button data-years="10" type="button">10Y</button><button data-years="50" class="active" type="button">50Y</button></div></div>
     </article>
 
     <article class="card ticker-card">
@@ -158,15 +162,44 @@ function formatSigned(n, suffix='') {
   const x=Number(n); const arrow=x>0?'▲':x<0?'▼':'•'; const sign=x>0?'+':'';
   return `${arrow} ${sign}${x.toFixed(1)}${suffix}`;
 }
+function normalizeEhiRows(rows) {
+  return (rows||[]).map(r=>{
+    const value=Number(r.value);
+    const date=new Date(r.timestamp);
+    return {...r,value,date,time:date.getTime()};
+  }).filter(r=>Number.isFinite(r.value)&&Number.isFinite(r.time))
+    .sort((a,b)=>a.time-b.time);
+}
+function subsetYears(rows, years) {
+  const clean=normalizeEhiRows(rows);
+  if(!clean.length || !years) return clean;
+  const latestYear=clean[clean.length-1].date.getUTCFullYear();
+  const floorYear=latestYear-years+1;
+  return clean.filter(r=>r.date.getUTCFullYear()>=floorYear);
+}
 function drawMarketSeries(canvas, rows, lineColor='#c7b7ff') {
   const ctx=canvas.getContext('2d'); const dpr=devicePixelRatio||1;
   const w=canvas.clientWidth, h=canvas.clientHeight; canvas.width=w*dpr; canvas.height=h*dpr; ctx.scale(dpr,dpr); ctx.clearRect(0,0,w,h);
-  if(!rows || rows.length<2){ ctx.fillStyle='#8d98a7'; ctx.font='12px system-ui'; ctx.fillText('History will build as the updater runs.',14,24); return; }
-  const pad=12, ys=rows.map(r=>Number(r.value)).filter(Number.isFinite), minY=Math.min(...ys), maxY=Math.max(...ys), span=Math.max(.01,maxY-minY);
-  const pts=rows.map((r,i)=>({x:pad+i/(rows.length-1)*(w-pad*2), y:h-pad-(Number(r.value)-minY)/span*(h-pad*2)}));
-  ctx.strokeStyle='#27313e'; ctx.lineWidth=1; for(let y=0;y<3;y++){const yy=pad+y*(h-pad*2)/2;ctx.beginPath();ctx.moveTo(pad,yy);ctx.lineTo(w-pad,yy);ctx.stroke();}
+  const clean=normalizeEhiRows(rows);
+  if(clean.length<2){ ctx.fillStyle='#8d98a7'; ctx.font='12px system-ui'; ctx.fillText('History will build as the updater runs.',14,24); return null; }
+  const left=14,right=42,top=12,bottom=22, chartW=w-left-right, chartH=h-top-bottom;
+  let minY=Math.min(...clean.map(r=>r.value)), maxY=Math.max(...clean.map(r=>r.value));
+  const rawSpan=Math.max(.1,maxY-minY); minY-=rawSpan*.08; maxY+=rawSpan*.08; const span=maxY-minY;
+  const yFor=v=>top+(maxY-v)/span*chartH;
+  const step=chartW/(clean.length-1);
+  const pts=clean.map((r,i)=>({x:left+i*step,y:yFor(r.value)}));
+  ctx.font='10px system-ui'; ctx.textAlign='left'; ctx.textBaseline='middle';
+  for(let i=0;i<4;i++){
+    const value=maxY-(span*i/3), y=yFor(value);
+    ctx.strokeStyle='#27313e';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right+4,y);ctx.stroke();
+    ctx.fillStyle='#7f8a99';ctx.fillText(value.toFixed(1),w-right+8,y);
+  }
   ctx.strokeStyle=lineColor; ctx.lineWidth=2.2; ctx.beginPath(); pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y)); ctx.stroke();
-  const last=pts[pts.length-1]; ctx.fillStyle=lineColor; ctx.beginPath(); ctx.arc(last.x,last.y,3.5,0,Math.PI*2); ctx.fill();
+  ctx.fillStyle=lineColor; pts.forEach((p,i)=>{ctx.globalAlpha=i===pts.length-1?1:.66;ctx.beginPath();ctx.arc(p.x,p.y,i===pts.length-1?3.5:2.2,0,Math.PI*2);ctx.fill();}); ctx.globalAlpha=1;
+  const firstDate=clean[0].date, lastDate=clean[clean.length-1].date;
+  ctx.fillStyle='#7f8a99';ctx.font='10px system-ui';ctx.textBaseline='alphabetic';ctx.textAlign='left';ctx.fillText(String(firstDate.getUTCFullYear()),left,h-5);
+  ctx.textAlign='right';ctx.fillText(String(lastDate.getUTCFullYear()),w-right+4,h-5);
+  return {clean,points:pts,left,right,top,bottom,step,w,h};
 }
 function ema(values, period=3) {
   if(!values.length) return [];
@@ -225,6 +258,44 @@ function drawGoonCandles(canvas, rows, emaPeriod=0) {
   ctx.textAlign='right';ctx.fillText(dateFmt(lastDate),w-right+4,h-5);
   return {clean,trend,emaPeriod,left,right,top,bottom,step,w,h};
 }
+function wireEhiTooltip(canvas, wrap, line, tooltip, getState) {
+  if(canvas.dataset.tooltipWired==='1') return;
+  canvas.dataset.tooltipWired='1';
+  const hide=()=>{line.style.display='none';tooltip.style.display='none';};
+  canvas.addEventListener('mouseleave',hide);
+  canvas.addEventListener('mousemove',event=>{
+    const state=getState();
+    if(!state?.clean?.length || !state?.points?.length) return hide();
+    const rect=canvas.getBoundingClientRect();
+    const localX=event.clientX-rect.left;
+    const rawIndex=Math.round((localX-state.left)/state.step);
+    const idx=Math.max(0,Math.min(state.clean.length-1,rawIndex));
+    const r=state.clean[idx];
+    const prev=idx?state.clean[idx-1]:null;
+    const change=prev?r.value-prev.value:null;
+    const directionClass=change>0?'tt-up':change<0?'tt-down':'';
+    const direction=change>0?'▲':change<0?'▼':'•';
+    const date=r.date.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'});
+    const coverage=Number(r.coverage);
+    const components=Array.isArray(r.components)?`${r.components.length} components`:'full basket';
+    tooltip.innerHTML=`
+      <div class="tt-date">${date}</div>
+      <div class="tt-row"><span>EHI value</span><strong>${r.value.toFixed(1)}</strong></div>
+      <div class="tt-row"><span>Kind</span><strong>${esc(r.kind||'history')}</strong></div>
+      ${Number.isFinite(coverage)?`<div class="tt-row"><span>Coverage</span><strong>${(coverage*100).toFixed(0)}%</strong></div>`:''}
+      <div class="tt-row"><span>Basis</span><strong>${esc(components)}</strong></div>
+      ${prev?`<div class="tt-row"><span>Vs prior point</span><strong class="${directionClass}">${direction} ${change>0?'+':''}${change.toFixed(1)} pts</strong></div>`:''}
+      <div class="tt-row tt-trend"><span>Method</span><strong>${esc(r.method_version||'headline')}</strong></div>`;
+    const point=state.points[idx];
+    line.style.display='block'; line.style.left=`${point.x}px`;
+    tooltip.style.display='block';
+    const tw=tooltip.offsetWidth||210, th=tooltip.offsetHeight||150;
+    const desiredX=point.x+14; const maxX=Math.max(6,wrap.clientWidth-tw-6);
+    const tx=Math.min(Math.max(6,desiredX),maxX);
+    const ty=Math.min(Math.max(6,event.clientY-rect.top-th/2),Math.max(6,wrap.clientHeight-th-6));
+    tooltip.style.left=`${tx}px`; tooltip.style.top=`${ty}px`;
+  });
+}
 function wireGoonTooltip(canvas, wrap, line, tooltip, getState) {
   if(canvas.dataset.tooltipWired==='1') return;
   canvas.dataset.tooltipWired='1';
@@ -272,19 +343,39 @@ function goonEmaPeriod(days) {
   return 5;
 }
 function renderMarketTrackers(data) {
-  const ehiRows=data.ehi_history||[];
+  const ehiRows=normalizeEhiRows(data.ehi_history||[]);
   document.getElementById('ehiTickerValue').textContent=data.index?.toFixed(1)??'—';
-  const ehiDelta=ehiRows.length>1?Number(ehiRows[ehiRows.length-1].value)-Number(ehiRows[0].value):null;
   const ehiDeltaEl=document.getElementById('ehiTickerDelta');
-  ehiDeltaEl.textContent=ehiDelta==null?'No prior snapshot':formatSigned(ehiDelta,' pts');
-  ehiDeltaEl.className='ticker-delta '+(ehiDelta==null||ehiDelta===0?'flat':ehiDelta>0?'good':'bad');
   const ehiMeta=document.getElementById('ehiHistoryMeta');
-  const firstEhi=ehiRows[0], lastEhi=ehiRows[ehiRows.length-1];
-  if(ehiMeta && firstEhi && lastEhi){
+  const ehiChart=document.getElementById('ehiTickerChart');
+  const ehiWrap=document.getElementById('ehiChartWrap');
+  const ehiHoverLine=document.getElementById('ehiHoverLine');
+  const ehiTooltip=document.getElementById('ehiTooltip');
+  const ehiRangeRoot=document.getElementById('ehiRangeButtons');
+  let selectedEhiYears=50;
+  let ehiChartState=null;
+  const updateEhiSummary=displayRows=>{
+    const ehiDelta=displayRows.length>1?displayRows[displayRows.length-1].value-displayRows[0].value:null;
+    ehiDeltaEl.textContent=ehiDelta==null?'No prior snapshot':formatSigned(ehiDelta,' pts');
+    ehiDeltaEl.className='ticker-delta '+(ehiDelta==null||ehiDelta===0?'flat':ehiDelta>0?'good':'bad');
+    const firstEhi=displayRows[0], lastEhi=displayRows[displayRows.length-1];
+    if(!ehiMeta || !firstEhi || !lastEhi) return;
     const yearOf=row=>new Date(row.timestamp).getUTCFullYear();
     ehiMeta.textContent=`${yearOf(firstEhi)} ${firstEhi.kind||'history'} ${Number(firstEhi.value).toFixed(1)} → ${yearOf(lastEhi)} ${lastEhi.kind||'current'} ${Number(lastEhi.value).toFixed(1)}`;
-  }
-  requestAnimationFrame(()=>drawMarketSeries(document.getElementById('ehiTickerChart'),ehiRows,'#8fd6a5'));
+  };
+  const redrawEhi=()=>{
+    const displayRows=subsetYears(ehiRows,selectedEhiYears);
+    updateEhiSummary(displayRows);
+    ehiChartState=drawMarketSeries(ehiChart,displayRows,'#8fd6a5');
+    ehiHoverLine.style.display='none'; ehiTooltip.style.display='none';
+  };
+  wireEhiTooltip(ehiChart,ehiWrap,ehiHoverLine,ehiTooltip,()=>ehiChartState);
+  requestAnimationFrame(redrawEhi);
+  ehiRangeRoot?.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{
+    selectedEhiYears=Number(btn.dataset.years);
+    ehiRangeRoot.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b===btn));
+    redrawEhi();
+  }));
 
   const goon=data.goon||{}; const rows=goon.series||[]; const value=Number(goon.value); const delta=Number(goon.change_24h);
   document.getElementById('goonTickerValue').textContent=Number.isFinite(value)?value.toFixed(1):'—';
