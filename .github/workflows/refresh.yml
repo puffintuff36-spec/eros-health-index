@@ -11,17 +11,12 @@ on:
   workflow_dispatch:
 permissions:
   contents: write
-  pages: write
-  id-token: write
 concurrency:
-  group: pages
+  group: refresh-data
   cancel-in-progress: false
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v6
@@ -32,15 +27,6 @@ jobs:
           CENSUS_API_KEY: ${{ secrets.CENSUS_API_KEY }}
           GOON_DOMAIN_BASKET: ${{ secrets.GOON_DOMAIN_BASKET }}
         run: python update_data.py
-      - name: Configure Pages
-        uses: actions/configure-pages@v6
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: .
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v5
       - name: Commit refreshed data
         run: |
           git config user.name "github-actions[bot]"
