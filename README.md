@@ -50,7 +50,7 @@ Then open `http://localhost:8000`.
 
 ### EHI
 
-The EHI tracker is the same structural score used by the main dashboard. Its history combines annual reconstructed fixed-core rows with observed full-basket snapshots from updater runs. Backcast rows in `data.json` are marked with `kind: "backcast"`, coverage, component names, and `method_version: "ehi-backcast-v1"`; observed snapshots are marked with `kind: "observed"` and `method_version: "headline-ehi-v1"`.
+The EHI tracker is the same structural score used by the main dashboard. Its history combines annual reconstructed fixed-core rows with observed full-basket snapshots from updater runs. Backcast rows in `data.json` are marked with `kind: "backcast"`, coverage, component names, and `method_version: "ehi-backcast-v1"`; observed snapshots are marked with `kind: "observed"` and `method_version: "headline-ehi-v1"`. The chart offers 5Y, 10Y, and All available windows because the current fixed-core overlap begins in 2015.
 
 Higher EHI is healthier.
 
