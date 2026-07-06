@@ -109,7 +109,7 @@
         <div id="ehiHoverLine" class="chart-hover-line" aria-hidden="true"></div>
         <div id="ehiTooltip" class="chart-tooltip" role="status" aria-live="polite"></div>
       </div>
-      <div class="ticker-meta"><span class="status-badge live">STRUCTURAL</span><span id="ehiHistoryMeta">Higher is healthier · reconstructed history + observed snapshots</span><div id="ehiRangeButtons" class="range-buttons"><button data-years="5" type="button">5Y</button><button data-years="10" type="button">10Y</button><button data-years="50" class="active" type="button">50Y</button></div></div>
+      <div class="ticker-meta"><span class="status-badge live">STRUCTURAL</span><span id="ehiHistoryMeta">Higher is healthier · reconstructed history + observed snapshots</span><div id="ehiRangeButtons" class="range-buttons"><button data-years="5" type="button">5Y</button><button data-years="10" type="button">10Y</button><button data-years="all" class="active" type="button">All</button></div></div>
     </article>
 
     <article class="card ticker-card">
@@ -164,6 +164,11 @@ function formatSigned(n, suffix='') {
   const x=Number(n); const arrow=x>0?'▲':x<0?'▼':'•'; const sign=x>0?'+':'';
   return `${arrow} ${sign}${x.toFixed(1)}${suffix}`;
 }
+function formatTrendValue(n) {
+  const value=Number(n);
+  if(!Number.isFinite(value)) return '—';
+  return Math.abs(value)<10?value.toFixed(2):value.toFixed(1);
+}
 function normalizeEhiRows(rows) {
   return (rows||[]).map(r=>{
     const value=Number(r.value);
@@ -174,9 +179,11 @@ function normalizeEhiRows(rows) {
 }
 function subsetYears(rows, years) {
   const clean=normalizeEhiRows(rows);
-  if(!clean.length || !years) return clean;
+  if(!clean.length || years==='all' || years==null) return clean;
+  const numericYears=Number(years);
+  if(!Number.isFinite(numericYears) || numericYears<=0) return clean;
   const latestYear=clean[clean.length-1].date.getUTCFullYear();
-  const floorYear=latestYear-years+1;
+  const floorYear=latestYear-numericYears+1;
   return clean.filter(r=>r.date.getUTCFullYear()>=floorYear);
 }
 function drawMarketSeries(canvas, rows, lineColor='#c7b7ff') {
@@ -372,6 +379,39 @@ function wireGoonTooltip(canvas, wrap, line, tooltip, getState) {
     tooltip.style.left=`${tx}px`; tooltip.style.top=`${ty}px`;
   });
 }
+function wireTrendTooltip(canvas, wrap, line, tooltip, getState) {
+  if(canvas.dataset.tooltipWired==='1') return;
+  canvas.dataset.tooltipWired='1';
+  const hide=()=>{line.style.display='none';tooltip.style.display='none';};
+  canvas.addEventListener('mouseleave',hide);
+  canvas.addEventListener('mousemove',event=>{
+    const state=getState();
+    if(!state?.clean?.length || !state?.points?.length) return hide();
+    const rect=canvas.getBoundingClientRect();
+    const localX=event.clientX-rect.left;
+    let idx=0, best=Infinity;
+    state.points.forEach((point,i)=>{
+      const distance=Math.abs(point.x-localX);
+      if(distance<best){best=distance;idx=i;}
+    });
+    const point=state.points[idx], row=state.clean[idx], prev=idx?state.clean[idx-1]:null;
+    const change=prev?row.value-prev.value:null;
+    const directionClass=change>0?'tt-up':change<0?'tt-down':'';
+    const direction=change>0?'▲':change<0?'▼':'•';
+    tooltip.innerHTML=`
+      <div class="tt-date">${esc(state.title)}</div>
+      <div class="tt-row"><span>Year</span><strong>${row.year}</strong></div>
+      <div class="tt-row"><span>Value</span><strong>${formatTrendValue(row.value)}</strong></div>
+      ${prev?`<div class="tt-row"><span>Vs prior year</span><strong class="${directionClass}">${direction} ${change>0?'+':''}${formatTrendValue(change)}</strong></div>`:''}`;
+    line.style.display='block'; line.style.left=`${point.x}px`;
+    tooltip.style.display='block';
+    const tw=tooltip.offsetWidth||210, th=tooltip.offsetHeight||120;
+    const desiredX=point.x+14; const maxX=Math.max(6,wrap.clientWidth-tw-6);
+    const tx=Math.min(Math.max(6,desiredX),maxX);
+    const ty=Math.min(Math.max(6,event.clientY-rect.top-th/2),Math.max(6,wrap.clientHeight-th-6));
+    tooltip.style.left=`${tx}px`; tooltip.style.top=`${ty}px`;
+  });
+}
 function subsetDays(rows, days) {
   if(!rows?.length) return [];
   const end=new Date(rows[rows.length-1].timestamp).getTime();
@@ -393,7 +433,7 @@ function renderMarketTrackers(data) {
   const ehiHoverLine=document.getElementById('ehiHoverLine');
   const ehiTooltip=document.getElementById('ehiTooltip');
   const ehiRangeRoot=document.getElementById('ehiRangeButtons');
-  let selectedEhiYears=50;
+  let selectedEhiYears='all';
   let ehiChartState=null;
   const updateEhiSummary=displayRows=>{
     const ehiDelta=displayRows.length>1?displayRows[displayRows.length-1].value-displayRows[0].value:null;
@@ -413,7 +453,7 @@ function renderMarketTrackers(data) {
   wireEhiTooltip(ehiChart,ehiWrap,ehiHoverLine,ehiTooltip,()=>ehiChartState);
   requestAnimationFrame(redrawEhi);
   ehiRangeRoot?.querySelectorAll('button').forEach(btn=>btn.addEventListener('click',()=>{
-    selectedEhiYears=Number(btn.dataset.years);
+    selectedEhiYears=btn.dataset.years;
     ehiRangeRoot.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b===btn));
     redrawEhi();
   }));
@@ -449,14 +489,37 @@ function renderMarketTrackers(data) {
   }));
 }
 const esc = s => String(s ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
-function drawSeries(canvas, rows) {
+function drawSeries(canvas, rows, title='Series') {
   const ctx = canvas.getContext('2d'); const dpr = devicePixelRatio || 1;
   const w = canvas.clientWidth, h = canvas.clientHeight; canvas.width = w*dpr; canvas.height = h*dpr; ctx.scale(dpr,dpr);
-  ctx.clearRect(0,0,w,h); if (!rows || rows.length < 2) { ctx.fillStyle='#8d98a7'; ctx.font='13px system-ui'; ctx.fillText('Run online refresh to populate this series.',16,28); return; }
-  const pad=24, xs=rows.map(r=>r.year), ys=rows.map(r=>r.value), minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys), spanY=Math.max(.001,maxY-minY);
-  ctx.strokeStyle='#344050'; ctx.lineWidth=1; ctx.beginPath(); ctx.moveTo(pad,h-pad); ctx.lineTo(w-pad,h-pad); ctx.stroke();
-  ctx.strokeStyle='#c7b7ff'; ctx.lineWidth=2; ctx.beginPath(); rows.forEach((r,i)=>{ const x=pad+(r.year-minX)/(maxX-minX)*(w-pad*2); const y=h-pad-(r.value-minY)/spanY*(h-pad*2); i?ctx.lineTo(x,y):ctx.moveTo(x,y); }); ctx.stroke();
-  ctx.fillStyle='#9aa6b5'; ctx.font='11px system-ui'; ctx.fillText(String(minX),pad,h-7); ctx.fillText(String(maxX),w-pad-28,h-7); ctx.fillText(maxY.toFixed(1),4,pad+4); ctx.fillText(minY.toFixed(1),4,h-pad);
+  ctx.clearRect(0,0,w,h);
+  const clean=(rows||[]).map(r=>({year:Number(r.year),value:Number(r.value)}))
+    .filter(r=>Number.isFinite(r.year)&&Number.isFinite(r.value))
+    .sort((a,b)=>a.year-b.year);
+  if (clean.length < 2) { ctx.fillStyle='#8d98a7'; ctx.font='13px system-ui'; ctx.fillText('Run online refresh to populate this series.',16,28); return null; }
+  const left=24,right=30,top=16,bottom=24, chartW=w-left-right, chartH=h-top-bottom;
+  const xs=clean.map(r=>r.year), ys=clean.map(r=>r.value), minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
+  const spanX=Math.max(1,maxX-minX), rawSpanY=Math.max(.001,maxY-minY), minPlot=minY-rawSpanY*.08, maxPlot=maxY+rawSpanY*.08, spanY=Math.max(.001,maxPlot-minPlot);
+  const xFor=year=>left+(year-minX)/spanX*chartW;
+  const yFor=value=>top+(maxPlot-value)/spanY*chartH;
+  const points=clean.map(r=>({x:xFor(r.year),y:yFor(r.value)}));
+  ctx.font='10px system-ui'; ctx.textAlign='left'; ctx.textBaseline='middle';
+  for(let i=0;i<3;i++){
+    const value=maxPlot-(spanY*i/2), y=yFor(value);
+    ctx.strokeStyle='#27313e';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(w-right+4,y);ctx.stroke();
+    ctx.fillStyle='#7f8a99';ctx.fillText(formatTrendValue(value),4,y);
+  }
+  const fill=ctx.createLinearGradient(0,top,0,h-bottom);
+  fill.addColorStop(0,'rgba(199,183,255,.14)');
+  fill.addColorStop(1,'rgba(199,183,255,.02)');
+  ctx.fillStyle=fill; ctx.beginPath();
+  points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
+  ctx.lineTo(points[points.length-1].x,h-bottom); ctx.lineTo(points[0].x,h-bottom); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle='#c7b7ff'; ctx.lineWidth=2; ctx.lineCap='round'; ctx.lineJoin='round';
+  ctx.beginPath(); points.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y)); ctx.stroke();
+  ctx.fillStyle='#c7b7ff'; points.forEach((p,i)=>{ctx.globalAlpha=i===points.length-1?1:.55;ctx.beginPath();ctx.arc(p.x,p.y,i===points.length-1?3.2:2,0,Math.PI*2);ctx.fill();}); ctx.globalAlpha=1;
+  ctx.fillStyle='#9aa6b5'; ctx.font='11px system-ui'; ctx.textBaseline='alphabetic'; ctx.textAlign='left'; ctx.fillText(String(minX),left,h-7); ctx.textAlign='right'; ctx.fillText(String(maxX),w-right+4,h-7);
+  return {title,clean,points,left,right,top,bottom,w,h};
 }
 function loadErosData() {
   const freshJson=()=>fetch(`data.json?ts=${Date.now()}`,{cache:'no-store'})
@@ -491,7 +554,13 @@ dataPromise.then(data=>{
     metrics.insertAdjacentHTML('beforeend',`<article class="card metric ${m.include_in_index?'':'excluded'}"><div class="metric-top"><div><span class="pill">${esc(m.group)}</span><span class="pill">${esc(m.region)}</span><h3>${esc(m.label)}</h3><div class="meta">${esc(m.source_name)} · ${esc(m.year)} · ${mode}${inc}</div></div><div class="value">${esc(m.value)} <small>${esc(m.unit)}</small></div></div><div class="metric-score"><div class="bar"><span style="width:${m.score??0}%"></span></div><small>${m.score==null?'—':m.score.toFixed(1)} / 100</small></div><div class="note">${esc(m.note)} Anchors: ${m.low_anchor} → ${m.high_anchor}; ${m.direction.replace('_',' ')}; weight ${m.weight}.</div><div class="note"><a href="${esc(m.source_url)}" target="_blank" rel="noopener">Source</a></div></article>`);
   });
   const trendDefs=[['young_adult_partnered_pct','Young adults partnered (%)'],['young_adult_living_alone_pct','Young adults living alone (%)'],['us_total_fertility_rate','US total fertility rate']];
-  const trends=document.getElementById('trends'); trendDefs.forEach(([key,title],i)=>{ trends.insertAdjacentHTML('beforeend',`<article class="card"><h3>${esc(title)}</h3><canvas id="chart${i}"></canvas></article>`); requestAnimationFrame(()=>drawSeries(document.getElementById('chart'+i),data.series?.[key]||[])); });
+  const trends=document.getElementById('trends'); trendDefs.forEach(([key,title],i)=>{
+    trends.insertAdjacentHTML('beforeend',`<article class="card"><h3>${esc(title)}</h3><div id="trendWrap${i}" class="chart-wrap"><canvas id="chart${i}"></canvas><div id="trendLine${i}" class="chart-hover-line" aria-hidden="true"></div><div id="trendTooltip${i}" class="chart-tooltip" role="status" aria-live="polite"></div></div></article>`);
+    const canvas=document.getElementById('chart'+i), wrap=document.getElementById('trendWrap'+i), line=document.getElementById('trendLine'+i), tooltip=document.getElementById('trendTooltip'+i);
+    let trendState=null;
+    wireTrendTooltip(canvas,wrap,line,tooltip,()=>trendState);
+    requestAnimationFrame(()=>{trendState=drawSeries(canvas,data.series?.[key]||[],title); line.style.display='none'; tooltip.style.display='none';});
+  });
   const warnings=document.getElementById('warnings'); if(data.refresh_errors?.length){ warnings.innerHTML='<strong>Partial refresh warnings:</strong> '+data.refresh_errors.map(esc).join(' · '); }
 }).catch(err=>{ document.getElementById('grade').textContent='Could not load data.json: '+err; });
 </script>
