@@ -1,4 +1,4 @@
-# Eros Health Index — launch v1.0.0
+# Eros Health Index — launch v1.0.1
 
 A small static dashboard plus Python refresher. The goal is not to pretend that “the Awakening” can be scientifically measured; it is to build a transparent civilizational pulse meter from observable proxies.
 
@@ -192,3 +192,9 @@ Move the pointer anywhere across the GOON chart. The chart snaps to the nearest 
 - EMA value when the selected range displays a trend line
 
 The vertical guide line follows the selected day; the tooltip stays within the chart card.
+
+
+## v1.0.1 polish
+
+- Score-card tooltips briefly explain what each domain rating means and how it is composed.
+- Tooltips support mouse hover, keyboard focus, and touch without changing any scores or weights.

@@ -54,6 +54,13 @@
     .grade { font-size:1rem; color:var(--warn); }
     .groups { display:grid; grid-template-columns:repeat(3, 1fr); gap:14px; align-content:center; }
     .group h3 { margin:0 0 10px; font-size:.95rem; font-weight:600; }
+
+    /* Quiet score explanations: visible only on hover, keyboard focus, or touch. */
+    .score-tip-target { cursor:help; }
+    .score-tip-target:focus-visible { outline:2px solid rgba(199,183,255,.62); outline-offset:3px; }
+    .score-tooltip { position:fixed; z-index:50; width:min(300px, calc(100vw - 20px)); padding:10px 12px; border:1px solid #465365; border-radius:10px; background:rgba(10,14,19,.98); box-shadow:0 14px 40px rgba(0,0,0,.48); color:#d9e0e8; font-size:.76rem; line-height:1.45; pointer-events:none; opacity:0; visibility:hidden; transform:translateY(3px); transition:opacity .12s ease, transform .12s ease, visibility .12s ease; backdrop-filter:blur(5px); }
+    .score-tooltip.show { opacity:1; visibility:visible; transform:translateY(0); }
+    .score-tooltip strong { display:block; color:var(--text); font-size:.8rem; margin-bottom:3px; }
     .group .n { font-size:2.2rem; letter-spacing:-.04em; }
     .bar { height:8px; border-radius:999px; background:#0c1015; overflow:hidden; margin-top:12px; border:1px solid #222b36; }
     .bar span { display:block; height:100%; background:linear-gradient(90deg, var(--bad), var(--warn), var(--good)); border-radius:inherit; }
@@ -169,7 +176,7 @@
 </head>
 <body>
 <main>
-  <div class="eyebrow">Launch v1.0.0 · signal architecture + plain-language brief</div>
+  <div class="eyebrow">Launch v1.0.1 · signal architecture + plain-language brief</div>
   <h1>Eros Health Index</h1>
   <p class="sub">A deliberately arguable instrument for tracking whether human desire is moving toward embodied relationship, durable pair-bonding and generativity—or toward synthetic substitution and disconnection.</p>
 
@@ -203,12 +210,13 @@
   </section>
 
   <section class="hero">
-    <div class="card scorebox">
+    <div class="card scorebox score-tip-target" tabindex="0" data-score-tip-key="Composite Score" aria-describedby="scoreTooltip">
       <div><div class="eyebrow">US-leaning composite</div><div id="index" class="bigscore">—</div><div id="grade" class="grade">Loading…</div></div>
       <div class="meta" id="updated"></div>
     </div>
     <div class="card groups" id="groups"></div>
   </section>
+  <div id="scoreTooltip" class="score-tooltip" role="tooltip" aria-hidden="true"></div>
 
   <section class="card accountability-card" aria-label="GOONER versus FEMOID accountability meter">
     <div class="accountability-head"><div><div class="eyebrow">Directional behavioral pressure</div><h2>GOONER vs FEMOID</h2></div><div class="meta">Behavior-attributable subset</div></div>
@@ -1038,6 +1046,64 @@ function loadErosData() {
   }
   return window.EROS_DATA ? Promise.resolve(window.EROS_DATA) : freshJson();
 }
+const SCORE_TIPS = {
+  'Embodied connection': 'Measures real-world social and romantic connection. Higher scores mean more in-person interaction, partnership, and durable relationship intention. Calculated from connection and participation signals in the EHI basket.',
+  'Synthetic substitution': 'Measures pressure from synthetic, parasocial, or digitally mediated substitutes for embodied intimacy. Higher scores mean less substitution pressure. Calculated from relevant exposure and impairment-oriented signals in the basket.',
+  'Generativity': 'Measures whether relationships are producing family formation and intergenerational continuity. Higher scores mean stronger marriage and fertility conditions. Calculated from demographic and family-formation indicators.',
+  'Relational reciprocity': 'Measures mutuality, boundaries, and give-and-take in relationships. Higher scores mean healthier reciprocity and fewer signs of one-sided or boundary-violating behavior. Calculated from the basket’s reciprocity-related signals.',
+  'Composite Score': 'The overall Eros Health Index. It combines all included metric scores using their effective weights after correlation-cluster caps prevent closely related signals from voting more than once in disguise.'
+};
+function setupScoreTooltips() {
+  const tooltip=document.getElementById('scoreTooltip');
+  if(!tooltip) return;
+  let active=null;
+  const clamp=(n,lo,hi)=>Math.min(hi,Math.max(lo,n));
+  const position=()=>{
+    if(!active || !tooltip.classList.contains('show')) return;
+    const r=active.getBoundingClientRect();
+    const tw=tooltip.offsetWidth, th=tooltip.offsetHeight;
+    const left=clamp(r.left+r.width/2-tw/2,10,window.innerWidth-tw-10);
+    let top=r.top-th-10;
+    if(top<10) top=Math.min(window.innerHeight-th-10,r.bottom+10);
+    tooltip.style.left=`${left}px`;
+    tooltip.style.top=`${Math.max(10,top)}px`;
+  };
+  const show=target=>{
+    const key=target.dataset.scoreTipKey;
+    const copy=SCORE_TIPS[key];
+    if(!copy) return;
+    active=target;
+    tooltip.replaceChildren();
+    const title=document.createElement('strong'); title.textContent=key;
+    const body=document.createElement('span'); body.textContent=copy;
+    tooltip.append(title,body);
+    tooltip.classList.add('show');
+    tooltip.setAttribute('aria-hidden','false');
+    requestAnimationFrame(position);
+  };
+  const hide=target=>{
+    if(target && active!==target) return;
+    tooltip.classList.remove('show');
+    tooltip.setAttribute('aria-hidden','true');
+    active=null;
+  };
+  document.querySelectorAll('.score-tip-target').forEach(target=>{
+    target.addEventListener('pointerenter',e=>{ if(e.pointerType==='mouse') show(target); });
+    target.addEventListener('pointerleave',e=>{ if(e.pointerType==='mouse') hide(target); });
+    target.addEventListener('focusin',()=>show(target));
+    target.addEventListener('focusout',()=>hide(target));
+    target.addEventListener('pointerdown',e=>{
+      if(e.pointerType!=='mouse') {
+        e.preventDefault();
+        if(active===target && tooltip.classList.contains('show')) hide(target); else { target.focus({preventScroll:true}); show(target); }
+      }
+    });
+  });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') hide(); });
+  document.addEventListener('pointerdown',e=>{ if(active && !active.contains(e.target) && !tooltip.contains(e.target)) hide(); });
+  window.addEventListener('resize',position,{passive:true});
+  window.addEventListener('scroll',position,{passive:true});
+}
 const dataPromise = loadErosData();
 dataPromise.then(data=>{
   renderMarketTrackers(data);
@@ -1071,7 +1137,8 @@ dataPromise.then(data=>{
     });
     adviceRoot.appendChild(col);
   });
-  const groups=document.getElementById('groups'); Object.entries(data.group_scores||{}).forEach(([name,s])=>{ groups.insertAdjacentHTML('beforeend',`<div class="group"><h3>${esc(name)}</h3><div class="n ${scoreClass(s)}">${s.toFixed(1)}</div><div class="bar"><span style="width:${s}%"></span></div></div>`); });
+  const groups=document.getElementById('groups'); Object.entries(data.group_scores||{}).forEach(([name,s])=>{ groups.insertAdjacentHTML('beforeend',`<div class="group score-tip-target" tabindex="0" data-score-tip-key="${esc(name)}" aria-describedby="scoreTooltip"><h3>${esc(name)}</h3><div class="n ${scoreClass(s)}">${s.toFixed(1)}</div><div class="bar"><span style="width:${s}%"></span></div></div>`); });
+  setupScoreTooltips();
   const metrics=document.getElementById('metrics'); data.metrics.forEach(m=>{
     const mode=m.refresh_mode==='snapshot'?'SNAPSHOT':m.refresh_mode==='auto_page'?'AUTO PAGE':'LIVE API';
     const inc=m.include_in_index?'':' · EXCLUDED FROM HEADLINE';
