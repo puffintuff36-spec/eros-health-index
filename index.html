@@ -7,7 +7,8 @@
   <style>
     :root { color-scheme: dark; --bg:#0e1116; --panel:#171c23; --panel2:#1d2430; --text:#edf1f7; --muted:#9aa6b5; --line:#2d3745; --good:#8fd6a5; --warn:#e8c47a; --bad:#e28b8b; --accent:#c7b7ff; }
     * { box-sizing:border-box; }
-    body { margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; background:radial-gradient(circle at 20% 0%, #1b2030, var(--bg) 38%); color:var(--text); }
+    html { max-width:100%; overflow-x:hidden; }
+    body { margin:0; max-width:100%; overflow-x:hidden; font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; background:radial-gradient(circle at 20% 0%, #1b2030, var(--bg) 38%); color:var(--text); }
     main { width:min(1180px, 94vw); margin:0 auto; padding:44px 0 80px; }
     h1 { font-size:clamp(2.2rem, 6vw, 5.4rem); line-height:.92; margin:0; letter-spacing:-.05em; max-width:900px; }
     .sub { color:var(--muted); font-size:1.08rem; max-width:760px; margin:18px 0 30px; line-height:1.6; }
@@ -415,11 +416,39 @@ function drawGoonPressureLine(canvas, rows, emaPeriod=0) {
   ctx.textAlign='right';ctx.fillText(dateFmt(lastDate),w-right+4,h-5);
   return {clean,trend,emaPeriod,left,right,top,bottom,step,w,h,points};
 }
+let chartTooltipDismissWired=false;
+function hideChartTooltip(line, tooltip) {
+  if(line) line.style.display='none';
+  if(tooltip) tooltip.style.display='none';
+}
+function hideAllChartTooltips(exceptTooltip=null, exceptLine=null) {
+  document.querySelectorAll('.chart-tooltip').forEach(item=>{ if(item!==exceptTooltip) item.style.display='none'; });
+  document.querySelectorAll('.chart-hover-line').forEach(item=>{ if(item!==exceptLine) item.style.display='none'; });
+}
+function wireChartTooltipDismiss(canvas, wrap, line, tooltip) {
+  const hide=()=>hideChartTooltip(line,tooltip);
+  canvas.addEventListener('mouseleave',hide);
+  canvas.addEventListener('pointerleave',hide);
+  wrap.addEventListener('mouseleave',hide);
+  wrap.addEventListener('pointerleave',hide);
+  canvas.addEventListener('blur',hide);
+  if(!chartTooltipDismissWired) {
+    chartTooltipDismissWired=true;
+    window.addEventListener('resize',()=>hideAllChartTooltips(),{passive:true});
+    window.addEventListener('scroll',()=>hideAllChartTooltips(),{passive:true});
+    document.addEventListener('mousemove',event=>{
+      if(!event.target.closest?.('.chart-wrap')) hideAllChartTooltips();
+    });
+    document.addEventListener('pointerdown',event=>{
+      if(!event.target.closest?.('.chart-wrap')) hideAllChartTooltips();
+    });
+  }
+  return hide;
+}
 function wireEhiTooltip(canvas, wrap, line, tooltip, getState) {
   if(canvas.dataset.tooltipWired==='1') return;
   canvas.dataset.tooltipWired='1';
-  const hide=()=>{line.style.display='none';tooltip.style.display='none';};
-  canvas.addEventListener('mouseleave',hide);
+  const hide=wireChartTooltipDismiss(canvas,wrap,line,tooltip);
   canvas.addEventListener('mousemove',event=>{
     const state=getState();
     if(!state?.clean?.length || !state?.points?.length) return hide();
@@ -444,6 +473,7 @@ function wireEhiTooltip(canvas, wrap, line, tooltip, getState) {
       ${prev?`<div class="tt-row"><span>Vs prior point</span><strong class="${directionClass}">${direction} ${change>0?'+':''}${change.toFixed(1)} pts</strong></div>`:''}
       <div class="tt-row tt-trend"><span>Method</span><strong>${esc(r.method_version||'headline')}</strong></div>`;
     const point=state.points[idx];
+    hideAllChartTooltips(tooltip,line);
     line.style.display='block'; line.style.left=`${point.x}px`;
     tooltip.style.display='block';
     const tw=tooltip.offsetWidth||210, th=tooltip.offsetHeight||150;
@@ -456,8 +486,7 @@ function wireEhiTooltip(canvas, wrap, line, tooltip, getState) {
 function wireGoonTooltip(canvas, wrap, line, tooltip, getState) {
   if(canvas.dataset.tooltipWired==='1') return;
   canvas.dataset.tooltipWired='1';
-  const hide=()=>{line.style.display='none';tooltip.style.display='none';};
-  canvas.addEventListener('mouseleave',hide);
+  const hide=wireChartTooltipDismiss(canvas,wrap,line,tooltip);
   canvas.addEventListener('mousemove',event=>{
     const state=getState();
     if(!state?.clean?.length) return hide();
@@ -479,6 +508,7 @@ function wireGoonTooltip(canvas, wrap, line, tooltip, getState) {
       <div class="tt-row"><span>Middle range low</span><strong>${r.low.toFixed(1)}</strong></div>
       <div class="tt-row"><span>Middle range high</span><strong>${r.high.toFixed(1)}</strong></div>
       ${Number.isFinite(trendValue)?`<div class="tt-row tt-trend"><span>${state.emaPeriod}-day trend</span><strong>${trendValue.toFixed(1)}</strong></div>`:''}`;
+    hideAllChartTooltips(tooltip,line);
     line.style.display='block'; line.style.left=`${x}px`;
     tooltip.style.display='block';
     const tw=tooltip.offsetWidth||210, th=tooltip.offsetHeight||150;
@@ -491,8 +521,7 @@ function wireGoonTooltip(canvas, wrap, line, tooltip, getState) {
 function wireTrendTooltip(canvas, wrap, line, tooltip, getState) {
   if(canvas.dataset.tooltipWired==='1') return;
   canvas.dataset.tooltipWired='1';
-  const hide=()=>{line.style.display='none';tooltip.style.display='none';};
-  canvas.addEventListener('mouseleave',hide);
+  const hide=wireChartTooltipDismiss(canvas,wrap,line,tooltip);
   canvas.addEventListener('mousemove',event=>{
     const state=getState();
     if(!state?.clean?.length || !state?.points?.length) return hide();
@@ -512,6 +541,7 @@ function wireTrendTooltip(canvas, wrap, line, tooltip, getState) {
       <div class="tt-row"><span>Year</span><strong>${row.year}</strong></div>
       <div class="tt-row"><span>Value</span><strong>${formatTrendValue(row.value)}</strong></div>
       ${prev?`<div class="tt-row"><span>Vs prior year</span><strong class="${directionClass}">${direction} ${change>0?'+':''}${formatTrendValue(change)}</strong></div>`:''}`;
+    hideAllChartTooltips(tooltip,line);
     line.style.display='block'; line.style.left=`${point.x}px`;
     tooltip.style.display='block';
     const tw=tooltip.offsetWidth||210, th=tooltip.offsetHeight||120;
