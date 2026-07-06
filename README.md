@@ -1,13 +1,14 @@
-# Eros Health Index — prototype v0.3.5
+# Eros Health Index — launch v1.0.0
 
 A small static dashboard plus Python refresher. The goal is not to pretend that “the Awakening” can be scientifically measured; it is to build a transparent civilizational pulse meter from observable proxies.
 
 ## What it tracks
 
 - **EHI:** the slow-moving structural composite built from partnership, marriage, fertility, digital substitution, and related signals, with annual backcast rows clearly separated from observed snapshots.
-- **GOON:** a daily aggregate digital-pressure tracker. In demo mode it uses clearly marked sample motion; with a private local basket it refreshes from Tranco historical domain ranks and publishes only the aggregate v0.3.5 signal.
-- **Embodied connection:** partnership and marriage aspiration/expectation.
+- **GOON:** a daily aggregate digital-pressure tracker. In demo mode it uses clearly marked sample motion; with a private local basket it refreshes from Tranco historical domain ranks and publishes only the aggregate signal.
+- **Embodied connection:** partnership, socializing, and marriage aspiration/expectation.
 - **Synthetic substitution:** AI-companion substitution and extreme digital saturation.
+- **Relational reciprocity:** direct dating-boundary harm and future reciprocity signals.
 - **Generativity:** marriage and fertility signals.
 - **Context-only signals:** international porn exposure and possible anti-porn countercurrents.
 
@@ -50,7 +51,7 @@ Then open `http://localhost:8000`.
 
 ### EHI
 
-The EHI tracker is the same structural score used by the main dashboard. Its history combines annual reconstructed fixed-core rows with observed full-basket snapshots from updater runs. Backcast rows in `data.json` are marked with `kind: "backcast"`, coverage, component names, and `method_version: "ehi-backcast-v1"`; observed snapshots are marked with `kind: "observed"` and `method_version: "headline-ehi-v1"`. The chart offers 5Y, 10Y, and All available windows because the current fixed-core overlap begins in 2015.
+The EHI tracker is the same structural score used by the main dashboard. Its history combines annual reconstructed fixed-core rows with observed full-basket snapshots from updater runs. Backcast rows in `data.json` are marked with `kind: "backcast"`, coverage, component names, and `method_version: "ehi-backcast-v1"`; observed snapshots are marked with `kind: "observed"`; current full-basket snapshots use `method_version: "headline-ehi-v2"`, while older saved observations retain their original method version. The chart offers 5Y, 10Y, and All available windows because the current fixed-core overlap begins in 2015.
 
 Higher EHI is healthier.
 
@@ -69,7 +70,7 @@ The live adapter:
 - applies a conservative architecture uplift using novelty, intensity, interaction, and explicit extremity descriptors;
 - writes only the aggregate GOON series into public dashboard data.
 
-The browser offers 7D and 30D views. If no private basket is configured, the dashboard says `DEMO` clearly and uses deterministic sample movement so the UI can still be tested locally.
+The browser offers 7D, 14D, and 30D views. If no private basket is configured, the dashboard says `DEMO` clearly and uses deterministic sample movement so the UI can still be tested locally.
 
 ## Eros field guide
 
@@ -85,7 +86,42 @@ For a higher-is-better metric:
 
 For a lower-is-better metric, the score is reversed. The headline index is the weighted mean of included metrics.
 
-The anchors and weights are explicitly editable in `seed_data.json`. They are interpretive choices, not natural constants.
+The anchors and raw weights are explicitly editable in `seed_data.json`. They are interpretive choices, not natural constants.
+
+### Signal roles and correlation firewall
+
+Every metric now carries a `signal_role`, `domain`, `correlation_cluster`, `evidence_tier`, and `mapping_confidence`. Outcomes, orientations, impairment signals, exposure proxies, mechanisms, context, and countercurrents are kept distinct so exposure is not silently promoted into pathology.
+
+The headline score uses a correlation firewall. Included metrics keep their authored raw weights, but if metrics inside one `correlation_cluster` exceed that cluster cap, the effective weights are scaled proportionally. This lets related signals corroborate one another without allowing the same underlying phenomenon to vote repeatedly just because several adjacent measures are available. Both raw and effective weights remain visible in generated data and on metric cards.
+
+### GOONER vs FEMOID meter
+
+The joke meter is explicitly separate from the EHI outcome score. Only metrics marked `accountability_include: true` participate. Population outcomes such as partnership, marriage rate, fertility, and embodied socialization stay neutral unless a defensible directional behavioral mapping exists.
+
+The launch meter uses **side-normalized severity** rather than a single shared pressure denominator. For each directional signal, the updater begins with the metric's effective correlation-capped weight, then applies visible modifiers for signal role, evidence tier, and mapping confidence. Exposure proxies and orientations therefore carry less directional authority than direct impairment signals. Each archetype gets its own weighted severity score:
+
+`side_severity = weighted mean of (100 - metric_score) for the signals routed to that side`
+
+The public GOONER/FEMOID split compares those two independent severity scores. This prevents a side from dominating merely because the current research basket happens to contain more sensors for that archetype.
+
+The meter also reports both raw directional coverage and role/confidence-adjusted coverage. A breadth gate marks the comparison `PROVISIONAL` until each side has at least two independent correlation clusters and at least one impairment signal. This is an evidence-coverage safeguard, not an equality-of-outcome rule.
+
+The labels are behavioral shorthand, not exclusive sex categories: both sexes can do both. `data.json` keeps contributor-level severity, adjusted accountability weight, role/evidence/mapping modifiers, cluster membership, and rationale auditable.
+
+The launch browser UI uses a self-contained Canvas clash animation. The public GOONER/FEMOID split controls the collision position, while the inverse EHI score controls total animation pressure: lower EHI produces faster flow, stronger turbulence, more impact spray, and more frequent drips; healthier EHI values calm the entire duel without changing the left/right result. Sparse cosmetic-side debris (eyelash, fake nail, smartphone, lipstick, red flag, or heart) occasionally enters the stream as a visual gag. Animation starts only while the meter is in view, pauses when it leaves the viewport or the tab is hidden, and falls back to a static rendering when the browser requests reduced motion. No external graphics library or art asset is required.
+
+## Plain-language methodology layer
+
+The launch dashboard includes an optional **Plain-language methodology & current interpretation** layer near the accountability-meter disclaimer. It uses the same in-memory data object as the public dashboard and generates a classroom-safe explanation of:
+
+- the current EHI and domain interpretation;
+- the side-normalized accountability severities, display split, coverage, and provisional evidence-breadth status;
+- normalization formulas and the correlation firewall;
+- headline and accountability weighting logic;
+- a complete current metric register with observed values, signal roles, evidence tiers, scores, raw/effective weights, headline inclusion status, and source links;
+- interpretive limits and direct access to `data.json` for audit.
+
+The layer deliberately removes the comedy vocabulary where possible while preserving the project names of the two accountability buckets. Its purpose is to make the project understandable without requiring the reader to share the dashboard's sense of humor. It explicitly states that the EHI is exploratory and recreational, not a validated clinical, psychological, or sociological scale.
 
 ## Refresh architecture
 
@@ -98,9 +134,11 @@ The script keeps partial results when one source fails and records failures in `
 
 ## Important methodological limits
 
-The metrics come from different populations, years, and sampling designs. The headline composite is therefore a theory-driven monitoring tool, not a validated clinical or sociological scale. Cross-country signals are displayed but excluded from the US headline score. Intent measures are weighted below direct behavior measures.
+The metrics come from different populations, years, and sampling designs. The headline composite is therefore a theory-driven monitoring tool, not a validated clinical or sociological scale. Cross-country signals are displayed but excluded from the US headline score. Exposure is not treated as identical to impairment, and outcome deterioration is not automatically assigned to either accountability archetype.
 
-GOON is also a proxy. Tranco domain rank is not the same thing as raw visits, minutes watched, or unique porn consumers. The exact conversion from rank to pressure is transparent in `rank_to_pressure()`, and the v0.3.5 extremity trait is a bounded architecture modifier rather than a substitute for observed popularity.
+`research_pipeline` in the data files records high-priority candidates that require more analysis before scoring. The current GSS candidates—relationship quality, pornography frequency, and sexual frequency—are intentionally held out until a documented weighted extraction is complete. Raw codebook counts are not substituted for weighted national estimates. `research_watchlist` records plausible but not-yet-score-ready domains such as deceptive self-presentation, breadcrumbing, fantasy-media displacement, and coparental gatekeeping.
+
+GOON is also a proxy. Tranco domain rank is not the same thing as raw visits, minutes watched, or unique porn consumers. The exact conversion from rank to pressure is transparent in `rank_to_pressure()`, and the extremity trait is a bounded architecture modifier rather than a substitute for observed popularity.
 
 ## Census API key
 

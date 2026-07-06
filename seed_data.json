@@ -1,7 +1,7 @@
 {
   "generated_at": "2026-07-05T00:00:00Z",
   "title": "Eros Health Index",
-  "subtitle": "A transparent prototype for tracking embodied connection, synthetic substitution, and generativity.",
+  "subtitle": "A transparent prototype for tracking embodied connection, synthetic substitution, relational reciprocity, and generativity.",
   "metrics": [
     {
       "id": "partnered_adults",
@@ -19,7 +19,13 @@
       "refresh_mode": "snapshot",
       "source_name": "Pew Research Center",
       "source_url": "https://www.pewresearch.org/short-reads/2025/01/08/share-of-us-adults-living-without-a-romantic-partner-has-ticked-down-in-recent-years/",
-      "note": "Derived as 100 minus the reported 42% living without a spouse or partner."
+      "note": "Derived as 100 minus the reported 42% living without a spouse or partner.",
+      "signal_role": "outcome",
+      "domain": "embodied_connection",
+      "correlation_cluster": "embodied_partnership",
+      "evidence_tier": "B",
+      "mapping_confidence": "high",
+      "accountability_include": false
     },
     {
       "id": "marriage_desire",
@@ -37,7 +43,13 @@
       "refresh_mode": "snapshot",
       "source_name": "Pew Research Center",
       "source_url": "https://www.pewresearch.org/short-reads/2024/02/15/among-young-adults-without-children-men-are-more-likely-than-women-to-say-they-want-to-be-parents-someday/",
-      "note": "Intent is not behavior, so this is weighted below actual partnership."
+      "note": "Intent is not behavior, so this is weighted below actual partnership.",
+      "signal_role": "orientation",
+      "domain": "embodied_connection",
+      "correlation_cluster": "marriage_orientation",
+      "evidence_tier": "B",
+      "mapping_confidence": "high",
+      "accountability_include": false
     },
     {
       "id": "marriage_expectation_12th",
@@ -55,7 +67,18 @@
       "refresh_mode": "snapshot",
       "source_name": "Pew Research Center / Monitoring the Future",
       "source_url": "https://www.pewresearch.org/short-reads/2025/11/14/12th-grade-girls-are-less-likely-than-boys-to-say-they-want-to-get-married-someday/",
-      "note": "Tracks expectation of durable pair-bonding among older adolescents."
+      "note": "Tracks expectation of durable pair-bonding among older adolescents.",
+      "accountability_split": {
+        "gooner": 0.4,
+        "femoid": 0.6,
+        "rationale": "Orientation signal with a reported sex gap: 2023 negative pressure is split from 26% of boys versus 39% of girls not saying they expect to marry. This is a directional proxy, not a blame allocation."
+      },
+      "signal_role": "orientation",
+      "domain": "embodied_connection",
+      "correlation_cluster": "marriage_orientation",
+      "evidence_tier": "B",
+      "mapping_confidence": "moderate",
+      "accountability_include": true
     },
     {
       "id": "ai_companion_monthly",
@@ -73,7 +96,18 @@
       "refresh_mode": "snapshot",
       "source_name": "Common Sense Media",
       "source_url": "https://www.commonsensemedia.org/research/talk-trust-and-trade-offs-how-and-why-teens-use-ai-companions",
-      "note": "Broad usage metric; not every use is romantic or isolating."
+      "note": "Broad usage metric; not every use is romantic or isolating.",
+      "accountability_split": {
+        "gooner": 1.0,
+        "femoid": 0.0,
+        "rationale": "Synthetic relational substitution is mapped to the GOONER behavioral archetype regardless of user sex."
+      },
+      "signal_role": "exposure_proxy",
+      "domain": "synthetic_substitution",
+      "correlation_cluster": "ai_substitution",
+      "evidence_tier": "B",
+      "mapping_confidence": "moderate",
+      "accountability_include": true
     },
     {
       "id": "ai_equal_satisfaction",
@@ -91,7 +125,18 @@
       "refresh_mode": "snapshot",
       "source_name": "Common Sense Media",
       "source_url": "https://www.commonsensemedia.org/research/talk-trust-and-trade-offs-how-and-why-teens-use-ai-companions",
-      "note": "Closer to substitution risk than simple trial or occasional use."
+      "note": "Closer to substitution risk than simple trial or occasional use.",
+      "accountability_split": {
+        "gooner": 1.0,
+        "femoid": 0.0,
+        "rationale": "Synthetic relational substitution is mapped to the GOONER behavioral archetype regardless of user sex."
+      },
+      "signal_role": "exposure_proxy",
+      "domain": "synthetic_substitution",
+      "correlation_cluster": "ai_substitution",
+      "evidence_tier": "B",
+      "mapping_confidence": "moderate",
+      "accountability_include": true
     },
     {
       "id": "almost_constant_online",
@@ -109,7 +154,13 @@
       "refresh_mode": "snapshot",
       "source_name": "Pew Research Center",
       "source_url": "https://www.pewresearch.org/internet/2024/12/12/teens-social-media-and-technology-2024/",
-      "note": "A proxy for digital saturation, not a direct measure of misdirected eros."
+      "note": "A proxy for digital saturation, not a direct measure of misdirected eros.",
+      "signal_role": "exposure_proxy",
+      "domain": "synthetic_substitution",
+      "correlation_cluster": "social_withdrawal",
+      "evidence_tier": "B",
+      "mapping_confidence": "low",
+      "accountability_include": false
     },
     {
       "id": "marriage_rate",
@@ -127,14 +178,20 @@
       "refresh_mode": "auto_page",
       "source_name": "CDC/NCHS",
       "source_url": "https://www.cdc.gov/nchs/fastats/marriage-divorce.htm",
-      "note": "Annual vital-statistics signal. The updater can refresh this page value."
+      "note": "Annual vital-statistics signal. The updater can refresh this page value.",
+      "signal_role": "outcome",
+      "domain": "generativity",
+      "correlation_cluster": "family_formation",
+      "evidence_tier": "A",
+      "mapping_confidence": "high",
+      "accountability_include": false
     },
     {
       "id": "general_fertility_rate",
       "label": "General fertility rate",
       "group": "Generativity",
       "value": 53.8,
-      "unit": "births per 1,000 women 15–44",
+      "unit": "births per 1,000 women 15\u201344",
       "year": 2024,
       "region": "US",
       "direction": "higher_better",
@@ -145,7 +202,13 @@
       "refresh_mode": "auto_page",
       "source_name": "CDC/NCHS",
       "source_url": "https://www.cdc.gov/nchs/nvss/births.htm",
-      "note": "Generativity signal. It should not be read as a judgment of individual childlessness."
+      "note": "Generativity signal. It should not be read as a judgment of individual childlessness.",
+      "signal_role": "outcome",
+      "domain": "generativity",
+      "correlation_cluster": "family_formation",
+      "evidence_tier": "A",
+      "mapping_confidence": "high",
+      "accountability_include": false
     },
     {
       "id": "youth_porn_exposure_uk",
@@ -163,7 +226,13 @@
       "refresh_mode": "snapshot",
       "source_name": "Children's Commissioner for England",
       "source_url": "https://www.childrenscommissioner.gov.uk/news-and-blogs/press-notice-children-see-violent-pornography-by-accident-via-social-media-and-as-young-as-six-new-research-from-the-childrens-commissioner-reveals/",
-      "note": "Shown as international context but excluded from the US headline composite."
+      "note": "Shown as international context but excluded from the US headline composite.",
+      "signal_role": "context_only",
+      "domain": "synthetic_substitution",
+      "correlation_cluster": "porn_exposure",
+      "evidence_tier": "B",
+      "mapping_confidence": "low",
+      "accountability_include": false
     },
     {
       "id": "anti_porn_restriction_support",
@@ -181,12 +250,216 @@
       "refresh_mode": "snapshot",
       "source_name": "Survey Center on American Life",
       "source_url": "https://www.americansurveycenter.org/newsletter/our-most-noteworthy-survey-findings-of-2025/",
-      "note": "Attitude indicator shown as a possible cultural antibody, not an outcome metric."
+      "note": "Attitude indicator shown as a possible cultural antibody, not an outcome metric.",
+      "signal_role": "countercurrent",
+      "domain": "synthetic_substitution",
+      "correlation_cluster": "porn_exposure",
+      "evidence_tier": "B",
+      "mapping_confidence": "low",
+      "accountability_include": false
+    },
+    {
+      "id": "socializing_average_day",
+      "label": "People socializing or communicating on an average day",
+      "group": "Embodied connection",
+      "value": 30.0,
+      "unit": "%",
+      "year": 2025,
+      "region": "US",
+      "direction": "higher_better",
+      "low_anchor": 25,
+      "high_anchor": 45,
+      "weight": 1.3,
+      "include_in_index": true,
+      "refresh_mode": "snapshot",
+      "source_name": "U.S. Bureau of Labor Statistics, American Time Use Survey",
+      "source_url": "https://www.bls.gov/news.release/atus.nr0.htm",
+      "note": "Direct embodied-socialization outcome. BLS reports 30% in 2025 versus 38% in 2015. The 2025 release also carries a shutdown-related diary-gap and reweighting caveat; this outcome stays neutral in the accountability meter.",
+      "signal_role": "outcome",
+      "domain": "embodied_connection",
+      "correlation_cluster": "social_withdrawal",
+      "evidence_tier": "A",
+      "mapping_confidence": "high",
+      "accountability_include": false
+    },
+    {
+      "id": "unwanted_sexual_content_online_dating",
+      "label": "Online daters receiving unwanted sexually explicit content",
+      "group": "Relational reciprocity",
+      "value": 38.0,
+      "unit": "%",
+      "year": 2022,
+      "region": "US",
+      "direction": "lower_better",
+      "low_anchor": 10,
+      "high_anchor": 50,
+      "weight": 0.9,
+      "include_in_index": true,
+      "refresh_mode": "snapshot",
+      "source_name": "Pew Research Center",
+      "source_url": "https://www.pewresearch.org/internet/2023/02/02/from-looking-for-love-to-swiping-the-field-online-dating-in-the-u-s/",
+      "note": "Direct adverse-experience signal among people who have used online dating. This is victim-experience prevalence, not perpetrator prevalence; one actor can affect multiple users. Pew also reports 30% experienced continued contact after saying they were not interested, so the two correlated harms are not double-counted here.",
+      "signal_role": "impairment",
+      "domain": "relational_reciprocity",
+      "correlation_cluster": "dating_boundary_failure",
+      "evidence_tier": "B",
+      "mapping_confidence": "high",
+      "accountability_include": true,
+      "accountability_split": {
+        "gooner": 1.0,
+        "femoid": 0.0,
+        "rationale": "Unsolicited sexual content is mapped to desire severed from reciprocal relationship. The bucket describes the behavior, not the sex of the actor."
+      }
     }
   ],
   "series": {
     "young_adult_partnered_pct": [],
     "young_adult_living_alone_pct": [],
     "us_total_fertility_rate": []
-  }
+  },
+  "version": "1.0.0",
+  "methodology": {
+    "architecture_version": "signal-architecture-v1.1",
+    "signal_roles": {
+      "outcome": "Observed state of embodied connection, relationship quality, family formation, or social life.",
+      "orientation": "Stated desire or expectation that may precede behavior but is not itself an outcome.",
+      "impairment": "Direct harm, loss of control, relationship interference, or adverse experience.",
+      "exposure_proxy": "Population exposure or use that may create pressure but does not establish pathology.",
+      "mechanism": "Evidence about a plausible behavioral process; usually not a national trend by itself.",
+      "context_only": "Relevant context shown without headline weight.",
+      "countercurrent": "Potential protective attitude or behavioral countertrend shown without headline weight."
+    },
+    "evidence_tiers": {
+      "A": "Recurring nationally representative government or similarly rigorous national data.",
+      "B": "High-quality nationally representative snapshot or slower-moving survey anchor.",
+      "C": "Peer-reviewed experimental, longitudinal, or observational mechanism evidence.",
+      "WATCHLIST": "Plausible and relevant, but not strong or repeatable enough to score."
+    },
+    "correlation_cluster_caps": {
+      "embodied_partnership": 1.5,
+      "marriage_orientation": 1.5,
+      "ai_substitution": 1.5,
+      "social_withdrawal": 1.6,
+      "family_formation": 2.0,
+      "dating_boundary_failure": 1.0,
+      "porn_exposure": 1.0
+    },
+    "accountability_rule": "Only metrics explicitly marked accountability_include participate. Each archetype receives an independently normalized weighted severity score after signal-role, evidence-tier, and mapping-confidence modifiers. The public split compares those side severities rather than dividing one shared pressure denominator. Population outcomes remain neutral unless a defensible directional behavioral mapping exists. Comparisons are provisional until each side has at least two independent clusters and one impairment signal.",
+    "accountability_role_modifiers": {
+      "impairment": 1.0,
+      "orientation": 0.6,
+      "exposure_proxy": 0.4,
+      "mechanism": 0.0,
+      "outcome": 0.0,
+      "context_only": 0.0,
+      "countercurrent": 0.0
+    },
+    "accountability_evidence_modifiers": {
+      "A": 1.0,
+      "B": 0.85,
+      "C": 0.65,
+      "WATCHLIST": 0.0
+    },
+    "accountability_mapping_modifiers": {
+      "high": 1.0,
+      "moderate": 0.75,
+      "low": 0.5
+    },
+    "accountability_breadth_requirements": {
+      "min_independent_clusters_per_side": 2,
+      "require_impairment_signal": true
+    }
+  },
+  "research_pipeline": [
+    {
+      "id": "gss_relationship_quality",
+      "status": "pending_weighted_extraction",
+      "candidate_variables": [
+        "HAPMAR",
+        "HAPCOHAB"
+      ],
+      "signal_role": "outcome",
+      "domain": "embodied_connection",
+      "evidence_tier": "A",
+      "source_name": "General Social Survey, 2024 Release 3",
+      "source_url": "https://gss.norc.org/get-the-data.html",
+      "reason": "Requires WTSSPS-weighted extraction and a documented rule for combining married and cohabiting respondents. Raw codebook counts are intentionally not used as national estimates."
+    },
+    {
+      "id": "gss_porn_frequency",
+      "status": "pending_weighted_extraction",
+      "candidate_variables": [
+        "XMOVIEY"
+      ],
+      "signal_role": "exposure_proxy",
+      "domain": "compulsive_novelty",
+      "evidence_tier": "A",
+      "source_name": "General Social Survey, 2024 Release 3",
+      "source_url": "https://gss.norc.org/get-the-data.html",
+      "reason": "Candidate thresholds include weekly-or-more and a graded frequency score. Frequency will remain an exposure proxy, not a diagnosis of problematic use."
+    },
+    {
+      "id": "gss_sexual_frequency",
+      "status": "analysis_before_scoring",
+      "candidate_variables": [
+        "SEXFREQ"
+      ],
+      "signal_role": "outcome",
+      "domain": "embodied_connection",
+      "evidence_tier": "A",
+      "source_name": "General Social Survey, 2024 Release 3",
+      "source_url": "https://gss.norc.org/get-the-data.html",
+      "reason": "Sexual inactivity is not automatically dysfunction. Analyze by age and relationship status before deciding whether any aggregate belongs in the headline index."
+    }
+  ],
+  "research_watchlist": [
+    {
+      "id": "fantasy_media_displacement",
+      "label": "Fantasy-romance and erotic-fiction displacement",
+      "evidence_tier": "WATCHLIST",
+      "reason_not_scored": "Sales or readership measure exposure, not impairment or displacement of real relationships."
+    },
+    {
+      "id": "deceptive_self_presentation",
+      "label": "Deceptive filters and strategic dating-profile presentation",
+      "evidence_tier": "WATCHLIST",
+      "reason_not_scored": "Relevant to trust and mate-market distortion, but no clean recurring national series currently supports headline weight."
+    },
+    {
+      "id": "breadcrumbing_benching",
+      "label": "Breadcrumbing, benching, and attention extraction",
+      "evidence_tier": "WATCHLIST",
+      "reason_not_scored": "Conceptually strong reciprocity failure; prevalence evidence is not yet nationally repeatable enough for scoring."
+    },
+    {
+      "id": "dating_choice_overload",
+      "label": "Catalogization and dating choice overload",
+      "evidence_tier": "WATCHLIST",
+      "reason_not_scored": "National surveys and experiments support the mechanism, but no recurring impairment-sensitive national series currently earns score weight."
+    },
+    {
+      "id": "relational_aggression",
+      "label": "Relationship-specific relational aggression",
+      "evidence_tier": "WATCHLIST",
+      "reason_not_scored": "Real behavioral literature, but adult pair-bond relevance and sex attribution are too heterogeneous for a clean dashboard metric."
+    },
+    {
+      "id": "coparental_gatekeeping",
+      "label": "Coparental gatekeeping",
+      "evidence_tier": "WATCHLIST",
+      "reason_not_scored": "Family-cohesion relevance is high; causal interpretation and repeatable national measurement are not clean enough for scoring."
+    },
+    {
+      "id": "financial_infidelity",
+      "label": "Financial infidelity and secret relationship-relevant behavior",
+      "evidence_tier": "WATCHLIST",
+      "reason_not_scored": "A clear reciprocity concern, but existing measurement is not yet suitable as a recurring national EHI series."
+    },
+    {
+      "id": "parasocial_monetization",
+      "label": "Paid parasocial and erotic attention markets",
+      "evidence_tier": "WATCHLIST",
+      "reason_not_scored": "Revenue and account counts do not establish personal impairment or displacement of embodied relationships."
+    }
+  ]
 }

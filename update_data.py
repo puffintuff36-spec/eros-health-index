@@ -1,4 +1,4 @@
-# v0.3.5: GOON v2 extremity model, normalized history merge, and EHI backcast support
+# v1.0.0 launch: stable signal architecture, calibrated accountability meter, launch UI
 #!/usr/bin/env python3
 """Refresh the Eros Health Index data file from public sources.
 
@@ -35,7 +35,7 @@ ROOT = Path(__file__).resolve().parent
 SEED = ROOT / "seed_data.json"
 OUT = ROOT / "data.json"
 OUT_JS = ROOT / "data.js"
-USER_AGENT = "ErosHealthIndex/0.3.5 (+public research dashboard)"
+USER_AGENT = "ErosHealthIndex/1.0.0 (+public research dashboard)"
 CENSUS_KEY_FILE = ROOT / "census_api_key.txt"
 GOON_BASKET_FILE = ROOT / "goon_basket.txt"
 
@@ -256,7 +256,55 @@ def score_metric(metric: dict[str, Any]) -> float | None:
     return round(clamp(raw), 1)
 
 
+def apply_correlation_firewall(data: dict[str, Any]) -> None:
+    """Assign effective weights after capping correlated metric clusters.
+
+    Metrics remain visible with their authored raw weights. When included metrics
+    inside one correlation cluster exceed that cluster's cap, their effective
+    weights are scaled proportionally. This prevents adjacent proxies from
+    gaining extra voting power merely because several versions of the same
+    underlying phenomenon are available.
+    """
+    caps = data.get("methodology", {}).get("correlation_cluster_caps", {})
+    cluster_totals: dict[str, float] = {}
+
+    for metric in data.get("metrics", []):
+        raw_weight = float(metric.get("weight", 1.0))
+        metric["effective_weight"] = raw_weight
+        if not metric.get("include_in_index") or metric.get("value") is None:
+            continue
+        cluster = metric.get("correlation_cluster")
+        if cluster:
+            cluster_totals[cluster] = cluster_totals.get(cluster, 0.0) + raw_weight
+
+    scales: dict[str, float] = {}
+    for cluster, total in cluster_totals.items():
+        cap = float(caps.get(cluster, total))
+        scales[cluster] = min(1.0, cap / total) if total > 0 else 1.0
+
+    for metric in data.get("metrics", []):
+        if not metric.get("include_in_index") or metric.get("value") is None:
+            continue
+        raw_weight = float(metric.get("weight", 1.0))
+        cluster = metric.get("correlation_cluster")
+        scale = scales.get(cluster, 1.0) if cluster else 1.0
+        metric["effective_weight"] = round(raw_weight * scale, 4)
+
+    data["correlation_firewall"] = {
+        "method_version": "proportional-cluster-cap-v1",
+        "clusters": {
+            cluster: {
+                "raw_weight": round(total, 4),
+                "cap": round(float(caps.get(cluster, total)), 4),
+                "scale": round(scales.get(cluster, 1.0), 4),
+            }
+            for cluster, total in sorted(cluster_totals.items())
+        },
+    }
+
+
 def calculate_index(data: dict[str, Any]) -> None:
+    apply_correlation_firewall(data)
     numerator = 0.0
     denominator = 0.0
     groups: dict[str, list[tuple[float, float]]] = {}
@@ -265,7 +313,7 @@ def calculate_index(data: dict[str, Any]) -> None:
         metric["score"] = score_metric(metric)
         if not metric.get("include_in_index") or metric["score"] is None:
             continue
-        weight = float(metric.get("weight", 1.0))
+        weight = float(metric.get("effective_weight", metric.get("weight", 1.0)))
         numerator += metric["score"] * weight
         denominator += weight
         groups.setdefault(metric["group"], []).append((metric["score"], weight))
@@ -276,6 +324,167 @@ def calculate_index(data: dict[str, Any]) -> None:
         for group, rows in groups.items()
     }
 
+
+def calculate_accountability_meter(data: dict[str, Any]) -> None:
+    """Calculate side-normalized behavioral severity for the joke meter.
+
+    EHI outcomes describe whether the system is healthy; they do not automatically
+    vote in the GOONER/FEMOID comparison. Directional metrics are first discounted
+    by signal role, evidence tier, and mapping confidence, then each archetype gets
+    its own weighted severity score. The public split compares those two severities
+    rather than dividing one shared pressure denominator that may contain far more
+    sensors on one side than the other.
+    """
+    methodology = data.get("methodology", {})
+    role_modifiers = methodology.get("accountability_role_modifiers", {})
+    tier_modifiers = methodology.get("accountability_evidence_modifiers", {})
+    confidence_modifiers = methodology.get("accountability_mapping_modifiers", {})
+    breadth_rules = methodology.get("accountability_breadth_requirements", {})
+
+    side_pressure = {"gooner": 0.0, "femoid": 0.0}
+    side_capacity = {"gooner": 0.0, "femoid": 0.0}
+    side_clusters: dict[str, set[str]] = {"gooner": set(), "femoid": set()}
+    side_has_impairment = {"gooner": False, "femoid": False}
+
+    total_ehi_pressure = 0.0
+    raw_directional_pressure = 0.0
+    adjusted_directional_pressure = 0.0
+    contributors: list[dict[str, Any]] = []
+
+    for metric in data.get("metrics", []):
+        if metric.get("score") is None:
+            continue
+
+        base_weight = float(metric.get("effective_weight", metric.get("weight", 1.0)))
+        severity = max(0.0, 100.0 - float(metric["score"])) / 100.0
+        ehi_pressure = severity * 100.0 * base_weight
+        if metric.get("include_in_index"):
+            total_ehi_pressure += ehi_pressure
+
+        if not metric.get("accountability_include"):
+            continue
+
+        split = metric.get("accountability_split")
+        if not split:
+            continue
+        gooner_share = float(split.get("gooner", 0.0))
+        femoid_share = float(split.get("femoid", 0.0))
+        split_total = gooner_share + femoid_share
+        if split_total <= 0:
+            continue
+        shares = {
+            "gooner": gooner_share / split_total,
+            "femoid": femoid_share / split_total,
+        }
+
+        role_factor = float(role_modifiers.get(metric.get("signal_role"), 0.0))
+        tier_factor = float(tier_modifiers.get(metric.get("evidence_tier"), 0.0))
+        confidence_factor = float(confidence_modifiers.get(metric.get("mapping_confidence"), 0.0))
+        accountability_weight = base_weight * role_factor * tier_factor * confidence_factor
+
+        raw_directional_pressure += ehi_pressure
+        adjusted_metric_pressure = severity * 100.0 * accountability_weight
+        adjusted_directional_pressure += adjusted_metric_pressure
+
+        side_components: dict[str, float] = {}
+        for side in ("gooner", "femoid"):
+            routed_weight = accountability_weight * shares[side]
+            routed_pressure = severity * routed_weight
+            side_pressure[side] += routed_pressure
+            side_capacity[side] += routed_weight
+            side_components[side] = routed_pressure * 100.0
+            if shares[side] > 0 and routed_weight > 0:
+                cluster = str(metric.get("correlation_cluster", "")).strip()
+                if cluster:
+                    side_clusters[side].add(cluster)
+                if metric.get("signal_role") == "impairment":
+                    side_has_impairment[side] = True
+
+        contributors.append({
+            "metric_id": metric.get("id"),
+            "label": metric.get("label"),
+            "score": metric.get("score"),
+            "severity_pct": round(severity * 100.0, 1),
+            "effective_weight": round(base_weight, 4),
+            "accountability_weight": round(accountability_weight, 4),
+            "role_modifier": round(role_factor, 3),
+            "evidence_modifier": round(tier_factor, 3),
+            "mapping_modifier": round(confidence_factor, 3),
+            "gooner_pressure": round(side_components["gooner"], 2),
+            "femoid_pressure": round(side_components["femoid"], 2),
+            "signal_role": metric.get("signal_role"),
+            "evidence_tier": metric.get("evidence_tier"),
+            "mapping_confidence": metric.get("mapping_confidence"),
+            "correlation_cluster": metric.get("correlation_cluster"),
+            "rationale": split.get("rationale", "Directional behavioral mapping."),
+        })
+
+    side_severity: dict[str, float] = {}
+    for side in ("gooner", "femoid"):
+        capacity = side_capacity[side]
+        side_severity[side] = (side_pressure[side] / capacity * 100.0) if capacity > 0 else 0.0
+
+    severity_total = side_severity["gooner"] + side_severity["femoid"]
+    gooner_pct = (side_severity["gooner"] / severity_total * 100.0) if severity_total else 50.0
+    femoid_pct = 100.0 - gooner_pct
+
+    raw_coverage_pct = (raw_directional_pressure / total_ehi_pressure * 100.0) if total_ehi_pressure else 0.0
+    adjusted_coverage_pct = (adjusted_directional_pressure / total_ehi_pressure * 100.0) if total_ehi_pressure else 0.0
+
+    min_clusters = int(breadth_rules.get("min_independent_clusters_per_side", 2))
+    require_impairment = bool(breadth_rules.get("require_impairment_signal", True))
+    breadth: dict[str, dict[str, Any]] = {}
+    underfilled: list[str] = []
+    for side in ("gooner", "femoid"):
+        cluster_count = len(side_clusters[side])
+        enough_clusters = cluster_count >= min_clusters
+        impairment_ok = side_has_impairment[side] or not require_impairment
+        sufficient = enough_clusters and impairment_ok
+        if not sufficient:
+            underfilled.append(side.upper())
+        breadth[side] = {
+            "independent_clusters": cluster_count,
+            "clusters": sorted(side_clusters[side]),
+            "has_impairment_signal": side_has_impairment[side],
+            "sufficient": sufficient,
+        }
+
+    comparison_status = "established" if not underfilled else "provisional"
+    if underfilled:
+        details: list[str] = []
+        for side_name in ("GOONER", "FEMOID"):
+            side_key = side_name.lower()
+            if side_name not in underfilled:
+                continue
+            info = breadth[side_key]
+            reasons = [f"{info['independent_clusters']} independent cluster" + ("" if info['independent_clusters'] == 1 else "s")]
+            if require_impairment and not info["has_impairment_signal"]:
+                reasons.append("no impairment signal")
+            details.append(f"{side_name}: " + ", ".join(reasons))
+        status_note = "PROVISIONAL · evidence basket underfilled (" + "; ".join(details) + ")."
+    else:
+        status_note = "Evidence breadth threshold met on both sides."
+
+    data["accountability_meter"] = {
+        "gooner": round(gooner_pct, 1),
+        "femoid": round(femoid_pct, 1),
+        "gooner_severity": round(side_severity["gooner"], 1),
+        "femoid_severity": round(side_severity["femoid"], 1),
+        "gooner_capacity": round(side_capacity["gooner"], 4),
+        "femoid_capacity": round(side_capacity["femoid"], 4),
+        "raw_directional_pressure": round(raw_directional_pressure, 2),
+        "adjusted_directional_pressure": round(adjusted_directional_pressure, 2),
+        "total_ehi_pressure": round(total_ehi_pressure, 2),
+        "coverage_pct": round(raw_coverage_pct, 1),
+        "adjusted_coverage_pct": round(adjusted_coverage_pct, 1),
+        "comparison_status": comparison_status,
+        "status_note": status_note,
+        "evidence_breadth": breadth,
+        "method_version": "side-normalized-severity-v1",
+        "note": "Disclaimer: some bitches be goonin, and some dudes be shallow AF.",
+        "coverage_note": "Only behavior-attributable signals vote here; EHI outcomes stay neutral.",
+        "contributors": sorted(contributors, key=lambda row: row["accountability_weight"], reverse=True),
+    }
 
 def metric_by_id(data: dict[str, Any], metric_id: str) -> dict[str, Any]:
     for metric in data["metrics"]:
@@ -1071,7 +1280,7 @@ def update_ehi_history(data: dict[str, Any], previous: dict[str, Any] | None = N
                 "value": float(data["index"]),
                 "kind": "observed",
                 "coverage": 1.0,
-                "method_version": "headline-ehi-v1",
+                "method_version": "headline-ehi-v2",
             }
 
     data["ehi_history"] = [merged[day] for day in sorted(merged)][-500:]
@@ -1083,7 +1292,7 @@ def update_ehi_history(data: dict[str, Any], previous: dict[str, Any] | None = N
             "partnering, total fertility, national marriage rate, and teen almost-constant "
             "internet use. Current observed snapshots use the full headline EHI basket. "
             "Backcast rows publish coverage and components and should not be read as "
-            "historical observations of metrics that did not yet exist."
+            "historical observations of metrics that did not yet exist. Current observed snapshots use the current correlation firewall."
         ),
         "sources": [
             {
@@ -1201,6 +1410,58 @@ def refresh_online(data: dict[str, Any]) -> list[str]:
     return errors
 
 
+
+def validate_signal_architecture(data: dict[str, Any]) -> None:
+    """Fail fast when signal metadata or directional mappings are incomplete."""
+    methodology = data.get("methodology", {})
+    roles = set(methodology.get("signal_roles", {}))
+    tiers = set(methodology.get("evidence_tiers", {}))
+    caps = methodology.get("correlation_cluster_caps", {})
+    role_modifiers = methodology.get("accountability_role_modifiers", {})
+    tier_modifiers = methodology.get("accountability_evidence_modifiers", {})
+    mapping_modifiers = methodology.get("accountability_mapping_modifiers", {})
+    seen: set[str] = set()
+
+    for cluster, cap in caps.items():
+        if float(cap) <= 0:
+            raise ValueError(f"Correlation cluster cap must be positive: {cluster}={cap}")
+
+    for metric in data.get("metrics", []):
+        metric_id = str(metric.get("id", "")).strip()
+        if not metric_id:
+            raise ValueError("Metric missing id")
+        if metric_id in seen:
+            raise ValueError(f"Duplicate metric id: {metric_id}")
+        seen.add(metric_id)
+
+        role = metric.get("signal_role")
+        if role not in roles:
+            raise ValueError(f"Unknown signal_role for {metric_id}: {role}")
+        tier = metric.get("evidence_tier")
+        if tier not in tiers:
+            raise ValueError(f"Unknown evidence_tier for {metric_id}: {tier}")
+        if not metric.get("domain"):
+            raise ValueError(f"Metric missing domain: {metric_id}")
+        if not metric.get("correlation_cluster"):
+            raise ValueError(f"Metric missing correlation_cluster: {metric_id}")
+        if metric.get("accountability_include"):
+            split = metric.get("accountability_split")
+            if not split:
+                raise ValueError(f"Directional metric missing accountability_split: {metric_id}")
+            total = float(split.get("gooner", 0.0)) + float(split.get("femoid", 0.0))
+            if total <= 0:
+                raise ValueError(f"Directional metric has empty split: {metric_id}")
+            confidence = metric.get("mapping_confidence")
+            if role not in role_modifiers:
+                raise ValueError(f"Directional metric role missing accountability modifier: {metric_id}={role}")
+            if tier not in tier_modifiers:
+                raise ValueError(f"Directional metric tier missing accountability modifier: {metric_id}={tier}")
+            if confidence not in mapping_modifiers:
+                raise ValueError(f"Unknown mapping_confidence for {metric_id}: {confidence}")
+            if float(role_modifiers[role]) <= 0 or float(tier_modifiers[tier]) <= 0 or float(mapping_modifiers[confidence]) <= 0:
+                raise ValueError(f"Directional metric has zeroed accountability modifier: {metric_id}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--offline", action="store_true", help="Do not contact remote sources")
@@ -1208,6 +1469,7 @@ def main() -> int:
 
     data = json.loads(SEED.read_text(encoding="utf-8"))
     data = copy.deepcopy(data)
+    validate_signal_architecture(data)
     previous: dict[str, Any] | None = None
     if OUT.exists():
         try:
@@ -1237,6 +1499,7 @@ def main() -> int:
     data["generated_at"] = dt.datetime.now(dt.UTC).isoformat()
     data["refresh_errors"] = errors
     calculate_index(data)
+    calculate_accountability_meter(data)
     generate_advice(data)
     update_ehi_history(data, previous)
     OUT.write_text(json.dumps(data, indent=2), encoding="utf-8")

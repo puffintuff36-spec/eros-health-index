@@ -1,7 +1,7 @@
 {
-  "generated_at": "2026-07-06T17:57:25.757156+00:00",
+  "generated_at": "2026-07-06T20:14:38.200867+00:00",
   "title": "Eros Health Index",
-  "subtitle": "A transparent prototype for tracking embodied connection, synthetic substitution, and generativity.",
+  "subtitle": "A transparent prototype for tracking embodied connection, synthetic substitution, relational reciprocity, and generativity.",
   "metrics": [
     {
       "id": "partnered_adults",
@@ -20,6 +20,13 @@
       "source_name": "Pew Research Center",
       "source_url": "https://www.pewresearch.org/short-reads/2025/01/08/share-of-us-adults-living-without-a-romantic-partner-has-ticked-down-in-recent-years/",
       "note": "Derived as 100 minus the reported 42% living without a spouse or partner.",
+      "signal_role": "outcome",
+      "domain": "embodied_connection",
+      "correlation_cluster": "embodied_partnership",
+      "evidence_tier": "B",
+      "mapping_confidence": "high",
+      "accountability_include": false,
+      "effective_weight": 1.5,
       "score": 40.0
     },
     {
@@ -39,6 +46,13 @@
       "source_name": "Pew Research Center",
       "source_url": "https://www.pewresearch.org/short-reads/2024/02/15/among-young-adults-without-children-men-are-more-likely-than-women-to-say-they-want-to-be-parents-someday/",
       "note": "Intent is not behavior, so this is weighted below actual partnership.",
+      "signal_role": "orientation",
+      "domain": "embodied_connection",
+      "correlation_cluster": "marriage_orientation",
+      "evidence_tier": "B",
+      "mapping_confidence": "high",
+      "accountability_include": false,
+      "effective_weight": 0.8182,
       "score": 54.3
     },
     {
@@ -58,6 +72,18 @@
       "source_name": "Pew Research Center / Monitoring the Future",
       "source_url": "https://www.pewresearch.org/short-reads/2025/11/14/12th-grade-girls-are-less-likely-than-boys-to-say-they-want-to-get-married-someday/",
       "note": "Tracks expectation of durable pair-bonding among older adolescents.",
+      "accountability_split": {
+        "gooner": 0.4,
+        "femoid": 0.6,
+        "rationale": "Orientation signal with a reported sex gap: 2023 negative pressure is split from 26% of boys versus 39% of girls not saying they expect to marry. This is a directional proxy, not a blame allocation."
+      },
+      "signal_role": "orientation",
+      "domain": "embodied_connection",
+      "correlation_cluster": "marriage_orientation",
+      "evidence_tier": "B",
+      "mapping_confidence": "moderate",
+      "accountability_include": true,
+      "effective_weight": 0.6818,
       "score": 48.6
     },
     {
@@ -77,6 +103,18 @@
       "source_name": "Common Sense Media",
       "source_url": "https://www.commonsensemedia.org/research/talk-trust-and-trade-offs-how-and-why-teens-use-ai-companions",
       "note": "Broad usage metric; not every use is romantic or isolating.",
+      "accountability_split": {
+        "gooner": 1.0,
+        "femoid": 0.0,
+        "rationale": "Synthetic relational substitution is mapped to the GOONER behavioral archetype regardless of user sex."
+      },
+      "signal_role": "exposure_proxy",
+      "domain": "synthetic_substitution",
+      "correlation_cluster": "ai_substitution",
+      "evidence_tier": "B",
+      "mapping_confidence": "moderate",
+      "accountability_include": true,
+      "effective_weight": 0.7857,
       "score": 13.3
     },
     {
@@ -96,6 +134,18 @@
       "source_name": "Common Sense Media",
       "source_url": "https://www.commonsensemedia.org/research/talk-trust-and-trade-offs-how-and-why-teens-use-ai-companions",
       "note": "Closer to substitution risk than simple trial or occasional use.",
+      "accountability_split": {
+        "gooner": 1.0,
+        "femoid": 0.0,
+        "rationale": "Synthetic relational substitution is mapped to the GOONER behavioral archetype regardless of user sex."
+      },
+      "signal_role": "exposure_proxy",
+      "domain": "synthetic_substitution",
+      "correlation_cluster": "ai_substitution",
+      "evidence_tier": "B",
+      "mapping_confidence": "moderate",
+      "accountability_include": true,
+      "effective_weight": 0.7143,
       "score": 22.5
     },
     {
@@ -115,6 +165,13 @@
       "source_name": "Pew Research Center",
       "source_url": "https://www.pewresearch.org/internet/2024/12/12/teens-social-media-and-technology-2024/",
       "note": "A proxy for digital saturation, not a direct measure of misdirected eros.",
+      "signal_role": "exposure_proxy",
+      "domain": "synthetic_substitution",
+      "correlation_cluster": "social_withdrawal",
+      "evidence_tier": "B",
+      "mapping_confidence": "low",
+      "accountability_include": false,
+      "effective_weight": 0.6095,
       "score": 10.0
     },
     {
@@ -134,6 +191,13 @@
       "source_name": "CDC/NCHS",
       "source_url": "https://www.cdc.gov/nchs/fastats/marriage-divorce.htm",
       "note": "Annual vital-statistics signal. The updater can refresh this page value.",
+      "signal_role": "outcome",
+      "domain": "generativity",
+      "correlation_cluster": "family_formation",
+      "evidence_tier": "A",
+      "mapping_confidence": "high",
+      "accountability_include": false,
+      "effective_weight": 0.9524,
       "score": 35.0
     },
     {
@@ -153,6 +217,13 @@
       "source_name": "CDC/NCHS",
       "source_url": "https://www.cdc.gov/nchs/nvss/births.htm",
       "note": "Generativity signal. It should not be read as a judgment of individual childlessness.",
+      "signal_role": "outcome",
+      "domain": "generativity",
+      "correlation_cluster": "family_formation",
+      "evidence_tier": "A",
+      "mapping_confidence": "high",
+      "accountability_include": false,
+      "effective_weight": 1.0476,
       "score": 34.5
     },
     {
@@ -172,6 +243,13 @@
       "source_name": "Children's Commissioner for England",
       "source_url": "https://www.childrenscommissioner.gov.uk/news-and-blogs/press-notice-children-see-violent-pornography-by-accident-via-social-media-and-as-young-as-six-new-research-from-the-childrens-commissioner-reveals/",
       "note": "Shown as international context but excluded from the US headline composite.",
+      "signal_role": "context_only",
+      "domain": "synthetic_substitution",
+      "correlation_cluster": "porn_exposure",
+      "evidence_tier": "B",
+      "mapping_confidence": "low",
+      "accountability_include": false,
+      "effective_weight": 1.0,
       "score": 16.7
     },
     {
@@ -191,7 +269,71 @@
       "source_name": "Survey Center on American Life",
       "source_url": "https://www.americansurveycenter.org/newsletter/our-most-noteworthy-survey-findings-of-2025/",
       "note": "Attitude indicator shown as a possible cultural antibody, not an outcome metric.",
+      "signal_role": "countercurrent",
+      "domain": "synthetic_substitution",
+      "correlation_cluster": "porn_exposure",
+      "evidence_tier": "B",
+      "mapping_confidence": "low",
+      "accountability_include": false,
+      "effective_weight": 0.5,
       "score": 66.7
+    },
+    {
+      "id": "socializing_average_day",
+      "label": "People socializing or communicating on an average day",
+      "group": "Embodied connection",
+      "value": 30.0,
+      "unit": "%",
+      "year": 2025,
+      "region": "US",
+      "direction": "higher_better",
+      "low_anchor": 25,
+      "high_anchor": 45,
+      "weight": 1.3,
+      "include_in_index": true,
+      "refresh_mode": "snapshot",
+      "source_name": "U.S. Bureau of Labor Statistics, American Time Use Survey",
+      "source_url": "https://www.bls.gov/news.release/atus.nr0.htm",
+      "note": "Direct embodied-socialization outcome. BLS reports 30% in 2025 versus 38% in 2015. The 2025 release also carries a shutdown-related diary-gap and reweighting caveat; this outcome stays neutral in the accountability meter.",
+      "signal_role": "outcome",
+      "domain": "embodied_connection",
+      "correlation_cluster": "social_withdrawal",
+      "evidence_tier": "A",
+      "mapping_confidence": "high",
+      "accountability_include": false,
+      "effective_weight": 0.9905,
+      "score": 25.0
+    },
+    {
+      "id": "unwanted_sexual_content_online_dating",
+      "label": "Online daters receiving unwanted sexually explicit content",
+      "group": "Relational reciprocity",
+      "value": 38.0,
+      "unit": "%",
+      "year": 2022,
+      "region": "US",
+      "direction": "lower_better",
+      "low_anchor": 10,
+      "high_anchor": 50,
+      "weight": 0.9,
+      "include_in_index": true,
+      "refresh_mode": "snapshot",
+      "source_name": "Pew Research Center",
+      "source_url": "https://www.pewresearch.org/internet/2023/02/02/from-looking-for-love-to-swiping-the-field-online-dating-in-the-u-s/",
+      "note": "Direct adverse-experience signal among people who have used online dating. This is victim-experience prevalence, not perpetrator prevalence; one actor can affect multiple users. Pew also reports 30% experienced continued contact after saying they were not interested, so the two correlated harms are not double-counted here.",
+      "signal_role": "impairment",
+      "domain": "relational_reciprocity",
+      "correlation_cluster": "dating_boundary_failure",
+      "evidence_tier": "B",
+      "mapping_confidence": "high",
+      "accountability_include": true,
+      "accountability_split": {
+        "gooner": 1.0,
+        "femoid": 0.0,
+        "rationale": "Unsolicited sexual content is mapped to desire severed from reciprocal relationship. The bucket describes the behavior, not the sex of the actor."
+      },
+      "effective_weight": 0.9,
+      "score": 30.0
     }
   ],
   "series": {
@@ -534,468 +676,558 @@
       }
     ]
   },
+  "version": "1.0.0",
+  "methodology": {
+    "architecture_version": "signal-architecture-v1.1",
+    "signal_roles": {
+      "outcome": "Observed state of embodied connection, relationship quality, family formation, or social life.",
+      "orientation": "Stated desire or expectation that may precede behavior but is not itself an outcome.",
+      "impairment": "Direct harm, loss of control, relationship interference, or adverse experience.",
+      "exposure_proxy": "Population exposure or use that may create pressure but does not establish pathology.",
+      "mechanism": "Evidence about a plausible behavioral process; usually not a national trend by itself.",
+      "context_only": "Relevant context shown without headline weight.",
+      "countercurrent": "Potential protective attitude or behavioral countertrend shown without headline weight."
+    },
+    "evidence_tiers": {
+      "A": "Recurring nationally representative government or similarly rigorous national data.",
+      "B": "High-quality nationally representative snapshot or slower-moving survey anchor.",
+      "C": "Peer-reviewed experimental, longitudinal, or observational mechanism evidence.",
+      "WATCHLIST": "Plausible and relevant, but not strong or repeatable enough to score."
+    },
+    "correlation_cluster_caps": {
+      "embodied_partnership": 1.5,
+      "marriage_orientation": 1.5,
+      "ai_substitution": 1.5,
+      "social_withdrawal": 1.6,
+      "family_formation": 2.0,
+      "dating_boundary_failure": 1.0,
+      "porn_exposure": 1.0
+    },
+    "accountability_rule": "Only metrics explicitly marked accountability_include participate. Each archetype receives an independently normalized weighted severity score after signal-role, evidence-tier, and mapping-confidence modifiers. The public split compares those side severities rather than dividing one shared pressure denominator. Population outcomes remain neutral unless a defensible directional behavioral mapping exists. Comparisons are provisional until each side has at least two independent clusters and one impairment signal.",
+    "accountability_role_modifiers": {
+      "impairment": 1.0,
+      "orientation": 0.6,
+      "exposure_proxy": 0.4,
+      "mechanism": 0.0,
+      "outcome": 0.0,
+      "context_only": 0.0,
+      "countercurrent": 0.0
+    },
+    "accountability_evidence_modifiers": {
+      "A": 1.0,
+      "B": 0.85,
+      "C": 0.65,
+      "WATCHLIST": 0.0
+    },
+    "accountability_mapping_modifiers": {
+      "high": 1.0,
+      "moderate": 0.75,
+      "low": 0.5
+    },
+    "accountability_breadth_requirements": {
+      "min_independent_clusters_per_side": 2,
+      "require_impairment_signal": true
+    }
+  },
+  "research_pipeline": [
+    {
+      "id": "gss_relationship_quality",
+      "status": "pending_weighted_extraction",
+      "candidate_variables": [
+        "HAPMAR",
+        "HAPCOHAB"
+      ],
+      "signal_role": "outcome",
+      "domain": "embodied_connection",
+      "evidence_tier": "A",
+      "source_name": "General Social Survey, 2024 Release 3",
+      "source_url": "https://gss.norc.org/get-the-data.html",
+      "reason": "Requires WTSSPS-weighted extraction and a documented rule for combining married and cohabiting respondents. Raw codebook counts are intentionally not used as national estimates."
+    },
+    {
+      "id": "gss_porn_frequency",
+      "status": "pending_weighted_extraction",
+      "candidate_variables": [
+        "XMOVIEY"
+      ],
+      "signal_role": "exposure_proxy",
+      "domain": "compulsive_novelty",
+      "evidence_tier": "A",
+      "source_name": "General Social Survey, 2024 Release 3",
+      "source_url": "https://gss.norc.org/get-the-data.html",
+      "reason": "Candidate thresholds include weekly-or-more and a graded frequency score. Frequency will remain an exposure proxy, not a diagnosis of problematic use."
+    },
+    {
+      "id": "gss_sexual_frequency",
+      "status": "analysis_before_scoring",
+      "candidate_variables": [
+        "SEXFREQ"
+      ],
+      "signal_role": "outcome",
+      "domain": "embodied_connection",
+      "evidence_tier": "A",
+      "source_name": "General Social Survey, 2024 Release 3",
+      "source_url": "https://gss.norc.org/get-the-data.html",
+      "reason": "Sexual inactivity is not automatically dysfunction. Analyze by age and relationship status before deciding whether any aggregate belongs in the headline index."
+    }
+  ],
+  "research_watchlist": [
+    {
+      "id": "fantasy_media_displacement",
+      "label": "Fantasy-romance and erotic-fiction displacement",
+      "evidence_tier": "WATCHLIST",
+      "reason_not_scored": "Sales or readership measure exposure, not impairment or displacement of real relationships."
+    },
+    {
+      "id": "deceptive_self_presentation",
+      "label": "Deceptive filters and strategic dating-profile presentation",
+      "evidence_tier": "WATCHLIST",
+      "reason_not_scored": "Relevant to trust and mate-market distortion, but no clean recurring national series currently supports headline weight."
+    },
+    {
+      "id": "breadcrumbing_benching",
+      "label": "Breadcrumbing, benching, and attention extraction",
+      "evidence_tier": "WATCHLIST",
+      "reason_not_scored": "Conceptually strong reciprocity failure; prevalence evidence is not yet nationally repeatable enough for scoring."
+    },
+    {
+      "id": "dating_choice_overload",
+      "label": "Catalogization and dating choice overload",
+      "evidence_tier": "WATCHLIST",
+      "reason_not_scored": "National surveys and experiments support the mechanism, but no recurring impairment-sensitive national series currently earns score weight."
+    },
+    {
+      "id": "relational_aggression",
+      "label": "Relationship-specific relational aggression",
+      "evidence_tier": "WATCHLIST",
+      "reason_not_scored": "Real behavioral literature, but adult pair-bond relevance and sex attribution are too heterogeneous for a clean dashboard metric."
+    },
+    {
+      "id": "coparental_gatekeeping",
+      "label": "Coparental gatekeeping",
+      "evidence_tier": "WATCHLIST",
+      "reason_not_scored": "Family-cohesion relevance is high; causal interpretation and repeatable national measurement are not clean enough for scoring."
+    },
+    {
+      "id": "financial_infidelity",
+      "label": "Financial infidelity and secret relationship-relevant behavior",
+      "evidence_tier": "WATCHLIST",
+      "reason_not_scored": "A clear reciprocity concern, but existing measurement is not yet suitable as a recurring national EHI series."
+    },
+    {
+      "id": "parasocial_monetization",
+      "label": "Paid parasocial and erotic attention markets",
+      "evidence_tier": "WATCHLIST",
+      "reason_not_scored": "Revenue and account counts do not establish personal impairment or displacement of embodied relationships."
+    }
+  ],
   "goon": {
-    "mode": "live",
-    "signal_kind": "stratified_timeseries",
-    "method_version": "stratified-v2",
+    "mode": "demo",
     "label": "The Gooning Index",
     "ticker": "GOON",
-    "description": "One category-balanced daily digital-pressure signal derived from a private stratified basket and Tranco rank histories. Absolute popularity dominates; a smaller own-history trend term and conservative novelty/intensity/interaction/extremity weighting add resolution. The pressure line shows aggregate GOON movement; the muted ribbon visualizes the middle 50% of adjusted domain pressure. Higher is worse for Eros; individual domains and ranks are not published.",
-    "source_name": "Tranco",
-    "source_url": "https://tranco-list.eu/api_documentation",
-    "last_updated": "2026-07-05T00:00:00Z",
-    "basket_size": 21,
-    "domains_reporting": 21,
-    "categories_reporting": 4,
-    "category_targets": {
-      "mainstream_tube": {
-        "label": "Mainstream tube/video",
-        "share": 0.45
-      },
-      "illustrated_niche": {
-        "label": "Illustrated fandom / niche",
-        "share": 0.2
-      },
-      "hentai_animation": {
-        "label": "Hentai / animation",
-        "share": 0.15
-      },
-      "interactive": {
-        "label": "Live / interactive",
-        "share": 0.15
-      }
-    },
+    "description": "Demo movement only. Add a private stratified goon_basket.txt for observed category-balanced daily pressure.",
+    "source_name": "Tranco (demo until basket is configured)",
+    "source_url": "https://tranco-list.eu/",
+    "last_updated": null,
     "series": [
       {
-        "timestamp": "2026-05-25T00:00:00Z",
-        "open": 49.71,
-        "high": 53.35,
-        "low": 46.26,
-        "close": 49.71,
-        "value": 49.71,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-07T00:00:00+00:00",
+        "open": 58.0,
+        "high": 61.0,
+        "low": 55.3,
+        "close": 58.0,
+        "value": 58.0
       },
       {
-        "timestamp": "2026-05-26T00:00:00Z",
-        "open": 49.71,
-        "high": 53.35,
-        "low": 46.28,
-        "close": 49.69,
-        "value": 49.69,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-08T00:00:00+00:00",
+        "open": 58.0,
+        "high": 62.7,
+        "low": 54.98,
+        "close": 59.35,
+        "value": 59.35
       },
       {
-        "timestamp": "2026-05-27T00:00:00Z",
-        "open": 49.69,
-        "high": 53.38,
-        "low": 46.28,
-        "close": 49.65,
-        "value": 49.65,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-09T00:00:00+00:00",
+        "open": 59.35,
+        "high": 64.07,
+        "low": 56.08,
+        "close": 60.44,
+        "value": 60.44
       },
       {
-        "timestamp": "2026-05-28T00:00:00Z",
-        "open": 49.65,
-        "high": 53.4,
-        "low": 46.29,
-        "close": 49.65,
-        "value": 49.65,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-10T00:00:00+00:00",
+        "open": 60.44,
+        "high": 64.88,
+        "low": 57.04,
+        "close": 61.1,
+        "value": 61.1
       },
       {
-        "timestamp": "2026-05-29T00:00:00Z",
-        "open": 49.65,
-        "high": 53.28,
-        "low": 46.28,
-        "close": 49.66,
-        "value": 49.66,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-11T00:00:00+00:00",
+        "open": 61.1,
+        "high": 65.04,
+        "low": 57.7,
+        "close": 61.27,
+        "value": 61.27
       },
       {
-        "timestamp": "2026-05-30T00:00:00Z",
-        "open": 49.66,
-        "high": 53.03,
-        "low": 46.3,
-        "close": 49.66,
-        "value": 49.66,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-12T00:00:00+00:00",
+        "open": 61.27,
+        "high": 64.88,
+        "low": 57.76,
+        "close": 61.01,
+        "value": 61.01
       },
       {
-        "timestamp": "2026-05-31T00:00:00Z",
-        "open": 49.66,
-        "high": 52.83,
-        "low": 46.32,
-        "close": 49.64,
-        "value": 49.64,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-13T00:00:00+00:00",
+        "open": 61.01,
+        "high": 64.33,
+        "low": 57.5,
+        "close": 60.49,
+        "value": 60.49
       },
       {
-        "timestamp": "2026-06-01T00:00:00Z",
-        "open": 49.64,
-        "high": 52.73,
-        "low": 46.43,
-        "close": 49.7,
-        "value": 49.7,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-14T00:00:00+00:00",
+        "open": 60.49,
+        "high": 63.46,
+        "low": 57.26,
+        "close": 59.94,
+        "value": 59.94
       },
       {
-        "timestamp": "2026-06-02T00:00:00Z",
-        "open": 49.7,
-        "high": 52.69,
-        "low": 46.51,
-        "close": 49.76,
-        "value": 49.76,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-15T00:00:00+00:00",
+        "open": 59.94,
+        "high": 62.56,
+        "low": 57.15,
+        "close": 59.5,
+        "value": 59.5
       },
       {
-        "timestamp": "2026-06-03T00:00:00Z",
-        "open": 49.76,
-        "high": 52.74,
-        "low": 46.53,
-        "close": 49.8,
-        "value": 49.8,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-16T00:00:00+00:00",
+        "open": 59.5,
+        "high": 61.85,
+        "low": 57.17,
+        "close": 59.28,
+        "value": 59.28
       },
       {
-        "timestamp": "2026-06-04T00:00:00Z",
-        "open": 49.8,
-        "high": 52.68,
-        "low": 46.55,
-        "close": 49.87,
-        "value": 49.87,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-17T00:00:00+00:00",
+        "open": 59.28,
+        "high": 61.49,
+        "low": 57.25,
+        "close": 59.24,
+        "value": 59.24
       },
       {
-        "timestamp": "2026-06-05T00:00:00Z",
-        "open": 49.87,
-        "high": 52.71,
-        "low": 46.6,
-        "close": 49.91,
-        "value": 49.91,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-18T00:00:00+00:00",
+        "open": 59.24,
+        "high": 61.48,
+        "low": 57.23,
+        "close": 59.25,
+        "value": 59.25
       },
       {
-        "timestamp": "2026-06-06T00:00:00Z",
-        "open": 49.91,
-        "high": 52.76,
-        "low": 46.73,
-        "close": 49.95,
-        "value": 49.95,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-19T00:00:00+00:00",
+        "open": 59.25,
+        "high": 61.66,
+        "low": 56.98,
+        "close": 59.15,
+        "value": 59.15
       },
       {
-        "timestamp": "2026-06-07T00:00:00Z",
-        "open": 49.95,
-        "high": 52.69,
-        "low": 46.76,
-        "close": 49.97,
-        "value": 49.97,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-20T00:00:00+00:00",
+        "open": 59.15,
+        "high": 61.85,
+        "low": 56.35,
+        "close": 58.79,
+        "value": 58.79
       },
       {
-        "timestamp": "2026-06-08T00:00:00Z",
-        "open": 49.97,
-        "high": 52.76,
-        "low": 46.81,
-        "close": 50.0,
-        "value": 50.0,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-21T00:00:00+00:00",
+        "open": 58.79,
+        "high": 61.85,
+        "low": 55.36,
+        "close": 58.12,
+        "value": 58.12
       },
       {
-        "timestamp": "2026-06-09T00:00:00Z",
-        "open": 50.0,
-        "high": 52.73,
-        "low": 46.61,
-        "close": 49.89,
-        "value": 49.89,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-22T00:00:00+00:00",
+        "open": 58.12,
+        "high": 61.52,
+        "low": 54.13,
+        "close": 57.2,
+        "value": 57.2
       },
       {
-        "timestamp": "2026-06-10T00:00:00Z",
-        "open": 49.89,
-        "high": 52.69,
-        "low": 45.71,
-        "close": 49.81,
-        "value": 49.81,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-23T00:00:00+00:00",
+        "open": 57.2,
+        "high": 60.87,
+        "low": 52.91,
+        "close": 56.21,
+        "value": 56.21
       },
       {
-        "timestamp": "2026-06-11T00:00:00Z",
-        "open": 49.81,
-        "high": 52.71,
-        "low": 45.69,
-        "close": 49.76,
-        "value": 49.76,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-24T00:00:00+00:00",
+        "open": 56.21,
+        "high": 60.0,
+        "low": 51.96,
+        "close": 55.37,
+        "value": 55.37
       },
       {
-        "timestamp": "2026-06-12T00:00:00Z",
-        "open": 49.76,
-        "high": 52.78,
-        "low": 45.65,
-        "close": 49.72,
-        "value": 49.72,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-25T00:00:00+00:00",
+        "open": 55.37,
+        "high": 59.13,
+        "low": 51.54,
+        "close": 54.92,
+        "value": 54.92
       },
       {
-        "timestamp": "2026-06-13T00:00:00Z",
-        "open": 49.72,
-        "high": 52.78,
-        "low": 45.51,
-        "close": 49.65,
-        "value": 49.65,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-26T00:00:00+00:00",
+        "open": 54.92,
+        "high": 58.56,
+        "low": 51.71,
+        "close": 54.99,
+        "value": 54.99
       },
       {
-        "timestamp": "2026-06-14T00:00:00Z",
-        "open": 49.65,
-        "high": 52.76,
-        "low": 45.3,
-        "close": 49.63,
-        "value": 49.63,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-27T00:00:00+00:00",
+        "open": 54.99,
+        "high": 58.87,
+        "low": 52.06,
+        "close": 55.61,
+        "value": 55.61
       },
       {
-        "timestamp": "2026-06-15T00:00:00Z",
-        "open": 49.63,
-        "high": 52.81,
-        "low": 45.06,
-        "close": 49.63,
-        "value": 49.63,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-28T00:00:00+00:00",
+        "open": 55.61,
+        "high": 59.55,
+        "low": 53.0,
+        "close": 56.65,
+        "value": 56.65
       },
       {
-        "timestamp": "2026-06-16T00:00:00Z",
-        "open": 49.63,
-        "high": 52.74,
-        "low": 44.82,
-        "close": 49.59,
-        "value": 49.59,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-29T00:00:00+00:00",
+        "open": 56.65,
+        "high": 60.46,
+        "low": 54.34,
+        "close": 57.89,
+        "value": 57.89
       },
       {
-        "timestamp": "2026-06-17T00:00:00Z",
-        "open": 49.59,
-        "high": 52.82,
-        "low": 44.3,
-        "close": 49.59,
-        "value": 49.59,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-06-30T00:00:00+00:00",
+        "open": 57.89,
+        "high": 61.41,
+        "low": 55.81,
+        "close": 59.09,
+        "value": 59.09
       },
       {
-        "timestamp": "2026-06-18T00:00:00Z",
-        "open": 49.59,
-        "high": 52.82,
-        "low": 44.17,
-        "close": 49.61,
-        "value": 49.61,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-07-01T00:00:00+00:00",
+        "open": 59.09,
+        "high": 62.23,
+        "low": 57.11,
+        "close": 60.03,
+        "value": 60.03
       },
       {
-        "timestamp": "2026-06-19T00:00:00Z",
-        "open": 49.61,
-        "high": 52.84,
-        "low": 44.14,
-        "close": 49.62,
-        "value": 49.62,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-07-02T00:00:00+00:00",
+        "open": 60.03,
+        "high": 62.84,
+        "low": 58.0,
+        "close": 60.59,
+        "value": 60.59
       },
       {
-        "timestamp": "2026-06-20T00:00:00Z",
-        "open": 49.62,
-        "high": 52.82,
-        "low": 44.13,
-        "close": 49.63,
-        "value": 49.63,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-07-03T00:00:00+00:00",
+        "open": 60.59,
+        "high": 63.24,
+        "low": 58.38,
+        "close": 60.78,
+        "value": 60.78
       },
       {
-        "timestamp": "2026-06-21T00:00:00Z",
-        "open": 49.63,
-        "high": 52.96,
-        "low": 44.13,
-        "close": 49.63,
-        "value": 49.63,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-07-04T00:00:00+00:00",
+        "open": 60.78,
+        "high": 63.55,
+        "low": 58.24,
+        "close": 60.73,
+        "value": 60.73
       },
       {
-        "timestamp": "2026-06-22T00:00:00Z",
-        "open": 49.63,
-        "high": 52.9,
-        "low": 44.16,
-        "close": 49.66,
-        "value": 49.66,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-07-05T00:00:00+00:00",
+        "open": 60.73,
+        "high": 63.86,
+        "low": 57.79,
+        "close": 60.61,
+        "value": 60.61
       },
       {
-        "timestamp": "2026-06-23T00:00:00Z",
-        "open": 49.66,
-        "high": 53.0,
-        "low": 44.15,
-        "close": 49.62,
-        "value": 49.62,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-06-24T00:00:00Z",
-        "open": 49.62,
-        "high": 53.07,
-        "low": 44.1,
-        "close": 49.57,
-        "value": 49.57,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-06-25T00:00:00Z",
-        "open": 49.57,
-        "high": 53.06,
-        "low": 44.05,
-        "close": 49.55,
-        "value": 49.55,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-06-26T00:00:00Z",
-        "open": 49.55,
-        "high": 53.03,
-        "low": 44.05,
-        "close": 49.51,
-        "value": 49.51,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-06-27T00:00:00Z",
-        "open": 49.51,
-        "high": 53.0,
-        "low": 44.06,
-        "close": 49.49,
-        "value": 49.49,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-06-28T00:00:00Z",
-        "open": 49.49,
-        "high": 52.92,
-        "low": 44.07,
-        "close": 49.49,
-        "value": 49.49,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-06-29T00:00:00Z",
-        "open": 49.49,
-        "high": 52.89,
-        "low": 44.08,
-        "close": 49.53,
-        "value": 49.53,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-06-30T00:00:00Z",
-        "open": 49.53,
-        "high": 52.89,
-        "low": 44.05,
-        "close": 49.54,
-        "value": 49.54,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-07-01T00:00:00Z",
-        "open": 49.54,
-        "high": 52.89,
-        "low": 44.11,
-        "close": 49.51,
-        "value": 49.51,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-07-02T00:00:00Z",
-        "open": 49.51,
-        "high": 52.89,
-        "low": 44.03,
-        "close": 49.49,
-        "value": 49.49,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-07-03T00:00:00Z",
-        "open": 49.49,
-        "high": 52.89,
-        "low": 44.04,
-        "close": 49.46,
-        "value": 49.46,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-07-04T00:00:00Z",
-        "open": 49.46,
-        "high": 52.86,
-        "low": 44.06,
-        "close": 49.45,
-        "value": 49.45,
-        "coverage": 21,
-        "category_coverage": 4
-      },
-      {
-        "timestamp": "2026-07-05T00:00:00Z",
-        "open": 49.45,
-        "high": 52.92,
-        "low": 44.06,
-        "close": 49.41,
-        "value": 49.41,
-        "coverage": 21,
-        "category_coverage": 4
+        "timestamp": "2026-07-06T00:00:00+00:00",
+        "open": 60.61,
+        "high": 64.07,
+        "low": 57.46,
+        "close": 60.57,
+        "value": 60.57
       }
     ],
-    "value": 49.4,
+    "value": 60.6,
     "change_24h": -0.0
   },
   "refresh_errors": [],
-  "index": 33.5,
+  "correlation_firewall": {
+    "method_version": "proportional-cluster-cap-v1",
+    "clusters": {
+      "ai_substitution": {
+        "raw_weight": 2.1,
+        "cap": 1.5,
+        "scale": 0.7143
+      },
+      "dating_boundary_failure": {
+        "raw_weight": 0.9,
+        "cap": 1.0,
+        "scale": 1.0
+      },
+      "embodied_partnership": {
+        "raw_weight": 1.5,
+        "cap": 1.5,
+        "scale": 1.0
+      },
+      "family_formation": {
+        "raw_weight": 2.1,
+        "cap": 2.0,
+        "scale": 0.9524
+      },
+      "marriage_orientation": {
+        "raw_weight": 2.2,
+        "cap": 1.5,
+        "scale": 0.6818
+      },
+      "social_withdrawal": {
+        "raw_weight": 2.1,
+        "cap": 1.6,
+        "scale": 0.7619
+      }
+    }
+  },
+  "index": 32.4,
   "group_scores": {
-    "Embodied connection": 47.0,
-    "Synthetic substitution": 15.6,
-    "Generativity": 34.7
+    "Embodied connection": 40.7,
+    "Synthetic substitution": 15.5,
+    "Generativity": 34.7,
+    "Relational reciprocity": 30.0
+  },
+  "accountability_meter": {
+    "gooner": 58.4,
+    "femoid": 41.6,
+    "gooner_severity": 72.2,
+    "femoid_severity": 51.4,
+    "gooner_capacity": 1.2518,
+    "femoid_capacity": 0.1565,
+    "raw_directional_pressure": 221.52,
+    "adjusted_directional_pressure": 98.44,
+    "total_ehi_pressure": 608.58,
+    "coverage_pct": 36.4,
+    "adjusted_coverage_pct": 16.2,
+    "comparison_status": "provisional",
+    "status_note": "PROVISIONAL \u00b7 evidence basket underfilled (FEMOID: 1 independent cluster, no impairment signal).",
+    "evidence_breadth": {
+      "gooner": {
+        "independent_clusters": 3,
+        "clusters": [
+          "ai_substitution",
+          "dating_boundary_failure",
+          "marriage_orientation"
+        ],
+        "has_impairment_signal": true,
+        "sufficient": true
+      },
+      "femoid": {
+        "independent_clusters": 1,
+        "clusters": [
+          "marriage_orientation"
+        ],
+        "has_impairment_signal": false,
+        "sufficient": false
+      }
+    },
+    "method_version": "side-normalized-severity-v1",
+    "note": "Disclaimer: some bitches be goonin, and some dudes be shallow AF.",
+    "coverage_note": "Only behavior-attributable signals vote here; EHI outcomes stay neutral.",
+    "contributors": [
+      {
+        "metric_id": "unwanted_sexual_content_online_dating",
+        "label": "Online daters receiving unwanted sexually explicit content",
+        "score": 30.0,
+        "severity_pct": 70.0,
+        "effective_weight": 0.9,
+        "accountability_weight": 0.765,
+        "role_modifier": 1.0,
+        "evidence_modifier": 0.85,
+        "mapping_modifier": 1.0,
+        "gooner_pressure": 53.55,
+        "femoid_pressure": 0.0,
+        "signal_role": "impairment",
+        "evidence_tier": "B",
+        "mapping_confidence": "high",
+        "correlation_cluster": "dating_boundary_failure",
+        "rationale": "Unsolicited sexual content is mapped to desire severed from reciprocal relationship. The bucket describes the behavior, not the sex of the actor."
+      },
+      {
+        "metric_id": "marriage_expectation_12th",
+        "label": "12th graders expecting to marry someday",
+        "score": 48.6,
+        "severity_pct": 51.4,
+        "effective_weight": 0.6818,
+        "accountability_weight": 0.2608,
+        "role_modifier": 0.6,
+        "evidence_modifier": 0.85,
+        "mapping_modifier": 0.75,
+        "gooner_pressure": 5.36,
+        "femoid_pressure": 8.04,
+        "signal_role": "orientation",
+        "evidence_tier": "B",
+        "mapping_confidence": "moderate",
+        "correlation_cluster": "marriage_orientation",
+        "rationale": "Orientation signal with a reported sex gap: 2023 negative pressure is split from 26% of boys versus 39% of girls not saying they expect to marry. This is a directional proxy, not a blame allocation."
+      },
+      {
+        "metric_id": "ai_companion_monthly",
+        "label": "Teens using AI companions at least monthly",
+        "score": 13.3,
+        "severity_pct": 86.7,
+        "effective_weight": 0.7857,
+        "accountability_weight": 0.2004,
+        "role_modifier": 0.4,
+        "evidence_modifier": 0.85,
+        "mapping_modifier": 0.75,
+        "gooner_pressure": 17.37,
+        "femoid_pressure": 0.0,
+        "signal_role": "exposure_proxy",
+        "evidence_tier": "B",
+        "mapping_confidence": "moderate",
+        "correlation_cluster": "ai_substitution",
+        "rationale": "Synthetic relational substitution is mapped to the GOONER behavioral archetype regardless of user sex."
+      },
+      {
+        "metric_id": "ai_equal_satisfaction",
+        "label": "Teens rating AI companion talk as equally or more satisfying than real friends",
+        "score": 22.5,
+        "severity_pct": 77.5,
+        "effective_weight": 0.7143,
+        "accountability_weight": 0.1821,
+        "role_modifier": 0.4,
+        "evidence_modifier": 0.85,
+        "mapping_modifier": 0.75,
+        "gooner_pressure": 14.12,
+        "femoid_pressure": 0.0,
+        "signal_role": "exposure_proxy",
+        "evidence_tier": "B",
+        "mapping_confidence": "moderate",
+        "correlation_cluster": "ai_substitution",
+        "rationale": "Synthetic relational substitution is mapped to the GOONER behavioral archetype regardless of user sex."
+      }
+    ]
   },
   "advice": {
     "engine_note": "Actions are selected from current index signals; evidence links support the behavioral rationale, not the metaphysical interpretation.",
@@ -1018,10 +1250,10 @@
         ]
       },
       {
-        "priority": 84.4,
+        "priority": 84.5,
         "title": "STOP GOONING.",
         "action": "If porn is replacing sex, courtship, sleep, work, or your ability to want an ordinary woman, kill the loop.",
-        "why": "Synthetic substitution scores 15.6/100. The countercurrent metric also finds 60% of young men favor harder access to online porn.",
+        "why": "Synthetic substitution scores 15.5/100. The countercurrent metric also finds 60% of young men favor harder access to online porn.",
         "evidence_note": "The clean claim is not \u201cporn automatically causes ED.\u201d A meta-analysis found pornography use associated with lower interpersonal satisfaction, with significant sex-stratified results for men; problematic use is also studied separately from ordinary use.",
         "sources": [
           {
@@ -1037,10 +1269,10 @@
     ],
     "women": [
       {
-        "priority": 61.8,
+        "priority": 66.5,
         "title": "STOP SHOPPING. START CHOOSING.",
         "action": "Cap the swipe session. Give one plausible man a real conversation or date before reopening the catalogue.",
-        "why": "Embodied connection scores 47.0/100, while 69% of unmarried young adults still say they want marriage. Desire for union is surviving better than actual connection.",
+        "why": "Embodied connection scores 40.7/100, while 69% of unmarried young adults still say they want marriage. Desire for union is surviving better than actual connection.",
         "evidence_note": "Online-dating experiments found that repeated profile evaluation can create a rejection mind-set; in one consequential study, women\u2019s match probability fell as the task progressed.",
         "sources": [
           {
@@ -1054,10 +1286,10 @@
         ]
       },
       {
-        "priority": 55.5,
+        "priority": 60.5,
         "title": "DATE CHARACTER, NOT DANGER.",
         "action": "Charisma is not character. Watch how he handles frustration, boundaries, responsibility, and boring Tuesdays.",
-        "why": "Embodied connection scores 47.0/100 and generativity 34.7/100. The index is weak where durable pair-bonding and life-building should show up.",
+        "why": "Embodied connection scores 40.7/100 and generativity 34.7/100. The index is weak where durable pair-bonding and life-building should show up.",
         "evidence_note": "Couple research links Dark Triad traits with relationship satisfaction outcomes, while longitudinal work finds perceived partner responsiveness\u2014feeling understood, valued, and cared for\u2014predicts later eudaimonic well-being.",
         "sources": [
           {
@@ -1290,17 +1522,17 @@
       "method_version": "headline-ehi-v1"
     },
     {
-      "timestamp": "2026-07-06T17:57:25.757156+00:00",
-      "value": 33.5,
+      "timestamp": "2026-07-06T20:14:38.200867+00:00",
+      "value": 32.4,
       "kind": "observed",
       "coverage": 1.0,
-      "method_version": "headline-ehi-v1"
+      "method_version": "headline-ehi-v2"
     }
   ],
   "ehi_history_meta": {
     "mode": "backcast_plus_observed",
     "method_version": "ehi-backcast-v1",
-    "note": "Annual reconstructed points use a fixed four-signal core: young-adult partnering, total fertility, national marriage rate, and teen almost-constant internet use. Current observed snapshots use the full headline EHI basket. Backcast rows publish coverage and components and should not be read as historical observations of metrics that did not yet exist.",
+    "note": "Annual reconstructed points use a fixed four-signal core: young-adult partnering, total fertility, national marriage rate, and teen almost-constant internet use. Current observed snapshots use the full headline EHI basket. Backcast rows publish coverage and components and should not be read as historical observations of metrics that did not yet exist. Current observed snapshots use the current correlation firewall.",
     "sources": [
       {
         "label": "U.S. Census Bureau ACS living-arrangements series",
