@@ -125,27 +125,26 @@ Local observed refreshes can use a private `goon_basket.txt`. The updater reads 
 
 The public dashboard shows only the aggregate GOON line.
 
-## GOON candle semantics
+## GOON pressure chart
 
-The GOON chart uses market-style daily candles rather than financial OHLC data:
+The GOON chart is a market-style pressure tape rather than financial OHLC data:
 
-- candle open = previous day aggregate GOON close
-- candle close = current day median basket pressure
-- candle body/wick = aggregate day movement, scaled for readable close action
-- violet band = compressed interquartile (middle 50%) basket pressure spread for that day
-- red = GOON pressure rose; green = GOON pressure fell
+- main line = daily aggregate GOON close
+- red segment = aggregate pressure rose from the previous day
+- green segment = aggregate pressure fell from the previous day
+- soft ribbon = compressed interquartile (middle 50%) basket pressure spread for that day
 - purple line = 3-day exponential moving average of daily closes
 
-The tooltip reports the full middle-range low and high values. The band is visually compressed so cross-domain spread does not flatten the aggregate daily move. This is a presentation of daily domain-ranking pressure, not a financial market and not intraday traffic.
+The tooltip reports the previous close, daily change, and full middle-range low/high values. The ribbon is visually compressed so cross-domain spread does not flatten the aggregate daily move. This is a presentation of daily domain-ranking pressure, not a financial market and not intraday traffic.
 
 
 ## GOON chart ranges
 
-The candlestick tracker offers 7D, 14D, and 30D views. The 7D view shows raw candles only; 14D overlays a 3-day EMA; 30D overlays a 5-day EMA.
+The GOON tracker offers 7D, 14D, and 30D views. The 7D view shows the raw pressure line only; 14D overlays a 3-day EMA; 30D overlays a 5-day EMA.
 
 ## GOON chart hover inspection
 
-Move the pointer anywhere across the GOON chart. The chart snaps to the nearest daily candle and shows:
+Move the pointer anywhere across the GOON chart. The chart snaps to the nearest daily point and shows:
 
 - date
 - GOON close
