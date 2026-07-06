@@ -1068,6 +1068,34 @@ def merge_goon_history(data: dict[str, Any], previous: dict[str, Any] | None) ->
     finalize_goon_summary(data)
 
 
+def carry_forward_live_goon(
+    data: dict[str, Any],
+    previous: dict[str, Any] | None,
+    errors: list[str],
+) -> bool:
+    """Preserve the last live GOON aggregate when the current refresh is partial."""
+    current_goon = data.get("goon")
+    if isinstance(current_goon, dict) and current_goon.get("mode") == "live":
+        return False
+    if not previous or not isinstance(previous.get("goon"), dict):
+        return False
+
+    prior_goon = previous["goon"]
+    prior_rows = prior_goon.get("series")
+    if prior_goon.get("mode") != "live" or not isinstance(prior_rows, list) or len(prior_rows) < 2:
+        return False
+
+    data["goon"] = copy.deepcopy(prior_goon)
+    data["goon"]["carried_forward"] = True
+    data["goon"]["carry_forward_reason"] = (
+        "Current refresh did not produce a usable live GOON signal; "
+        "retaining the previous aggregate instead of replacing it with demo data."
+    )
+    finalize_goon_summary(data)
+    errors.append("GOON: retained previous live aggregate because the current refresh was incomplete.")
+    return True
+
+
 # Official national marriage rates per 1,000 population, CDC/NCHS.
 # Source: https://www.cdc.gov/nchs/data/dvs/marriage-divorce/
 EHI_BACKCAST_MARRIAGE_RATE: dict[int, float] = {
@@ -1480,19 +1508,22 @@ def main() -> int:
 
     if not args.offline:
         errors = refresh_online(data)
-    if "goon" not in data:
-        # Offline mode or a failed Tranco refresh falls back visibly to DEMO data.
-        data["goon"] = {
-            "mode": "demo",
-            "label": "The Gooning Index",
-            "ticker": "GOON",
-            "description": "Demo movement only. Add a private stratified goon_basket.txt for observed category-balanced daily pressure.",
-            "source_name": "Tranco (demo until basket is configured)",
-            "source_url": "https://tranco-list.eu/",
-            "last_updated": None,
-            "series": make_demo_goon_series(),
-        }
-        finalize_goon_summary(data)
+    current_goon = data.get("goon")
+    if not isinstance(current_goon, dict) or current_goon.get("mode") != "live":
+        if not carry_forward_live_goon(data, previous, errors):
+            # Offline mode or a failed Tranco refresh falls back visibly to DEMO data when no live aggregate exists.
+            if not isinstance(data.get("goon"), dict):
+                data["goon"] = {
+                    "mode": "demo",
+                    "label": "The Gooning Index",
+                    "ticker": "GOON",
+                    "description": "Demo movement only. Add a private stratified goon_basket.txt for observed category-balanced daily pressure.",
+                    "source_name": "Tranco (demo until basket is configured)",
+                    "source_url": "https://tranco-list.eu/",
+                    "last_updated": None,
+                    "series": make_demo_goon_series(),
+                }
+            finalize_goon_summary(data)
 
     merge_goon_history(data, previous)
     carry_forward_series(data, previous)
