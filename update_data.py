@@ -781,7 +781,7 @@ def refresh_goon_index(data: dict[str, Any]) -> None:
         "method_version": "stratified-v2",
         "label": "The Gooning Index",
         "ticker": "GOON",
-        "description": "One category-balanced daily digital-pressure signal derived from a private stratified basket and Tranco rank histories. Absolute popularity dominates; a smaller own-history trend term and conservative novelty/intensity/interaction/extremity weighting add resolution. Candles show aggregate GOON movement; the muted spread band visualizes the middle 50% of adjusted domain pressure. Higher is worse for Eros; individual domains and ranks are not published.",
+        "description": "One category-balanced daily digital-pressure signal derived from a private stratified basket and Tranco rank histories. Absolute popularity dominates; a smaller own-history trend term and conservative novelty/intensity/interaction/extremity weighting add resolution. The pressure line shows aggregate GOON movement; the muted ribbon visualizes the middle 50% of adjusted domain pressure. Higher is worse for Eros; individual domains and ranks are not published.",
         "source_name": "Tranco",
         "source_url": "https://tranco-list.eu/api_documentation",
         "last_updated": output_rows[-1]["timestamp"],
