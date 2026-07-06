@@ -1,0 +1,18 @@
+Recommended GSS 1972-2024 Release 3 CSV subset variables for EHI v0.4.5:
+
+year
+age
+marital
+marcohab
+hapmar
+hapcohab
+xmoviey
+sexfreq
+xmarsex
+wtssps
+
+Minimum required by the extractor:
+year, hapmar, hapcohab, xmoviey, sexfreq, xmarsex, wtssps
+
+age, marital, and marcohab are recommended because they enable the diagnostic
+SEXFREQ stratifications. The extractor accepts numeric-coded or labelled CSV.
