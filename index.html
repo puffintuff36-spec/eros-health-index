@@ -287,7 +287,7 @@
   <div id="scoreTooltip" class="score-tooltip" role="tooltip" aria-hidden="true"></div>
 
   <section class="card accountability-card" aria-label="GOONER versus FEMOID accountability meter">
-    <div class="accountability-head"><div><div class="eyebrow">Directional behavioral pressure</div><h2>GOONER vs FEMOID</h2></div><div class="meta">Behavior-attributable subset</div></div>
+    <div class="accountability-head"><div><div class="eyebrow">Directional behavioral pressure</div><h2>GOONER vs FOID</h2></div><div class="meta">Behavior-attributable subset</div></div>
 <div class="duel-readout">
   <span class="gooner">GOONER BEHAVIOR <strong id="goonerShare">—</strong></span>
   <span class="femoid"><strong id="femoidShare">—</strong> FEMOID BEHAVIOR</span>
@@ -1046,19 +1046,20 @@ function setupAccountabilityDuel(stage, canvas, goonerPct, femoidPct, ehiScore) 
       ctx.quadraticCurveTo(cX+Math.cos(a)*outer*.68,cY+Math.sin(a)*outer*.68+Math.sin(tt*.005+i)*5,cX+Math.cos(a)*outer,cY+Math.sin(a)*outer);
       ctx.stroke();
     }
-    const pourCount=Math.round(5+pressure*7);
+    const pourCount=Math.round(2+pressure*3);
     for(let i=0;i<pourCount;i++){
       const sideBias=(i/(pourCount-1||1)-.5);
-      const x=cX+sideBias*(22+pressure*18)+Math.sin(tt*.003+i*1.7)*(2.5+pressure*3.5);
-      const startY=cY+7+Math.sin(tt*.004+i)*4;
-      const endY=height+10;
+      const x=cX+sideBias*(18+pressure*14)+Math.sin(tt*.003+i*1.7)*(2+pressure*2.5);
+      const drift=(sideBias+Math.sin(i*2.1)*.28)*(20+pressure*22);
+      const startY=cY+7+Math.sin(tt*.004+i)*3;
+      const endY=Math.min(height+4,startY+height*(.36+pressure*.16));
       const widthScale=1-Math.min(.85,Math.abs(sideBias));
-      ctx.strokeStyle=i%3===0?'rgba(255,251,226,.38)':rainbow[(i+2)%rainbow.length];
-      ctx.globalAlpha=(.18+pressure*.24)*(.55+widthScale*.55);
-      ctx.lineWidth=(2.1+pressure*3.4)*(widthScale+.35);
+      ctx.strokeStyle=i%3===0?'rgba(255,251,226,.24)':rainbow[(i+2)%rainbow.length];
+      ctx.globalAlpha=(.08+pressure*.13)*(.45+widthScale*.5);
+      ctx.lineWidth=(.8+pressure*1.5)*(widthScale+.35);
       ctx.beginPath();
       ctx.moveTo(x,startY);
-      ctx.bezierCurveTo(x+Math.sin(tt*.004+i)*8,startY+height*.18,x+Math.sin(tt*.002+i*2.1)*12,startY+height*.42,x+Math.sin(tt*.003+i)*8,endY);
+      ctx.bezierCurveTo(x+drift*.34,startY+height*.13,x+drift*.72+Math.sin(tt*.002+i*2.1)*5,startY+height*.3,x+drift,endY);
       ctx.stroke();
     }
     ctx.globalAlpha=1;
@@ -1099,12 +1100,15 @@ function setupAccountabilityDuel(stage, canvas, goonerPct, femoidPct, ehiScore) 
       splashParticles.push({x:x+rand(-5,5),y:y+rand(-8,8),vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed+rand(-34,34),r:rand(1.0,3.7)*(1+pressure*.35),life,maxLife:life,color:dir<0?'#fffbe4':rainbow[(Math.random()*rainbow.length)|0],glitter:dir>0&&Math.random()<.28,stretch:rand(1.55,3.1),trail:true,phase:rand(0,Math.PI*2)});
     }
   }
-  function emitDrip(x,y) {
-    if(drips.length>76) return;
+  function emitDrip(x,y,mode='fall') {
+    if(drips.length>42) return;
+    const rebound=mode==='rebound';
     const mixed=Math.random();
-    const color=mixed<.38?'rgba(255,250,224,.96)':mixed<.62?'rgba(239,196,255,.92)':mixed<.82?'rgba(255,115,190,.88)':'rgba(100,217,255,.86)';
-    const heavy=Math.random()<(.34+pressure*.36);
-    drips.push({x:x+rand(-18,18),y:y+rand(4,16),vx:rand(-15,15)*(heavy ? .55 : 1),vy:rand(28,66)*(heavy ? 1.18 : 1),r:heavy?rand(5.0,10.5):rand(2.6,7.4),stretch:heavy?rand(2.4,4.6):rand(1.8,3.4),life:heavy?rand(1.05,1.85):rand(.72,1.55),color,phase:rand(0,Math.PI*2),sheet:heavy&&Math.random()<.58,wobble:rand(1.5,5.5)});
+    const color=mixed<.48?'rgba(255,250,224,.92)':mixed<.66?'rgba(239,196,255,.84)':mixed<.8?'rgba(255,115,190,.78)':'rgba(100,217,255,.74)';
+    const heavy=!rebound&&Math.random()<(.07+pressure*.12);
+    const dir=Math.random()<.5?-1:1;
+    const sideKick=dir*rand(22,78)*(.78+pressure*.45);
+    drips.push({x:x+rand(-10,10),y:y+rand(rebound?-2:5,rebound?7:14),vx:sideKick*(rebound?1.15:1),vy:rebound?-rand(34,92)*(.72+pressure*.5):rand(18,70)*(.72+pressure*.42),r:rebound?rand(1.0,2.4):(heavy?rand(2.8,5.2):rand(1.2,3.4)),stretch:rebound?rand(1.05,1.65):(heavy?rand(1.7,2.55):rand(1.15,2.0)),life:rebound?rand(.42,.84):(heavy?rand(.86,1.35):rand(.58,1.12)),color,phase:rand(0,Math.PI*2),sheet:heavy&&Math.random()<.1,wobble:rand(.7,2.8),gravity:rebound?rand(145,235):rand(95,175),drag:rebound?rand(.48,.66):rand(.54,.74)});
   }
 
   function updateParticles(dt, impact) {
@@ -1119,10 +1123,10 @@ function setupAccountabilityDuel(stage, canvas, goonerPct, femoidPct, ehiScore) 
       if(Math.random()<(.42+pressure*.38)) backspray(hitX,hitY,Math.random()<pressure*.5?4:3,1);
       impactEmit-=1;
     }
-    dripEmit += dt*(1.8+pressure*8.5);
+    dripEmit += dt*(.85+pressure*4.2);
     while(dripEmit>=1){
       emitDrip(impact.x,impact.y);
-      if(Math.random()<(.42+pressure*.42)) emitDrip(impact.x+rand(-10,10),impact.y+rand(0,8));
+      if(Math.random()<(.28+pressure*.3)) emitDrip(impact.x+rand(-8,8),impact.y+rand(-3,4),'rebound');
       dripEmit-=1;
     }
 
@@ -1148,7 +1152,7 @@ function setupAccountabilityDuel(stage, canvas, goonerPct, femoidPct, ehiScore) 
       if(p.life<=0 || p.y>height+12) splashParticles.splice(i,1);
     }
     for(let i=drips.length-1;i>=0;i--){
-      const p=drips[i]; p.x+=p.vx*dt+Math.sin(clock*.006+p.phase)*p.wobble*dt; p.y+=p.vy*dt; p.vy+=(190+pressure*230)*dt; p.vx*=Math.pow(.18,dt); p.life-=dt;
+      const p=drips[i]; p.x+=p.vx*dt+Math.sin(clock*.006+p.phase)*p.wobble*dt; p.y+=p.vy*dt; p.vy+=(p.gravity||150)*dt; p.vx*=Math.pow(p.drag||.62,dt); p.life-=dt;
       if(p.life<=0 || p.y>height+22) drips.splice(i,1);
     }
   }
@@ -1314,21 +1318,24 @@ function setupAccountabilityDuel(stage, canvas, goonerPct, femoidPct, ehiScore) 
     });
     ctx.globalAlpha=1; ctx.globalCompositeOperation='source-over';
     drips.forEach(p=>{
-      const tail=Math.min(height*.62,p.r*p.stretch+Math.abs(p.vy)*.105);
+      const speed=Math.hypot(p.vx,p.vy);
+      const angle=Math.atan2(p.vy,p.vx);
+      const tail=Math.min(height*.26,p.r*p.stretch+speed*.04);
+      const tx=Math.cos(angle)*tail, ty=Math.sin(angle)*tail;
       const a=Math.max(0,Math.min(1,p.life/1.1));
       ctx.save();
-      ctx.globalAlpha=.74*a;
-      ctx.strokeStyle=p.color; ctx.lineWidth=Math.max(2.4,p.r*(p.sheet?1.05:.82)); ctx.lineCap='round';
-      ctx.beginPath(); ctx.moveTo(p.x,p.y-tail); ctx.quadraticCurveTo(p.x+Math.sin(clock*.006+p.phase)*p.wobble,p.y-tail*.42,p.x,p.y); ctx.stroke();
-      ctx.globalAlpha=.88*a;
-      ctx.fillStyle=p.color; ctx.beginPath(); ctx.ellipse(p.x,p.y,p.r,p.r*p.stretch,0,0,Math.PI*2); ctx.fill();
+      ctx.globalAlpha=.58*a;
+      ctx.strokeStyle=p.color; ctx.lineWidth=Math.max(.75,p.r*(p.sheet?.58:.42)); ctx.lineCap='round';
+      ctx.beginPath(); ctx.moveTo(p.x-tx,p.y-ty); ctx.quadraticCurveTo(p.x-tx*.45+Math.sin(clock*.006+p.phase)*p.wobble,p.y-ty*.45,p.x,p.y); ctx.stroke();
+      ctx.globalAlpha=.76*a;
+      ctx.fillStyle=p.color; ctx.beginPath(); ctx.ellipse(p.x,p.y,p.r*p.stretch,p.r*.72,angle,0,Math.PI*2); ctx.fill();
       if(p.sheet){
-        ctx.globalAlpha=.22*a;
+        ctx.globalAlpha=.14*a;
         ctx.fillStyle=p.color;
-        ctx.beginPath(); ctx.ellipse(p.x+Math.sin(clock*.004+p.phase)*2,p.y-tail*.34,p.r*1.45,tail*.34,0,0,Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(p.x-tx*.28,p.y-ty*.28,p.r*1.1,tail*.18,angle,0,Math.PI*2); ctx.fill();
       }
-      ctx.globalAlpha=.34*a;
-      ctx.fillStyle='rgba(255,255,255,.70)'; ctx.beginPath(); ctx.arc(p.x-p.r*.25,p.y-p.r*.5,Math.max(.9,p.r*.22),0,Math.PI*2); ctx.fill();
+      ctx.globalAlpha=.28*a;
+      ctx.fillStyle='rgba(255,255,255,.70)'; ctx.beginPath(); ctx.arc(p.x-Math.cos(angle)*p.r*.3,p.y-Math.sin(angle)*p.r*.3,Math.max(.45,p.r*.18),0,Math.PI*2); ctx.fill();
       ctx.restore();
     });
     ctx.restore();
