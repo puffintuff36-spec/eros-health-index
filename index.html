@@ -133,7 +133,6 @@
     .scenario-lens-track::before { content:''; position:absolute; left:50%; top:3px; bottom:3px; width:1px; background:rgba(238,242,247,.22); }
     .scenario-lens-fill { position:absolute; top:4px; bottom:4px; left:50%; width:0; border-radius:999px; background:linear-gradient(90deg,#e8c47a,#c7b7ff,#ff5cb8); opacity:.82; }
     .scenario-lens-thumb { position:absolute; left:50%; top:50%; width:16px; height:16px; border-radius:50%; transform:translate(-50%,-50%); background:#f5f0ff; border:2px solid #10151c; box-shadow:0 0 0 3px rgba(199,183,255,.18),0 4px 16px rgba(0,0,0,.38); }
-    .scenario-lens-marks { display:flex; justify-content:space-between; gap:6px; flex-wrap:wrap; margin-top:7px; color:#7f8a99; font-size:.58rem; line-height:1.15; text-transform:uppercase; letter-spacing:.04em; }
     .scenario-note { color:var(--muted); font-size:.72rem; line-height:1.45; margin-top:12px; }
     .scenario-tip { position:absolute; z-index:5; width:min(276px, calc(100% - 20px)); padding:10px 11px; border:1px solid rgba(199,183,255,.34); border-radius:12px; background:rgba(13,17,23,.96); color:#dfe5ee; box-shadow:0 16px 46px rgba(0,0,0,.48); font-size:.74rem; line-height:1.38; opacity:0; transform:translateY(4px); pointer-events:none; transition:opacity .12s ease, transform .12s ease; }
     .scenario-tip.show { opacity:1; transform:translateY(0); }
@@ -346,12 +345,11 @@
           <div class="scenario-bar"><strong>Build Bonds</strong><div class="scenario-meter bonds"><span id="scenarioBondsBar"></span></div><span id="scenarioBondsValue">20%</span></div>
           <div class="scenario-bar"><strong>Find God</strong><div class="scenario-meter meaning"><span id="scenarioMeaningBar"></span></div><span id="scenarioMeaningValue">20%</span></div>
           <div class="scenario-lens">
-            <div class="scenario-lens-labels"><span>Protestant Virgin</span><strong id="scenarioLensValue">Vanilla</strong><span>Anthrofox In Heat</span></div>
-            <div id="scenarioLensTrack" class="scenario-lens-track" role="slider" tabindex="0" aria-label="Moral lens from Protestant Virgin to Anthrofox in Heat" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Vanilla">
+            <div class="scenario-lens-labels"><span>Ascetic Monk</span><strong id="scenarioLensValue">Vanilla</strong><span>Anthrofox In Heat</span></div>
+            <div id="scenarioLensTrack" class="scenario-lens-track" role="slider" tabindex="0" aria-label="Moral lens from Ascetic Monk to Anthrofox in Heat" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Vanilla">
               <span id="scenarioLensFill" class="scenario-lens-fill" aria-hidden="true"></span>
               <span id="scenarioLensThumb" class="scenario-lens-thumb" aria-hidden="true"></span>
             </div>
-            <div class="scenario-lens-marks" aria-hidden="true"><span>Protestant Virgin</span><span>Catholic Virgin</span><span>Proper Vanilla</span><span>Vanilla</span><span>Spicy Vanilla</span><span>Weird-Curious</span><span>Weird But Trying</span><span>Feral But Accountable</span><span>Horny Mystic</span></div>
           </div>
           <div class="scenario-note">Official index stays pinned; this is a counterfactual pressure toy.</div>
         </div>
@@ -1351,9 +1349,11 @@ function setupScenarioSandbox(controller, baseGooner, baseFemoid, baseEhi) {
   let lensDragging=false;
   let activeTipTarget=null;
   const lensCategories=[
-    {max:-.82,label:'Protestant Virgin'},
-    {max:-.62,label:'Catholic Virgin'},
-    {max:-.38,label:'Proper Vanilla'},
+    {max:-.90,label:'Ascetic Monk'},
+    {max:-.76,label:'Protestant Virgin'},
+    {max:-.58,label:'Catholic Virgin'},
+    {max:-.40,label:'"Leave Room for Jesus!"'},
+    {max:-.20,label:'Proper Vanilla'},
     {max:.12,label:'Vanilla'},
     {max:.32,label:'Spicy Vanilla'},
     {max:.50,label:'Weird-Curious'},
