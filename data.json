@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-07-07T01:16:00.905627+00:00",
+  "generated_at": "2026-07-07T02:02:32.915023+00:00",
   "title": "Eros Health Index",
   "subtitle": "A transparent prototype for tracking embodied connection, synthetic substitution, relational reciprocity, and generativity.",
   "metrics": [
@@ -1742,7 +1742,7 @@
       "method_version": "headline-ehi-v2"
     },
     {
-      "timestamp": "2026-07-07T01:16:00.905627+00:00",
+      "timestamp": "2026-07-07T02:02:32.915023+00:00",
       "value": 32.4,
       "kind": "observed",
       "coverage": 1.0,
