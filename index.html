@@ -207,7 +207,7 @@
   <section class="market-strip" aria-label="Eros market trackers">
     <article class="card ticker-card">
       <div class="ticker-head">
-        <div><div class="ticker-symbol">EHI</div><div class="ticker-name">Eros Health Index</div></div>
+<div class="score-tip-target" tabindex="0" data-score-tip-key="Eros Health Index" aria-describedby="scoreTooltip"><div class="ticker-symbol">EHI</div><div class="ticker-name">Eros Health Index</div></div>
         <div class="ticker-quote"><div id="ehiTickerValue" class="ticker-value">—</div><div id="ehiTickerDelta" class="ticker-delta flat">No prior snapshot</div></div>
       </div>
       <div id="ehiChartWrap" class="chart-wrap">
@@ -220,7 +220,7 @@
 
     <article class="card ticker-card">
       <div class="ticker-head">
-        <div><div class="ticker-symbol">GOON</div><div class="ticker-name">The Gooning Index</div></div>
+        <div class="score-tip-target" tabindex="0" data-score-tip-key="The Gooning Index" aria-describedby="scoreTooltip"><div class="ticker-symbol">GOON</div><div class="ticker-name">The Gooning Index</div></div>
         <div class="ticker-quote"><div id="goonTickerValue" class="ticker-value">—</div><div id="goonTickerDelta" class="ticker-delta flat">Loading pulse…</div></div>
       </div>
       <div id="goonChartWrap" class="chart-wrap">
@@ -1166,6 +1166,8 @@ function loadErosData() {
   return window.EROS_DATA ? Promise.resolve(window.EROS_DATA) : freshJson();
 }
 const SCORE_TIPS = {
+  'Eros Health Index': 'Overall Eros health score (0–100). Higher is healthier. Calculated from weighted public indicators, with related signals capped so one phenomenon cannot vote repeatedly.',
+  'The Gooning Index': 'Aggregate digital-pressure score. Higher is worse. Calculated from domain popularity pressure and trend, then adjusted for novelty, intensity, extremity and interaction architecture.',
   'Embodied connection': 'Measures real-world social and romantic connection. Higher scores mean more in-person interaction, partnership, and durable relationship intention. Calculated from connection and participation signals in the EHI basket.',
   'Synthetic substitution': 'Measures pressure from synthetic, parasocial, or digitally mediated substitutes for embodied intimacy. Higher scores mean less substitution pressure. Calculated from relevant exposure and impairment-oriented signals in the basket.',
   'Generativity': 'Measures whether relationships are producing family formation and intergenerational continuity. Higher scores mean stronger marriage and fertility conditions. Calculated from demographic and family-formation indicators.',
