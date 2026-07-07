@@ -97,29 +97,48 @@
     .duel-stage { position:relative; height:132px; margin:10px 0 9px; overflow:hidden; border:1px solid var(--line); border-radius:18px; background:radial-gradient(circle at 50% 50%, #24222d 0%, #10151c 46%, #0b0f14 100%); isolation:isolate; }
     .duel-stage::after { content:''; position:absolute; inset:0; pointer-events:none; background:linear-gradient(180deg, rgba(255,255,255,.045), transparent 22%, transparent 76%, rgba(0,0,0,.22)); mix-blend-mode:screen; }
     .duel-canvas { display:block; width:100%; height:100%; border:0; border-radius:inherit; background:transparent; }
-    .scenario-sandbox { margin:13px 0 12px; padding:14px; border:1px solid rgba(58,70,86,.82); border-radius:16px; background:linear-gradient(180deg, rgba(16,21,28,.82), rgba(12,16,21,.72)); }
+    .scenario-sandbox { position:relative; margin:13px 0 12px; padding:14px; border:1px solid rgba(58,70,86,.82); border-radius:16px; background:linear-gradient(180deg, rgba(16,21,28,.82), rgba(12,16,21,.72)); }
     .scenario-head { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:12px; }
     .scenario-head h3 { margin:2px 0 0; font-size:1rem; letter-spacing:0; }
     .scenario-projection { color:var(--text); font-size:.82rem; text-align:right; line-height:1.35; font-weight:650; }
     .scenario-projection small { display:block; color:var(--muted); font-size:.68rem; font-weight:500; margin-top:2px; }
-    .scenario-body { display:grid; grid-template-columns:minmax(220px, 285px) 1fr; gap:16px; align-items:center; }
-    .scenario-triangle-wrap { position:relative; min-height:220px; }
-    .scenario-triangle { display:block; width:100%; height:220px; touch-action:none; overflow:visible; cursor:grab; user-select:none; }
-    .scenario-triangle:active { cursor:grabbing; }
-    .scenario-triangle:focus-visible { outline:2px solid rgba(199,183,255,.62); outline-offset:4px; border-radius:12px; }
-    .scenario-triangle text { font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; font-weight:750; fill:#edf1f7; font-size:12px; letter-spacing:.02em; pointer-events:none; }
-    .scenario-triangle .hint { font-size:9px; font-weight:650; fill:#9aa6b5; letter-spacing:.08em; text-transform:uppercase; }
+    .scenario-body { display:grid; grid-template-columns:minmax(250px, 330px) 1fr; gap:16px; align-items:center; }
+    .scenario-polygon-wrap { position:relative; min-height:260px; }
+    .scenario-polygon { display:block; width:100%; height:260px; touch-action:none; overflow:visible; cursor:grab; user-select:none; }
+    .scenario-polygon:active { cursor:grabbing; }
+    .scenario-polygon:focus-visible { outline:2px solid rgba(199,183,255,.62); outline-offset:4px; border-radius:12px; }
+    .scenario-polygon text { font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; font-weight:750; fill:#edf1f7; font-size:12px; letter-spacing:.02em; pointer-events:none; }
+    .scenario-point-label { cursor:help; outline:none; pointer-events:all; }
+    .scenario-point-label rect { fill:rgba(12,16,21,.42); stroke:rgba(199,183,255,.14); pointer-events:all; }
+    .scenario-point-label:hover rect,.scenario-point-label:focus-visible rect { fill:rgba(199,183,255,.13); stroke:rgba(199,183,255,.56); }
+    .scenario-spoke { stroke:rgba(238,242,247,.15); stroke-width:1; }
     .scenario-reset { position:absolute; right:4px; bottom:2px; appearance:none; border:1px solid var(--line); background:#10151c; color:var(--muted); border-radius:999px; padding:4px 9px; font:inherit; font-size:.68rem; cursor:pointer; }
     .scenario-reset:hover { color:var(--text); border-color:#5a6472; }
     .scenario-bars { display:grid; gap:10px; }
-    .scenario-bar { display:grid; grid-template-columns:104px 1fr 42px; gap:9px; align-items:center; color:var(--muted); font-size:.76rem; }
+    .scenario-bar { display:grid; grid-template-columns:112px 1fr 42px; gap:9px; align-items:center; color:var(--muted); font-size:.76rem; }
     .scenario-bar strong { color:var(--text); font-weight:700; }
     .scenario-meter { height:8px; border-radius:999px; border:1px solid #222b36; background:#0c1015; overflow:hidden; }
     .scenario-meter span { display:block; height:100%; width:0%; border-radius:inherit; transition:width .12s ease; }
     .scenario-meter.touch span { background:linear-gradient(90deg,#8fd6a5,#c7b7ff); }
     .scenario-meter.gooning span { background:linear-gradient(90deg,#fff8d8,#c7b7ff); }
     .scenario-meter.shopping span { background:linear-gradient(90deg,#ff5cb8,#e8c47a); }
+    .scenario-meter.bonds span { background:linear-gradient(90deg,#64d9ff,#8fd6a5); }
+    .scenario-meter.meaning span { background:linear-gradient(90deg,#e8c47a,#fff8d8); }
+    .scenario-lens { margin-top:13px; padding-top:12px; border-top:1px solid rgba(45,55,69,.74); }
+    .scenario-lens-labels { display:grid; grid-template-columns:1fr auto 1fr; gap:8px; align-items:center; color:var(--muted); font-size:.7rem; line-height:1.2; }
+    .scenario-lens-labels strong { color:var(--text); font-size:.74rem; text-align:center; }
+    .scenario-lens-labels span:last-child { text-align:right; }
+    .scenario-lens-track { position:relative; height:18px; margin-top:9px; border:1px solid #222b36; border-radius:999px; background:#0c1015; cursor:pointer; touch-action:none; }
+    .scenario-lens-track:focus-visible { outline:2px solid rgba(199,183,255,.62); outline-offset:4px; }
+    .scenario-lens-track::before { content:''; position:absolute; left:50%; top:3px; bottom:3px; width:1px; background:rgba(238,242,247,.22); }
+    .scenario-lens-fill { position:absolute; top:4px; bottom:4px; left:50%; width:0; border-radius:999px; background:linear-gradient(90deg,#e8c47a,#c7b7ff,#ff5cb8); opacity:.82; }
+    .scenario-lens-thumb { position:absolute; left:50%; top:50%; width:16px; height:16px; border-radius:50%; transform:translate(-50%,-50%); background:#f5f0ff; border:2px solid #10151c; box-shadow:0 0 0 3px rgba(199,183,255,.18),0 4px 16px rgba(0,0,0,.38); }
     .scenario-note { color:var(--muted); font-size:.72rem; line-height:1.45; margin-top:12px; }
+    .scenario-tip { position:absolute; z-index:5; width:min(276px, calc(100% - 20px)); padding:10px 11px; border:1px solid rgba(199,183,255,.34); border-radius:12px; background:rgba(13,17,23,.96); color:#dfe5ee; box-shadow:0 16px 46px rgba(0,0,0,.48); font-size:.74rem; line-height:1.38; opacity:0; transform:translateY(4px); pointer-events:none; transition:opacity .12s ease, transform .12s ease; }
+    .scenario-tip.show { opacity:1; transform:translateY(0); }
+    .scenario-tip strong { display:block; color:#fff8d8; font-size:.78rem; margin-bottom:3px; }
+    .scenario-tip span { display:block; color:#b7c0cc; }
+    .scenario-tip em { display:block; margin-top:6px; color:#8fd6a5; font-style:normal; font-weight:650; }
     .accountability-severity { margin-top:2px; color:var(--text); font-size:.78rem; font-weight:650; }
     .accountability-status { margin-top:5px; color:var(--warn); font-size:.72rem; font-weight:700; letter-spacing:.02em; }
     .accountability-meta { display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; color:var(--muted); font-size:.72rem; line-height:1.4; margin-top:7px; }
@@ -218,7 +237,7 @@
     .serious-footer { margin-top:28px; padding-top:16px; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; }
     @media (prefers-reduced-motion: reduce) { .card { transition:none; } .metric:hover,.advice-card:hover,.trend-grid article:hover,.ticker-card:hover { transform:none; } }
 
-    @media (max-width:850px) { .market-strip,.hero{grid-template-columns:1fr}.groups,.trend-grid,.advice-grid{grid-template-columns:1fr}.metrics{grid-template-columns:1fr}.bigscore{font-size:5rem}.metric-top{flex-wrap:wrap}.value{text-align:left;white-space:normal}.metric-score{grid-template-columns:1fr}.metric-score small{justify-self:start}.scenario-head{display:grid}.scenario-projection{text-align:left}.scenario-body{grid-template-columns:1fr}.scenario-triangle-wrap{max-width:320px;width:100%;margin:0 auto}.serious-grid{grid-template-columns:1fr}.serious-sources{columns:1}.serious-head{padding:18px}.serious-body{padding:18px} }
+    @media (max-width:850px) { .market-strip,.hero{grid-template-columns:1fr}.groups,.trend-grid,.advice-grid{grid-template-columns:1fr}.metrics{grid-template-columns:1fr}.bigscore{font-size:5rem}.metric-top{flex-wrap:wrap}.value{text-align:left;white-space:normal}.metric-score{grid-template-columns:1fr}.metric-score small{justify-self:start}.scenario-head{display:grid}.scenario-projection{text-align:left}.scenario-body{grid-template-columns:1fr}.scenario-polygon-wrap{max-width:340px;width:100%;margin:0 auto}.scenario-lens-labels{grid-template-columns:1fr}.scenario-lens-labels strong,.scenario-lens-labels span:last-child{text-align:left}.serious-grid{grid-template-columns:1fr}.serious-sources{columns:1}.serious-head{padding:18px}.serious-body{padding:18px} }
   </style>
 </head>
 <body>
@@ -278,10 +297,10 @@
         <div id="scenarioProjection" class="scenario-projection">Projected split loading<small>EHI projection loading</small></div>
       </div>
       <div class="scenario-body">
-        <div class="scenario-triangle-wrap">
-          <svg id="scenarioTriangle" class="scenario-triangle" viewBox="0 0 280 228" role="slider" tabindex="0" aria-label="Scenario mix triangle" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="scenario-polygon-wrap">
+          <svg id="scenarioPolygon" class="scenario-polygon" viewBox="0 0 320 270" role="slider" tabindex="0" aria-label="Scenario mix pentagon" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
             <defs>
-              <linearGradient id="scenarioTriangleFill" x1="20%" y1="6%" x2="82%" y2="94%">
+              <linearGradient id="scenarioPolygonFill" x1="18%" y1="4%" x2="84%" y2="96%">
                 <stop offset="0%" stop-color="#8fd6a5" stop-opacity=".28"></stop>
                 <stop offset="52%" stop-color="#c7b7ff" stop-opacity=".18"></stop>
                 <stop offset="100%" stop-color="#ff5cb8" stop-opacity=".24"></stop>
@@ -292,23 +311,50 @@
                 <stop offset="100%" stop-color="#c7b7ff" stop-opacity="0"></stop>
               </radialGradient>
             </defs>
-            <polygon points="140,30 38,184 242,184" fill="url(#scenarioTriangleFill)" stroke="rgba(199,183,255,.58)" stroke-width="1.6"></polygon>
-            <path d="M140 30 L140 184 M38 184 L242 184 M38 184 L140 107 M242 184 L140 107" stroke="rgba(238,242,247,.16)" stroke-width="1"></path>
-            <circle id="scenarioHandleGlowDot" cx="140" cy="133" r="24" fill="url(#scenarioHandleGlow)" opacity=".74"></circle>
-            <circle id="scenarioHandle" cx="140" cy="133" r="8.5" fill="#f5f0ff" stroke="#10151c" stroke-width="2.4"></circle>
-            <text x="140" y="16" text-anchor="middle">Touch Grass</text>
-            <text x="58" y="214" text-anchor="middle">Stop Gooning</text>
-            <text x="222" y="214" text-anchor="middle">Stop Shopping</text>
+            <polygon points="160,42 252,106 218,214 102,214 68,106" fill="url(#scenarioPolygonFill)" stroke="rgba(199,183,255,.58)" stroke-width="1.6"></polygon>
+            <path class="scenario-spoke" d="M160 137 L160 42 M160 137 L252 106 M160 137 L218 214 M160 137 L102 214 M160 137 L68 106"></path>
+            <circle id="scenarioHandleGlowDot" cx="160" cy="137" r="25" fill="url(#scenarioHandleGlow)" opacity=".74"></circle>
+            <circle id="scenarioHandle" cx="160" cy="137" r="8.5" fill="#f5f0ff" stroke="#10151c" stroke-width="2.4"></circle>
+            <g class="scenario-point-label" tabindex="0" data-scenario-key="meaning" data-tip-title="Find God" data-tip-body="Meaning, ritual, community, and a chosen moral frame. The point is not one creed; it is not drifting through desire with no steering wheel." data-tip-action="Blunt move: pick one practice you respect and do it weekly. Channel the heat into making, serving, training, praying, building, or showing up." aria-describedby="scenarioTip" aria-label="Find God. Meaning, ritual, community, and a chosen moral frame.">
+              <rect x="124" y="7" width="72" height="24" rx="10"></rect>
+              <text x="160" y="23" text-anchor="middle">Find God</text>
+            </g>
+            <g class="scenario-point-label" tabindex="0" data-scenario-key="touch" data-tip-title="Touch Grass" data-tip-body="Embodied life: sleep, sunlight, movement, face-to-face friendship, and places where your body is not just a meat cursor." data-tip-action="Blunt move: schedule two offline anchors this week. Walk, lift, eat with a human, join a thing, and protect the appointment like rent is due." aria-describedby="scenarioTip" aria-label="Touch Grass. Embodied life, sleep, movement, and real-world community.">
+              <rect x="226" y="78" width="88" height="24" rx="10"></rect>
+              <text x="270" y="94" text-anchor="middle">Touch Grass</text>
+            </g>
+            <g class="scenario-point-label" tabindex="0" data-scenario-key="shopping" data-tip-title="Stop Shopping" data-tip-body="Reduce swipe-market disposability, comparison loops, and treating people like inventory with prettier thumbnails." data-tip-action="Blunt move: shrink the apps, choose fewer better conversations, and stop browsing when you already know you are not actually available." aria-describedby="scenarioTip" aria-label="Stop Shopping. Reduce swipe-market disposability and comparison loops.">
+              <rect x="176" y="236" width="106" height="24" rx="10"></rect>
+              <text x="229" y="252" text-anchor="middle">Stop Shopping</text>
+            </g>
+            <g class="scenario-point-label" tabindex="0" data-scenario-key="bonds" data-tip-title="Build Bonds" data-tip-body="Commitment, reciprocity, repair, partner wellbeing, and relationship satisfaction instead of vibes duct-taped over avoidant nonsense." data-tip-action="Blunt move: ask one honest satisfaction question, listen without lawyering, and fix one small repeating grievance this week." aria-describedby="scenarioTip" aria-label="Build Bonds. Commitment, reciprocity, repair, and partner wellbeing.">
+              <rect x="57" y="236" width="90" height="24" rx="10"></rect>
+              <text x="102" y="252" text-anchor="middle">Build Bonds</text>
+            </g>
+            <g class="scenario-point-label" tabindex="0" data-scenario-key="gooning" data-tip-title="Stop Gooning" data-tip-body="Reduce compulsive synthetic or parasocial substitution: the loop where pixels, novelty, and pretend intimacy eat the life you meant to live." data-tip-action="Blunt move: remove cues, add friction, cap sessions, and when the urge spikes spend ten minutes on something physical or creative before screens." aria-describedby="scenarioTip" aria-label="Stop Gooning. Reduce compulsive synthetic or parasocial substitution.">
+              <rect x="6" y="78" width="108" height="24" rx="10"></rect>
+              <text x="60" y="94" text-anchor="middle">Stop Gooning</text>
+            </g>
           </svg>
           <button id="scenarioReset" class="scenario-reset" type="button" aria-label="Reset scenario sandbox">Reset</button>
         </div>
         <div class="scenario-bars">
-          <div class="scenario-bar"><strong>Touch Grass</strong><div class="scenario-meter touch"><span id="scenarioTouchBar"></span></div><span id="scenarioTouchValue">33%</span></div>
-          <div class="scenario-bar"><strong>Stop Gooning</strong><div class="scenario-meter gooning"><span id="scenarioGooningBar"></span></div><span id="scenarioGooningValue">33%</span></div>
-          <div class="scenario-bar"><strong>Stop Shopping</strong><div class="scenario-meter shopping"><span id="scenarioShoppingBar"></span></div><span id="scenarioShoppingValue">33%</span></div>
+          <div class="scenario-bar"><strong>Touch Grass</strong><div class="scenario-meter touch"><span id="scenarioTouchBar"></span></div><span id="scenarioTouchValue">20%</span></div>
+          <div class="scenario-bar"><strong>Stop Gooning</strong><div class="scenario-meter gooning"><span id="scenarioGooningBar"></span></div><span id="scenarioGooningValue">20%</span></div>
+          <div class="scenario-bar"><strong>Stop Shopping</strong><div class="scenario-meter shopping"><span id="scenarioShoppingBar"></span></div><span id="scenarioShoppingValue">20%</span></div>
+          <div class="scenario-bar"><strong>Build Bonds</strong><div class="scenario-meter bonds"><span id="scenarioBondsBar"></span></div><span id="scenarioBondsValue">20%</span></div>
+          <div class="scenario-bar"><strong>Find God</strong><div class="scenario-meter meaning"><span id="scenarioMeaningBar"></span></div><span id="scenarioMeaningValue">20%</span></div>
+          <div class="scenario-lens">
+            <div class="scenario-lens-labels"><span>Puritanical</span><strong id="scenarioLensValue">Mixed doctrine</strong><span>Anthrofox In Heat</span></div>
+            <div id="scenarioLensTrack" class="scenario-lens-track" role="slider" tabindex="0" aria-label="Moral lens from puritanical to anthrofox in heat" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Mixed doctrine">
+              <span id="scenarioLensFill" class="scenario-lens-fill" aria-hidden="true"></span>
+              <span id="scenarioLensThumb" class="scenario-lens-thumb" aria-hidden="true"></span>
+            </div>
+          </div>
           <div class="scenario-note">Official index stays pinned; this is a counterfactual pressure toy.</div>
         </div>
       </div>
+      <div id="scenarioTip" class="scenario-tip" role="tooltip" aria-hidden="true"></div>
     </div>
     <div id="accountabilitySeverity" class="accountability-severity">Measured severity loading…</div>
     <div id="accountabilityStatus" class="accountability-status"></div>
@@ -1248,18 +1294,28 @@ function setupAccountabilityDuel(stage, canvas, goonerPct, femoidPct, ehiScore) 
   };
 }
 function setupScenarioSandbox(controller, baseGooner, baseFemoid, baseEhi) {
-  const triangle=document.getElementById('scenarioTriangle');
+  const polygon=document.getElementById('scenarioPolygon');
   const handle=document.getElementById('scenarioHandle');
   const glow=document.getElementById('scenarioHandleGlowDot');
   const reset=document.getElementById('scenarioReset');
   const projectionEl=document.getElementById('scenarioProjection');
+  const lensTrack=document.getElementById('scenarioLensTrack');
+  const lensThumb=document.getElementById('scenarioLensThumb');
+  const lensFill=document.getElementById('scenarioLensFill');
+  const lensValue=document.getElementById('scenarioLensValue');
+  const sandbox=document.querySelector('.scenario-sandbox');
+  const tip=document.getElementById('scenarioTip');
   const touchBar=document.getElementById('scenarioTouchBar');
   const gooningBar=document.getElementById('scenarioGooningBar');
   const shoppingBar=document.getElementById('scenarioShoppingBar');
+  const bondsBar=document.getElementById('scenarioBondsBar');
+  const meaningBar=document.getElementById('scenarioMeaningBar');
   const touchValue=document.getElementById('scenarioTouchValue');
   const gooningValue=document.getElementById('scenarioGooningValue');
   const shoppingValue=document.getElementById('scenarioShoppingValue');
-  if(!triangle || !handle || !glow || !projectionEl || !controller?.setScenario) return;
+  const bondsValue=document.getElementById('scenarioBondsValue');
+  const meaningValue=document.getElementById('scenarioMeaningValue');
+  if(!polygon || !handle || !glow || !projectionEl || !controller?.setScenario) return;
 
   const clamp=(n,lo,hi)=>Math.min(hi,Math.max(lo,n));
   const safeBaseGooner=Number.isFinite(baseGooner)?clamp(baseGooner,0,100):50;
@@ -1268,136 +1324,325 @@ function setupScenarioSandbox(controller, baseGooner, baseFemoid, baseEhi) {
   const officialGooner=safeBaseGooner/baseTotal*100;
   const officialFemoid=safeBaseFemoid/baseTotal*100;
   const officialEhi=Number.isFinite(baseEhi)?clamp(baseEhi,0,100):50;
-  const vertices={
-    touch:{x:140,y:30},
-    gooning:{x:38,y:184},
-    shopping:{x:242,y:184}
+  const points=[
+    {key:'meaning',label:'Find God',x:160,y:42},
+    {key:'touch',label:'Touch Grass',x:252,y:106},
+    {key:'shopping',label:'Stop Shopping',x:218,y:214},
+    {key:'bonds',label:'Build Bonds',x:102,y:214},
+    {key:'gooning',label:'Stop Gooning',x:68,y:106}
+  ];
+  const keys=points.map(point=>point.key);
+  const vertices=points.reduce((map,point)=>{ map[point.key]=point; return map; },{});
+  const centerPoint={x:160,y:137};
+  const centerWeights=keys.reduce((map,key)=>{ map[key]=1/keys.length; return map; },{});
+  const barEls={
+    touch:[touchBar,touchValue],
+    gooning:[gooningBar,gooningValue],
+    shopping:[shoppingBar,shoppingValue],
+    bonds:[bondsBar,bondsValue],
+    meaning:[meaningBar,meaningValue]
   };
-  const center={touch:1/3,gooning:1/3,shopping:1/3};
-  let current={...center};
+  let currentPoint={...centerPoint};
+  let currentWeights={...centerWeights};
+  let lens=0;
   let dragging=false;
+  let lensDragging=false;
+  let activeTipTarget=null;
 
   function normalize(weights) {
-    const touch=Math.max(0,weights.touch);
-    const gooning=Math.max(0,weights.gooning);
-    const shopping=Math.max(0,weights.shopping);
-    const total=Math.max(.001,touch+gooning+shopping);
-    return {touch:touch/total,gooning:gooning/total,shopping:shopping/total};
-  }
-  function rawBary(x,y) {
-    const a=vertices.touch, b=vertices.gooning, c=vertices.shopping;
-    const det=(b.y-c.y)*(a.x-c.x)+(c.x-b.x)*(a.y-c.y);
-    const touch=((b.y-c.y)*(x-c.x)+(c.x-b.x)*(y-c.y))/det;
-    const gooning=((c.y-a.y)*(x-c.x)+(a.x-c.x)*(y-c.y))/det;
-    return {touch,gooning,shopping:1-touch-gooning};
-  }
-  function pointFromWeights(weights) {
-    return {
-      x:vertices.touch.x*weights.touch+vertices.gooning.x*weights.gooning+vertices.shopping.x*weights.shopping,
-      y:vertices.touch.y*weights.touch+vertices.gooning.y*weights.gooning+vertices.shopping.y*weights.shopping
-    };
+    const clean=keys.reduce((map,key)=>{ map[key]=Math.max(0,weights[key]||0); return map; },{});
+    const total=Math.max(.001,keys.reduce((sum,key)=>sum+clean[key],0));
+    keys.forEach(key=>{ clean[key]/=total; });
+    return clean;
   }
   function closestOnSegment(point,a,b) {
     const dx=b.x-a.x, dy=b.y-a.y;
     const lengthSq=dx*dx+dy*dy || 1;
     const t=clamp(((point.x-a.x)*dx+(point.y-a.y)*dy)/lengthSq,0,1);
-    return {x:a.x+dx*t,y:a.y+dy*t};
+    return {x:a.x+dx*t,y:a.y+dy*t,t};
   }
   function distanceSq(a,b) {
     const dx=a.x-b.x, dy=a.y-b.y;
     return dx*dx+dy*dy;
   }
-  function weightsFromPoint(x,y) {
-    const weights=rawBary(x,y);
-    if(weights.touch>=-.001 && weights.gooning>=-.001 && weights.shopping>=-.001) return normalize(weights);
-    const point={x,y};
-    const candidates=[
-      closestOnSegment(point,vertices.touch,vertices.gooning),
-      closestOnSegment(point,vertices.touch,vertices.shopping),
-      closestOnSegment(point,vertices.gooning,vertices.shopping)
-    ].sort((a,b)=>distanceSq(point,a)-distanceSq(point,b));
-    return normalize(rawBary(candidates[0].x,candidates[0].y));
+  function cross(a,b) {
+    return a.x*b.y-a.y*b.x;
+  }
+  function isInsidePolygon(point) {
+    let inside=false;
+    for(let i=0,j=points.length-1;i<points.length;j=i++){
+      const a=points[i], b=points[j];
+      const crosses=((a.y>point.y)!==(b.y>point.y)) && point.x < (b.x-a.x)*(point.y-a.y)/(b.y-a.y)+a.x;
+      if(crosses) inside=!inside;
+    }
+    return inside;
+  }
+  function clampToPolygon(point) {
+    if(isInsidePolygon(point)) return point;
+    let best=null;
+    points.forEach((a,i)=>{
+      const b=points[(i+1)%points.length];
+      const candidate=closestOnSegment(point,a,b);
+      const d=distanceSq(point,candidate);
+      if(!best || d<best.d) best={...candidate,d};
+    });
+    return {x:best.x,y:best.y};
+  }
+  function boundaryForAngle(angle) {
+    const direction={x:Math.cos(angle),y:Math.sin(angle)};
+    let best=null;
+    points.forEach((a,i)=>{
+      const b=points[(i+1)%points.length];
+      const segment={x:b.x-a.x,y:b.y-a.y};
+      const denom=cross(direction,segment);
+      if(Math.abs(denom)<.0001) return;
+      const delta={x:a.x-centerPoint.x,y:a.y-centerPoint.y};
+      const t=cross(delta,segment)/denom;
+      const u=cross(delta,direction)/denom;
+      if(t>=0 && u>=-.001 && u<=1.001 && (!best || t<best.t)) best={point:{x:centerPoint.x+direction.x*t,y:centerPoint.y+direction.y*t},t};
+    });
+    return best || {point:{...centerPoint},t:0};
+  }
+  function edgeMixForPoint(point) {
+    let best=null;
+    points.forEach((a,i)=>{
+      const b=points[(i+1)%points.length];
+      const candidate=closestOnSegment(point,a,b);
+      const d=distanceSq(point,candidate);
+      if(!best || d<best.d) best={i,t:candidate.t,d};
+    });
+    const weights=keys.reduce((map,key)=>{ map[key]=0; return map; },{});
+    const a=points[best.i];
+    const b=points[(best.i+1)%points.length];
+    weights[a.key]=1-best.t;
+    weights[b.key]=best.t;
+    return weights;
+  }
+  function stateFromPoint(point) {
+    const cleanPoint=clampToPolygon(point);
+    const dx=cleanPoint.x-centerPoint.x, dy=cleanPoint.y-centerPoint.y;
+    const radius=Math.hypot(dx,dy);
+    if(radius<.001) return {point:{...centerPoint},weights:{...centerWeights},intensity:0};
+    const boundary=boundaryForAngle(Math.atan2(dy,dx));
+    const boundaryRadius=Math.max(.001,Math.hypot(boundary.point.x-centerPoint.x,boundary.point.y-centerPoint.y));
+    const intensity=clamp(radius/boundaryRadius,0,1);
+    const edgeWeights=edgeMixForPoint(boundary.point);
+    const weights=keys.reduce((map,key)=>{
+      map[key]=centerWeights[key]*(1-intensity)+edgeWeights[key]*intensity;
+      return map;
+    },{});
+    return {point:cleanPoint,weights:normalize(weights),intensity};
   }
   function svgPointFromEvent(event) {
-    const point=triangle.createSVGPoint();
+    const point=polygon.createSVGPoint();
     point.x=event.clientX;
     point.y=event.clientY;
-    return point.matrixTransform(triangle.getScreenCTM().inverse());
+    const matrix=polygon.getScreenCTM();
+    return matrix ? point.matrixTransform(matrix.inverse()) : {...centerPoint};
   }
-  function project(weights) {
-    const distance=clamp(Math.hypot(weights.touch-center.touch,weights.gooning-center.gooning,weights.shopping-center.shopping)/Math.sqrt(2/3),0,1);
-    const sharedRelief=1-distance*weights.touch*.38;
-    const goonerRaw=Math.max(.1,officialGooner*sharedRelief-distance*weights.gooning*38+distance*weights.shopping*14);
-    const femoidRaw=Math.max(.1,officialFemoid*sharedRelief-distance*weights.shopping*38+distance*weights.gooning*14);
+  function project(weights,intensity) {
+    const puritan=(1-lens)/2;
+    const fox=(1+lens)/2;
+    const sharedRelief=weights.touch*(13+5*fox)+weights.bonds*(17+6*fox)+weights.meaning*(13+8*puritan);
+    const goonRelief=weights.gooning*(30+6*puritan)+weights.meaning*(8+8*puritan)+weights.bonds*(7+5*fox)+weights.touch*(8+4*fox);
+    const femoidRelief=weights.shopping*(27+4*fox)+weights.bonds*(7+5*fox)+weights.touch*(8+4*fox)+weights.meaning*(6+4*puritan);
+    const goonPush=weights.shopping*(7+2*puritan);
+    const femoidPush=weights.gooning*(7+3*fox);
+    const goonerRaw=Math.max(.1,officialGooner-intensity*(goonRelief+sharedRelief*.55)+intensity*goonPush);
+    const femoidRaw=Math.max(.1,officialFemoid-intensity*(femoidRelief+sharedRelief*.55)+intensity*femoidPush);
     const total=Math.max(.001,goonerRaw+femoidRaw);
-    const ehi=clamp(officialEhi+distance*(weights.touch*18+weights.gooning*12+weights.shopping*12),0,100);
-    return {gooner:goonerRaw/total*100,femoid:femoidRaw/total*100,ehi,lift:ehi-officialEhi,distance};
+    const ehiBoost=intensity*(weights.touch*(23+4*fox)+weights.gooning*(12+8*puritan)+weights.shopping*(12+3*fox)+weights.bonds*(25+5*fox)+weights.meaning*(20+7*puritan));
+    const ehi=clamp(officialEhi+ehiBoost,0,100);
+    return {gooner:goonerRaw/total*100,femoid:femoidRaw/total*100,ehi,lift:ehi-officialEhi,distance:intensity};
   }
   function setBar(bar,valueEl,value) {
     if(bar) bar.style.width=`${clamp(value,0,100).toFixed(1)}%`;
     if(valueEl) valueEl.textContent=`${Math.round(value)}%`;
   }
+  function dominantPoint(weights) {
+    return points.reduce((best,point)=>weights[point.key]>weights[best.key]?point:best,points[0]);
+  }
   function updateProjectionText(projected) {
     const lift=projected.lift>=0?`+${projected.lift.toFixed(1)}`:projected.lift.toFixed(1);
     const small=document.createElement('small');
-    small.textContent=`EHI ${lift} pts`;
+    const focusLabel=projected.distance<.02?'Balanced':dominantPoint(currentWeights).label;
+    small.textContent=`EHI ${lift} pts - ${focusLabel} focus`;
     projectionEl.replaceChildren(document.createTextNode(`GOONER ${projected.gooner.toFixed(1)} / FEMOID ${projected.femoid.toFixed(1)} `),small);
   }
-  function render(weights) {
-    current=normalize(weights);
-    const point=pointFromWeights(current);
-    const projected=project(current);
-    handle.setAttribute('cx',point.x.toFixed(1));
-    handle.setAttribute('cy',point.y.toFixed(1));
-    glow.setAttribute('cx',point.x.toFixed(1));
-    glow.setAttribute('cy',point.y.toFixed(1));
-    setBar(touchBar,touchValue,current.touch*100);
-    setBar(gooningBar,gooningValue,current.gooning*100);
-    setBar(shoppingBar,shoppingValue,current.shopping*100);
+  function updateLensLabel() {
+    const label=lens<-0.45?'Puritanical':lens>0.45?'Anthrofox In Heat':lens<-0.15?'Chastened':lens>0.15?'Weird But Trying':'Mixed doctrine';
+    if(lensValue) lensValue.textContent=label;
+    if(lensTrack) {
+      lensTrack.setAttribute('aria-valuenow',String(Math.round(lens*100)));
+      lensTrack.setAttribute('aria-valuetext',label);
+    }
+    const pct=(lens+1)*50;
+    if(lensThumb) lensThumb.style.left=`${pct.toFixed(1)}%`;
+    if(lensFill) {
+      lensFill.style.left=`${Math.min(50,pct).toFixed(1)}%`;
+      lensFill.style.width=`${Math.abs(pct-50).toFixed(1)}%`;
+    }
+  }
+  function setLens(value) {
+    lens=clamp(value,-1,1);
+    updateLensLabel();
+    renderPoint(currentPoint);
+  }
+  function lensFromEvent(event) {
+    const rect=lensTrack?.getBoundingClientRect();
+    if(!rect || !rect.width) return lens;
+    return clamp((event.clientX-rect.left)/rect.width*2-1,-1,1);
+  }
+  function renderPoint(point) {
+    const state=stateFromPoint(point);
+    currentPoint=state.point;
+    currentWeights=state.weights;
+    const projected=project(currentWeights,state.intensity);
+    handle.setAttribute('cx',currentPoint.x.toFixed(1));
+    handle.setAttribute('cy',currentPoint.y.toFixed(1));
+    glow.setAttribute('cx',currentPoint.x.toFixed(1));
+    glow.setAttribute('cy',currentPoint.y.toFixed(1));
+    keys.forEach(key=>setBar(barEls[key]?.[0],barEls[key]?.[1],currentWeights[key]*100));
     updateProjectionText(projected);
-    triangle.setAttribute('aria-valuenow',String(Math.round(projected.distance*100)));
-    triangle.setAttribute('aria-valuetext',`Touch Grass ${Math.round(current.touch*100)}%, Stop Gooning ${Math.round(current.gooning*100)}%, Stop Shopping ${Math.round(current.shopping*100)}%. Projected GOONER ${projected.gooner.toFixed(1)}, FEMOID ${projected.femoid.toFixed(1)}.`);
+    polygon.setAttribute('aria-valuenow',String(Math.round(projected.distance*100)));
+    polygon.setAttribute('aria-valuetext',`${points.map(point=>`${point.label} ${Math.round(currentWeights[point.key]*100)}%`).join(', ')}. Projected GOONER ${projected.gooner.toFixed(1)}, FEMOID ${projected.femoid.toFixed(1)}.`);
     controller.setScenario(projected);
   }
   function renderFromEvent(event) {
     const point=svgPointFromEvent(event);
-    render(weightsFromPoint(point.x,point.y));
+    renderPoint(point);
   }
   function blendToward(key,amount) {
-    const target={touch:0,gooning:0,shopping:0};
-    target[key]=1;
-    render({
-      touch:current.touch*(1-amount)+target.touch*amount,
-      gooning:current.gooning*(1-amount)+target.gooning*amount,
-      shopping:current.shopping*(1-amount)+target.shopping*amount
+    const target=vertices[key];
+    if(!target) return;
+    renderPoint({
+      x:currentPoint.x*(1-amount)+target.x*amount,
+      y:currentPoint.y*(1-amount)+target.y*amount
     });
   }
+  function nudge(dx,dy) {
+    renderPoint({x:currentPoint.x+dx,y:currentPoint.y+dy});
+  }
+  function positionTip() {
+    if(!activeTipTarget || !tip || !sandbox || !tip.classList.contains('show')) return;
+    const targetRect=activeTipTarget.getBoundingClientRect();
+    const box=sandbox.getBoundingClientRect();
+    const width=tip.offsetWidth || 260;
+    const height=tip.offsetHeight || 80;
+    const left=clamp(targetRect.left-box.left+targetRect.width/2-width/2,10,box.width-width-10);
+    let top=targetRect.top-box.top-height-8;
+    if(top<8) top=targetRect.bottom-box.top+8;
+    tip.style.left=`${left}px`;
+    tip.style.top=`${top}px`;
+  }
+  function showTip(target) {
+    if(!tip || !target) return;
+    activeTipTarget=target;
+    const title=document.createElement('strong');
+    title.textContent=target.dataset.tipTitle || '';
+    const body=document.createElement('span');
+    body.textContent=target.dataset.tipBody || '';
+    const action=document.createElement('em');
+    action.textContent=target.dataset.tipAction || '';
+    tip.replaceChildren(title,body,action);
+    tip.classList.add('show');
+    tip.setAttribute('aria-hidden','false');
+    requestAnimationFrame(positionTip);
+  }
+  function hideTip(target) {
+    if(target && activeTipTarget!==target) return;
+    tip?.classList.remove('show');
+    tip?.setAttribute('aria-hidden','true');
+    activeTipTarget=null;
+  }
+  polygon.querySelectorAll('.scenario-point-label').forEach(label=>{
+    label.addEventListener('pointerenter',event=>{ if(event.pointerType==='mouse') showTip(label); });
+    label.addEventListener('pointerleave',event=>{ if(event.pointerType==='mouse') hideTip(label); });
+    label.addEventListener('focusin',()=>showTip(label));
+    label.addEventListener('focusout',()=>hideTip(label));
+    label.addEventListener('pointerdown',event=>{
+      if(event.pointerType!=='mouse') {
+        event.preventDefault();
+        event.stopPropagation();
+        if(activeTipTarget===label && tip?.classList.contains('show')) hideTip(label);
+        else showTip(label);
+      }
+    });
+    label.addEventListener('click',event=>{
+      event.preventDefault();
+      event.stopPropagation();
+      label.focus?.({preventScroll:true});
+      showTip(label);
+    });
+    label.addEventListener('keydown',event=>{
+      if(event.key==='Enter' || event.key===' ') {
+        event.preventDefault();
+        showTip(label);
+      }
+    });
+  });
 
-  triangle.addEventListener('pointerdown',event=>{
+  polygon.addEventListener('pointerdown',event=>{
+    if(event.target.closest?.('.scenario-point-label')) return;
     event.preventDefault();
-    triangle.focus({preventScroll:true});
+    polygon.focus({preventScroll:true});
     dragging=true;
-    triangle.setPointerCapture?.(event.pointerId);
+    polygon.setPointerCapture?.(event.pointerId);
     renderFromEvent(event);
   });
-  triangle.addEventListener('pointermove',event=>{ if(dragging) renderFromEvent(event); });
-  triangle.addEventListener('pointerup',event=>{
+  polygon.addEventListener('pointermove',event=>{ if(dragging) renderFromEvent(event); });
+  polygon.addEventListener('pointerup',event=>{
     dragging=false;
-    triangle.releasePointerCapture?.(event.pointerId);
+    polygon.releasePointerCapture?.(event.pointerId);
   });
-  triangle.addEventListener('pointercancel',event=>{
+  polygon.addEventListener('pointercancel',event=>{
     dragging=false;
-    triangle.releasePointerCapture?.(event.pointerId);
+    polygon.releasePointerCapture?.(event.pointerId);
   });
-  triangle.addEventListener('keydown',event=>{
-    const amount=event.shiftKey?.075:.04;
-    if(event.key==='ArrowUp'){ event.preventDefault(); blendToward('touch',amount); }
-    else if(event.key==='ArrowLeft'){ event.preventDefault(); blendToward('gooning',amount); }
-    else if(event.key==='ArrowRight'){ event.preventDefault(); blendToward('shopping',amount); }
-    else if(event.key==='Home' || event.key==='ArrowDown'){ event.preventDefault(); render(center); }
+  polygon.addEventListener('keydown',event=>{
+    const amount=event.shiftKey?.11:.06;
+    const step=event.shiftKey?12:7;
+    const targetKeys={'1':'touch','2':'gooning','3':'shopping','4':'bonds','5':'meaning'};
+    if(targetKeys[event.key]){ event.preventDefault(); blendToward(targetKeys[event.key],amount); }
+    else if(event.key==='ArrowUp'){ event.preventDefault(); nudge(0,-step); }
+    else if(event.key==='ArrowDown'){ event.preventDefault(); nudge(0,step); }
+    else if(event.key==='ArrowLeft'){ event.preventDefault(); nudge(-step,0); }
+    else if(event.key==='ArrowRight'){ event.preventDefault(); nudge(step,0); }
+    else if(event.key==='Home'){ event.preventDefault(); renderPoint(centerPoint); }
   });
-  reset?.addEventListener('click',()=>render(center));
-  render(center);
+  lensTrack?.addEventListener('pointerdown',event=>{
+    event.preventDefault();
+    lensDragging=true;
+    lensTrack.focus({preventScroll:true});
+    lensTrack.setPointerCapture?.(event.pointerId);
+    setLens(lensFromEvent(event));
+  });
+  lensTrack?.addEventListener('pointermove',event=>{ if(lensDragging) setLens(lensFromEvent(event)); });
+  lensTrack?.addEventListener('pointerup',event=>{
+    lensDragging=false;
+    lensTrack.releasePointerCapture?.(event.pointerId);
+  });
+  lensTrack?.addEventListener('pointercancel',event=>{
+    lensDragging=false;
+    lensTrack.releasePointerCapture?.(event.pointerId);
+  });
+  lensTrack?.addEventListener('keydown',event=>{
+    const step=event.shiftKey?.2:.08;
+    if(event.key==='ArrowLeft'){ event.preventDefault(); setLens(lens-step); }
+    else if(event.key==='ArrowRight'){ event.preventDefault(); setLens(lens+step); }
+    else if(event.key==='Home'){ event.preventDefault(); setLens(-1); }
+    else if(event.key==='End'){ event.preventDefault(); setLens(1); }
+    else if(event.key==='ArrowDown'){ event.preventDefault(); setLens(0); }
+  });
+  reset?.addEventListener('click',()=>{
+    setLens(0);
+    renderPoint(centerPoint);
+  });
+  document.addEventListener('keydown',event=>{ if(event.key==='Escape') hideTip(); });
+  window.addEventListener('resize',positionTip,{passive:true});
+  window.addEventListener('scroll',positionTip,{passive:true});
+  updateLensLabel();
+  renderPoint(centerPoint);
 }
 function loadErosData() {
   const freshJson=()=>fetch(`data.json?ts=${Date.now()}`,{cache:'no-store'})
