@@ -94,7 +94,7 @@
     .duel-readout { display:flex; justify-content:space-between; gap:18px; align-items:center; font-size:1.08rem; font-weight:750; letter-spacing:.02em; }
     .duel-readout .gooner { color:var(--accent); }
     .duel-readout .femoid { color:var(--warn); text-align:right; }
-    .duel-stage { position:relative; height:132px; margin:10px 0 9px; overflow:hidden; border:1px solid var(--line); border-radius:18px; background:radial-gradient(circle at 50% 50%, #24222d 0%, #10151c 46%, #0b0f14 100%); isolation:isolate; }
+    .duel-stage { position:relative; height:148px; margin:10px 0 9px; overflow:hidden; border:1px solid var(--line); border-radius:18px; background:radial-gradient(circle at 50% 50%, #24222d 0%, #10151c 46%, #0b0f14 100%); isolation:isolate; }
     .duel-stage::after { content:''; position:absolute; inset:0; pointer-events:none; background:linear-gradient(180deg, rgba(255,255,255,.045), transparent 22%, transparent 76%, rgba(0,0,0,.22)); mix-blend-mode:screen; }
     .duel-canvas { display:block; width:100%; height:100%; border:0; border-radius:inherit; background:transparent; }
     .scenario-sandbox { position:relative; margin:13px 0 12px; padding:14px; border:1px solid rgba(58,70,86,.82); border-radius:16px; background:linear-gradient(180deg, rgba(16,21,28,.82), rgba(12,16,21,.72)); }
@@ -1022,6 +1022,22 @@ function setupAccountabilityDuel(stage, canvas, goonerPct, femoidPct, ehiScore) 
       const inner=7+(i%3)*1.5, outer=15+(i%4)*3+(staticOnly?0:Math.sin(tt*.005+i)*(1+pressure*4));
       ctx.beginPath(); ctx.moveTo(cX+Math.cos(a)*inner,cY+Math.sin(a)*inner); ctx.lineTo(cX+Math.cos(a)*outer,cY+Math.sin(a)*outer); ctx.stroke();
     }
+    const sprayRays=Math.round(9+pressure*13);
+    for(let i=0;i<sprayRays;i++){
+      const dir=i%2===0?-1:1;
+      const wobble=Math.sin(tt*.004+i*1.91)*(.18+pressure*.32);
+      const a=(dir<0?Math.PI:0)+wobble+Math.sin(i*2.3)*.18;
+      const inner=9+(i%4)*1.7;
+      const outer=22+pressure*24+Math.sin(tt*.006+i)*5;
+      ctx.strokeStyle=dir<0?'rgba(255,251,225,.50)':rainbow[i%rainbow.length];
+      ctx.globalAlpha=.34+pressure*.22;
+      ctx.lineWidth=.8+pressure*.9+(i%3)*.22;
+      ctx.beginPath();
+      ctx.moveTo(cX+Math.cos(a)*inner,cY+Math.sin(a)*inner);
+      ctx.quadraticCurveTo(cX+Math.cos(a)*outer*.68,cY+Math.sin(a)*outer*.68+Math.sin(tt*.005+i)*5,cX+Math.cos(a)*outer,cY+Math.sin(a)*outer);
+      ctx.stroke();
+    }
+    ctx.globalAlpha=1;
     ctx.fillStyle='rgba(255,255,248,.92)'; ctx.beginPath(); ctx.arc(cX,cY,(4.5+pressure*2.2)*pulse,0,Math.PI*2); ctx.fill();
     ctx.globalCompositeOperation='source-over';
     ctx.restore();
@@ -1029,21 +1045,33 @@ function setupAccountabilityDuel(stage, canvas, goonerPct, femoidPct, ehiScore) 
   }
 
   function emitLeft() {
-    if(leftParticles.length>115) return;
-    leftParticles.push({x:-12,y:centerY()+rand(-height*.12,height*.12),vx:rand(width*.16,width*.24)*( .72+pressure*.58),vy:rand(-8,8)*( .6+pressure*.6),r:rand(2.2,6.2),life:rand(1.4,2.8),phase:rand(0,Math.PI*2),tail:Math.random()<.74,tailLen:rand(14,30),tailAmp:rand(1.5,4.4)});
+    if(leftParticles.length>165) return;
+    const y=centerY()+rand(-height*.14,height*.12);
+    const topLane=y<centerY()-height*.035;
+    leftParticles.push({x:-12,y,vx:rand(width*.20,width*.31)*( .78+pressure*.6),vy:rand(-7,7)*( .55+pressure*.55),r:rand(2.2,6.2),life:rand(2.8,4.7),phase:rand(0,Math.PI*2),tail:Math.random()<.86,tailLen:rand(14,30),tailAmp:rand(1.5,4.4),breach:topLane&&Math.random()<(.24+pressure*.18),breachStart:rand(.10,.28),breachSpan:rand(.18,.30),breachHeight:rand(height*.075,height*.16)});
   }
   function emitRight() {
-    if(rightParticles.length>130) return;
-    const prop=Math.random()<.115?pick(streamPropTypes):null;
-    rightParticles.push({x:width+12,y:centerY()+rand(-height*.20,height*.20),vx:-rand(width*.17,width*.25)*( .72+pressure*.58),vy:rand(-10,10)*( .6+pressure*.6),r:rand(1.8,5.0),life:rand(1.3,2.5),phase:rand(0,Math.PI*2),color:rainbow[(Math.random()*rainbow.length)|0],glitter:!prop&&Math.random()<.22,prop,propScale:rand(.56,.92),propRot:rand(-.75,.75),propSpin:rand(-1.15,1.15)});
+    if(rightParticles.length>178) return;
+    const prop=Math.random()<.14?pick(streamPropTypes):null;
+    rightParticles.push({x:width+12,y:centerY()+rand(-height*.21,height*.21),vx:-rand(width*.21,width*.32)*( .78+pressure*.6),vy:rand(-10,10)*( .6+pressure*.6),r:rand(1.8,5.0),life:rand(2.4,4.1),phase:rand(0,Math.PI*2),color:rainbow[(Math.random()*rainbow.length)|0],glitter:!prop&&Math.random()<.24,prop,propScale:rand(.56,.92),propRot:rand(-.75,.75),propSpin:rand(-1.15,1.15)});
   }
   function burst(x,y,side,count=3,force=1) {
-    for(let i=0;i<count && splashParticles.length<260;i++) {
+    for(let i=0;i<count && splashParticles.length<440;i++) {
       // Bias spray vertically so the impact reads as splash rather than confetti drift.
       const vertical = Math.random()<.7;
       const angle = vertical ? (Math.random()<.5 ? rand(-Math.PI*.88,-Math.PI*.28) : rand(Math.PI*.28,Math.PI*.88)) : rand(-Math.PI*.22,Math.PI*.22);
       const speed=rand(34,105)*( .7+pressure*.65)*force;
-      splashParticles.push({x,y,vx:Math.cos(angle)*speed*(side==='left'?1:-1),vy:Math.sin(angle)*speed,r:rand(1.2,4.4)*( .85+pressure*.3),life:rand(.42,1.15),color:side==='left'?'#fffbe4':rainbow[(Math.random()*rainbow.length)|0],glitter:side==='right'&&Math.random()<.32});
+      const life=rand(.55,1.35);
+      splashParticles.push({x,y,vx:Math.cos(angle)*speed*(side==='left'?1:-1),vy:Math.sin(angle)*speed,r:rand(1.2,4.4)*( .85+pressure*.3),life,maxLife:life,color:side==='left'?'#fffbe4':rainbow[(Math.random()*rainbow.length)|0],glitter:side==='right'&&Math.random()<.32,stretch:rand(1.15,2.1),trail:Math.random()<(.36+pressure*.34),phase:rand(0,Math.PI*2)});
+    }
+  }
+  function backspray(x,y,count=4,force=1) {
+    for(let i=0;i<count && splashParticles.length<440;i++) {
+      const dir=i%2===0?-1:1;
+      const angle=(dir<0?Math.PI:0)+rand(-Math.PI*.34,Math.PI*.34);
+      const speed=rand(52,150)*( .72+pressure*.72)*force;
+      const life=rand(.5,1.18);
+      splashParticles.push({x:x+rand(-5,5),y:y+rand(-8,8),vx:Math.cos(angle)*speed,vy:Math.sin(angle)*speed+rand(-34,34),r:rand(1.0,3.7)*(1+pressure*.35),life,maxLife:life,color:dir<0?'#fffbe4':rainbow[(Math.random()*rainbow.length)|0],glitter:dir>0&&Math.random()<.28,stretch:rand(1.55,3.1),trail:true,phase:rand(0,Math.PI*2)});
     }
   }
   function emitDrip(x,y) {
@@ -1054,26 +1082,36 @@ function setupAccountabilityDuel(stage, canvas, goonerPct, femoidPct, ehiScore) 
   }
 
   function updateParticles(dt, impact) {
-    leftEmit += dt*(8+pressure*25); rightEmit += dt*(10+pressure*27);
+    leftEmit += dt*(11+pressure*34); rightEmit += dt*(13+pressure*36);
     while(leftEmit>=1){ emitLeft(); leftEmit-=1; }
     while(rightEmit>=1){ emitRight(); rightEmit-=1; }
 
-    impactEmit += dt*(1.2+pressure*8.5);
+    impactEmit += dt*(2.4+pressure*15);
     while(impactEmit>=1){
-      burst(impact.x+rand(-2,2),impact.y+rand(-3,3),Math.random()<.48?'left':'right',Math.random() < pressure * .3 ? 2 : 1);
+      const hitX=impact.x+rand(-4,4), hitY=impact.y+rand(-6,6);
+      burst(hitX,hitY,Math.random()<.48?'left':'right',Math.random()<pressure*.55?3:2,Math.random() < pressure * .35 ? 1.35 : 1);
+      if(Math.random()<(.42+pressure*.38)) backspray(hitX,hitY,Math.random()<pressure*.5?4:3,1);
       impactEmit-=1;
     }
-    dripEmit += dt*(.05+pressure*.72);
+    dripEmit += dt*(.08+pressure*.95);
     while(dripEmit>=1){ emitDrip(impact.x,impact.y); dripEmit-=1; }
 
     for(let i=leftParticles.length-1;i>=0;i--){
       const p=leftParticles[i]; p.x+=p.vx*dt; p.y+=p.vy*dt+Math.sin(clock*.006*timeScale+p.phase)*(.18+pressure*.3); p.life-=dt;
-      if(p.x>=impact.x-4 || p.life<=0){ if(Math.random()<(.28+pressure*.48)) burst(impact.x,impact.y,'left',1); leftParticles.splice(i,1); }
+      if(p.x>=impact.x-4 || p.life<=0){
+        if(Math.random()<(.38+pressure*.54)) burst(impact.x,impact.y,'left',Math.random()<pressure*.4?2:1,1.08);
+        if(Math.random()<(.22+pressure*.36)) backspray(impact.x,impact.y,2,.82);
+        leftParticles.splice(i,1);
+      }
     }
     for(let i=rightParticles.length-1;i>=0;i--){
       const p=rightParticles[i]; p.x+=p.vx*dt; p.y+=p.vy*dt+Math.sin(clock*.007*timeScale+p.phase)*(.25+pressure*.35); p.life-=dt;
       if(p.prop) p.propRot+=p.propSpin*dt;
-      if(p.x<=impact.x+4 || p.life<=0){ if(Math.random()<(.32+pressure*.5)) burst(impact.x,impact.y,'right',1); rightParticles.splice(i,1); }
+      if(p.x<=impact.x+4 || p.life<=0){
+        if(Math.random()<(.42+pressure*.56)) burst(impact.x,impact.y,'right',Math.random()<pressure*.42?2:1,1.08);
+        if(Math.random()<(.24+pressure*.38)) backspray(impact.x,impact.y,2,.86);
+        rightParticles.splice(i,1);
+      }
     }
     for(let i=splashParticles.length-1;i>=0;i--){
       const p=splashParticles[i]; p.x+=p.vx*dt; p.y+=p.vy*dt; p.vy+=(48+pressure*52)*dt; p.vx*=Math.pow(.12,dt); p.life-=dt;
@@ -1085,12 +1123,22 @@ function setupAccountabilityDuel(stage, canvas, goonerPct, femoidPct, ehiScore) 
     }
   }
 
-  function drawParticles() {
+  function breachLift(p, impact) {
+    if(!p.breach || !impact?.x) return 0;
+    const progress=clamp((p.x+12)/Math.max(1,impact.x+12),0,1);
+    const q=(progress-p.breachStart)/p.breachSpan;
+    if(q<=0 || q>=1) return 0;
+    return -Math.sin(q*Math.PI)*p.breachHeight;
+  }
+
+  function drawParticles(impact) {
     ctx.save();
     leftParticles.forEach(p=>{
+      const lift=breachLift(p,impact);
+      const drawY=p.y+lift;
       if(p.tail){
         const wave=clock*.0085*timeScale+p.phase;
-        const baseX=p.x-p.r*1.35, baseY=p.y;
+        const baseX=p.x-p.r*1.35, baseY=drawY;
         ctx.save();
         ctx.strokeStyle='rgba(255,253,232,.68)';
         ctx.globalAlpha=.30+Math.min(.16,p.r*.026);
@@ -1104,9 +1152,18 @@ function setupAccountabilityDuel(stage, canvas, goonerPct, femoidPct, ehiScore) 
         ctx.stroke();
         ctx.restore();
       }
+      if(lift<-1){
+        ctx.save();
+        ctx.strokeStyle='rgba(255,253,232,.22)';
+        ctx.lineWidth=Math.max(.6,p.r*.16);
+        ctx.beginPath();
+        ctx.ellipse(p.x-p.r*.7,p.y+p.r*.55,p.r*2.2,p.r*.45,0,0,Math.PI*2);
+        ctx.stroke();
+        ctx.restore();
+      }
       ctx.fillStyle='rgba(255,251,229,.72)';
-      ctx.beginPath(); ctx.ellipse(p.x,p.y,p.r*1.8,p.r,.15,0,Math.PI*2); ctx.fill();
-      ctx.fillStyle='rgba(255,255,255,.25)'; ctx.beginPath(); ctx.arc(p.x-p.r*.4,p.y-p.r*.35,Math.max(.7,p.r*.22),0,Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(p.x,drawY,p.r*1.8,p.r,.15,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='rgba(255,255,255,.25)'; ctx.beginPath(); ctx.arc(p.x-p.r*.4,drawY-p.r*.35,Math.max(.7,p.r*.22),0,Math.PI*2); ctx.fill();
     });
     rightParticles.forEach(p=>{
       ctx.fillStyle=p.color; ctx.globalAlpha=.78;
@@ -1119,10 +1176,23 @@ function setupAccountabilityDuel(stage, canvas, goonerPct, femoidPct, ehiScore) 
     ctx.globalAlpha=1;
     ctx.globalCompositeOperation='screen';
     splashParticles.forEach(p=>{
-      const a=Math.max(0,Math.min(1,p.life/.8)); ctx.globalAlpha=a;
+      const a=Math.max(0,Math.min(1,p.life/(p.maxLife||.8))); ctx.globalAlpha=a;
       ctx.fillStyle=p.color;
+      if(p.trail){
+        ctx.save();
+        ctx.strokeStyle=p.color;
+        ctx.globalAlpha=a*.38;
+        ctx.lineWidth=Math.max(.7,p.r*.42);
+        ctx.lineCap='round';
+        ctx.beginPath();
+        ctx.moveTo(p.x-p.vx*.036,p.y-p.vy*.036);
+        ctx.lineTo(p.x,p.y);
+        ctx.stroke();
+        ctx.restore();
+        ctx.globalAlpha=a;
+      }
       if(p.glitter){ ctx.fillRect(p.x-p.r*.3,p.y-p.r*1.8,p.r*.6,p.r*3.6); ctx.fillRect(p.x-p.r*1.8,p.y-p.r*.3,p.r*3.6,p.r*.6); }
-      else { ctx.beginPath(); ctx.ellipse(p.x,p.y,p.r*.72,p.r*1.45,Math.atan2(p.vy,p.vx),0,Math.PI*2); ctx.fill(); }
+      else { ctx.beginPath(); ctx.ellipse(p.x,p.y,p.r*.72,p.r*(p.stretch||1.45),Math.atan2(p.vy,p.vx),0,Math.PI*2); ctx.fill(); }
     });
     ctx.globalAlpha=1; ctx.globalCompositeOperation='source-over';
     drips.forEach(p=>{
@@ -1234,7 +1304,7 @@ function setupAccountabilityDuel(stage, canvas, goonerPct, femoidPct, ehiScore) 
       updateParticles(dt,impact);
       maybeStartDebris(t);
       updateDebris(dt,impact);
-      drawParticles();
+      drawParticles(impact);
       drawDebris();
     } else {
       // Static reduced-motion hint: enough glitter to preserve the joke without motion.
