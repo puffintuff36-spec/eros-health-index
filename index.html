@@ -930,15 +930,24 @@ function setupAccountabilityDuel(stage, canvas, goonerPct, femoidPct, ehiScore) 
   const rainbow = ['#ff5cb8','#9f7cff','#64d9ff','#ffcf5a','#ff7a7a','#7fffd4'];
   const debrisTypes = ['eyelash','nail','phone','lipstick','redflag','heart','bottle','bag','card','crown'];
   const streamPropTypes = ['bottle','phone','bag','card','crown'];
+  const uniqueGoonTypes = ['stoner','thrill','pious','salary','doom'];
   let width = 1, height = 1, dpr = 1;
   let visible = false, raf = 0, last = 0, clock = 0;
   let leftEmit = 0, rightEmit = 0, impactEmit = 0, dripEmit = 0;
   let debris = null, nextDebris = 5200 + Math.random() * 4200;
+  let nextUniqueGoonAt = 0;
 
   const rand = (a,b) => a + Math.random() * (b-a);
   const pick = list => list[(Math.random()*list.length)|0];
   const centerY = () => height * .5;
   const clashX = () => Math.max(width*.10, Math.min(width*.90, width * goonerShare));
+
+  function maybeUniqueGoon() {
+    if(!nextUniqueGoonAt) nextUniqueGoonAt = clock + rand(55000, 95000);
+    if(clock < nextUniqueGoonAt) return null;
+    nextUniqueGoonAt = clock + rand(45000, 110000);
+    return pick(uniqueGoonTypes);
+  }
 
   function resize() {
     const box = stage.getBoundingClientRect();
@@ -1063,7 +1072,8 @@ function setupAccountabilityDuel(stage, canvas, goonerPct, femoidPct, ehiScore) 
     if(leftParticles.length>165) return;
     const y=centerY()+rand(-height*.14,height*.12);
     const topLane=y<centerY()-height*.035;
-    leftParticles.push({x:-12,y,vx:rand(width*.20,width*.31)*( .78+pressure*.6),vy:rand(-7,7)*( .55+pressure*.55),r:rand(2.2,6.2),life:rand(2.8,4.7),phase:rand(0,Math.PI*2),tail:Math.random()<.86,tailLen:rand(14,30),tailAmp:rand(1.5,4.4),breach:topLane&&Math.random()<(.24+pressure*.18),breachStart:rand(.10,.28),breachSpan:rand(.18,.30),breachHeight:rand(height*.075,height*.16)});
+    const variant=maybeUniqueGoon();
+    leftParticles.push({x:-12,y,vx:rand(width*.20,width*.31)*( .78+pressure*.6),vy:rand(-7,7)*( .55+pressure*.55),r:rand(2.2,6.2),life:rand(2.8,4.7),phase:rand(0,Math.PI*2),tail:Math.random()<.86,tailLen:rand(14,30),tailAmp:rand(1.5,4.4),breach:topLane&&Math.random()<(.24+pressure*.18),breachStart:rand(.10,.28),breachSpan:rand(.18,.30),breachHeight:rand(height*.075,height*.16),variant});
   }
   function emitRight() {
     if(rightParticles.length>178) return;
@@ -1151,6 +1161,93 @@ function setupAccountabilityDuel(stage, canvas, goonerPct, femoidPct, ehiScore) 
     return -Math.sin(q*Math.PI)*p.breachHeight;
   }
 
+  function drawUniqueGoon(p, drawY) {
+    if(!p.variant) return;
+    const r=Math.max(3,p.r);
+    const headX=p.x+r*.74, headY=drawY-r*.08;
+    ctx.save();
+    ctx.globalAlpha=.9;
+    ctx.lineCap='round';
+    ctx.lineJoin='round';
+    if(p.variant==='stoner'){
+      const w=r*.58, h=Math.max(.9,r*.28);
+      ctx.fillStyle='rgba(18,17,24,.94)';
+      ctx.beginPath(); ctx.roundRect(headX-w*.98,headY-h*.72,w,h,h*.35); ctx.fill();
+      ctx.beginPath(); ctx.roundRect(headX+w*.02,headY-h*.72,w,h,h*.35); ctx.fill();
+      ctx.strokeStyle='rgba(18,17,24,.94)';
+      ctx.lineWidth=Math.max(.45,r*.08);
+      ctx.beginPath(); ctx.moveTo(headX-w*.1,headY-h*.25); ctx.lineTo(headX+w*.03,headY-h*.25); ctx.stroke();
+      ctx.strokeStyle='rgba(143,214,165,.78)';
+      ctx.lineWidth=Math.max(.35,r*.05);
+      ctx.beginPath(); ctx.moveTo(headX-w*.76,headY-h*.48); ctx.lineTo(headX-w*.52,headY-h*.6); ctx.stroke();
+    } else if(p.variant==='thrill'){
+      ctx.strokeStyle='rgba(255,207,90,.95)';
+      ctx.lineWidth=Math.max(.65,r*.13);
+      ctx.beginPath();
+      ctx.moveTo(headX-r*.08,headY-r*.95);
+      ctx.lineTo(headX+r*.34,headY-r*.34);
+      ctx.lineTo(headX+r*.08,headY-r*.32);
+      ctx.lineTo(headX+r*.48,headY+r*.18);
+      ctx.stroke();
+      ctx.fillStyle='rgba(255,255,248,.68)';
+      ctx.beginPath(); ctx.arc(headX+r*.36,headY-r*.28,Math.max(.55,r*.12),0,Math.PI*2); ctx.fill();
+    } else if(p.variant==='pious'){
+      ctx.fillStyle='rgba(255,252,232,.92)';
+      ctx.strokeStyle='rgba(255,207,90,.82)';
+      ctx.lineWidth=Math.max(.55,r*.1);
+      ctx.beginPath();
+      ctx.moveTo(headX-r*.52,headY-r*.42);
+      ctx.lineTo(headX,headY-r*1.2);
+      ctx.lineTo(headX+r*.52,headY-r*.42);
+      ctx.lineTo(headX+r*.36,headY+r*.02);
+      ctx.lineTo(headX-r*.36,headY+r*.02);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      ctx.strokeStyle='rgba(199,183,255,.88)';
+      ctx.lineWidth=Math.max(.45,r*.08);
+      ctx.beginPath();
+      ctx.moveTo(headX,headY-r*.88);
+      ctx.lineTo(headX,headY-r*.38);
+      ctx.moveTo(headX-r*.17,headY-r*.64);
+      ctx.lineTo(headX+r*.17,headY-r*.64);
+      ctx.stroke();
+    } else if(p.variant==='salary'){
+      ctx.fillStyle='rgba(24,22,32,.82)';
+      ctx.beginPath();
+      ctx.moveTo(headX-r*.48,headY+r*.12);
+      ctx.lineTo(headX-r*.04,headY+r*.34);
+      ctx.lineTo(headX+r*.42,headY+r*.05);
+      ctx.lineTo(headX+r*.12,headY+r*.52);
+      ctx.lineTo(headX-r*.28,headY+r*.5);
+      ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle='rgba(199,183,255,.88)';
+      ctx.beginPath();
+      ctx.moveTo(headX-r*.04,headY+r*.16);
+      ctx.lineTo(headX+r*.2,headY+r*.4);
+      ctx.lineTo(headX-r*.02,headY+r*.74);
+      ctx.lineTo(headX-r*.22,headY+r*.42);
+      ctx.closePath();
+      ctx.fill();
+    } else if(p.variant==='doom'){
+      ctx.strokeStyle='rgba(21,20,29,.95)';
+      ctx.lineWidth=Math.max(.85,r*.18);
+      ctx.beginPath();
+      ctx.arc(headX-r*.02,headY-r*.02,r*.72,Math.PI*1.04,Math.PI*1.92);
+      ctx.stroke();
+      ctx.strokeStyle='rgba(21,20,29,.82)';
+      ctx.lineWidth=Math.max(.45,r*.07);
+      ctx.beginPath();
+      ctx.moveTo(headX-r*.22,headY-r*.04);
+      ctx.lineTo(headX-r*.02,headY+r*.04);
+      ctx.moveTo(headX+r*.15,headY+r*.12);
+      ctx.quadraticCurveTo(headX+r*.28,headY,headX+r*.42,headY+r*.1);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
   function drawParticles(impact) {
     ctx.save();
     leftParticles.forEach(p=>{
@@ -1184,6 +1281,7 @@ function setupAccountabilityDuel(stage, canvas, goonerPct, femoidPct, ehiScore) 
       ctx.fillStyle='rgba(255,251,229,.72)';
       ctx.beginPath(); ctx.ellipse(p.x,drawY,p.r*1.8,p.r,.15,0,Math.PI*2); ctx.fill();
       ctx.fillStyle='rgba(255,255,255,.25)'; ctx.beginPath(); ctx.arc(p.x-p.r*.4,drawY-p.r*.35,Math.max(.7,p.r*.22),0,Math.PI*2); ctx.fill();
+      drawUniqueGoon(p,drawY);
     });
     rightParticles.forEach(p=>{
       ctx.fillStyle=p.color; ctx.globalAlpha=.78;
