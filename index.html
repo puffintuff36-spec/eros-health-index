@@ -97,6 +97,29 @@
     .duel-stage { position:relative; height:132px; margin:10px 0 9px; overflow:hidden; border:1px solid var(--line); border-radius:18px; background:radial-gradient(circle at 50% 50%, #24222d 0%, #10151c 46%, #0b0f14 100%); isolation:isolate; }
     .duel-stage::after { content:''; position:absolute; inset:0; pointer-events:none; background:linear-gradient(180deg, rgba(255,255,255,.045), transparent 22%, transparent 76%, rgba(0,0,0,.22)); mix-blend-mode:screen; }
     .duel-canvas { display:block; width:100%; height:100%; border:0; border-radius:inherit; background:transparent; }
+    .scenario-sandbox { margin:13px 0 12px; padding:14px; border:1px solid rgba(58,70,86,.82); border-radius:16px; background:linear-gradient(180deg, rgba(16,21,28,.82), rgba(12,16,21,.72)); }
+    .scenario-head { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; margin-bottom:12px; }
+    .scenario-head h3 { margin:2px 0 0; font-size:1rem; letter-spacing:0; }
+    .scenario-projection { color:var(--text); font-size:.82rem; text-align:right; line-height:1.35; font-weight:650; }
+    .scenario-projection small { display:block; color:var(--muted); font-size:.68rem; font-weight:500; margin-top:2px; }
+    .scenario-body { display:grid; grid-template-columns:minmax(220px, 285px) 1fr; gap:16px; align-items:center; }
+    .scenario-triangle-wrap { position:relative; min-height:220px; }
+    .scenario-triangle { display:block; width:100%; height:220px; touch-action:none; overflow:visible; cursor:grab; user-select:none; }
+    .scenario-triangle:active { cursor:grabbing; }
+    .scenario-triangle:focus-visible { outline:2px solid rgba(199,183,255,.62); outline-offset:4px; border-radius:12px; }
+    .scenario-triangle text { font-family:Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; font-weight:750; fill:#edf1f7; font-size:12px; letter-spacing:.02em; pointer-events:none; }
+    .scenario-triangle .hint { font-size:9px; font-weight:650; fill:#9aa6b5; letter-spacing:.08em; text-transform:uppercase; }
+    .scenario-reset { position:absolute; right:4px; bottom:2px; appearance:none; border:1px solid var(--line); background:#10151c; color:var(--muted); border-radius:999px; padding:4px 9px; font:inherit; font-size:.68rem; cursor:pointer; }
+    .scenario-reset:hover { color:var(--text); border-color:#5a6472; }
+    .scenario-bars { display:grid; gap:10px; }
+    .scenario-bar { display:grid; grid-template-columns:104px 1fr 42px; gap:9px; align-items:center; color:var(--muted); font-size:.76rem; }
+    .scenario-bar strong { color:var(--text); font-weight:700; }
+    .scenario-meter { height:8px; border-radius:999px; border:1px solid #222b36; background:#0c1015; overflow:hidden; }
+    .scenario-meter span { display:block; height:100%; width:0%; border-radius:inherit; transition:width .12s ease; }
+    .scenario-meter.touch span { background:linear-gradient(90deg,#8fd6a5,#c7b7ff); }
+    .scenario-meter.gooning span { background:linear-gradient(90deg,#fff8d8,#c7b7ff); }
+    .scenario-meter.shopping span { background:linear-gradient(90deg,#ff5cb8,#e8c47a); }
+    .scenario-note { color:var(--muted); font-size:.72rem; line-height:1.45; margin-top:12px; }
     .accountability-severity { margin-top:2px; color:var(--text); font-size:.78rem; font-weight:650; }
     .accountability-status { margin-top:5px; color:var(--warn); font-size:.72rem; font-weight:700; letter-spacing:.02em; }
     .accountability-meta { display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap; color:var(--muted); font-size:.72rem; line-height:1.4; margin-top:7px; }
@@ -195,7 +218,7 @@
     .serious-footer { margin-top:28px; padding-top:16px; border-top:1px solid var(--line); color:var(--muted); font-size:.78rem; }
     @media (prefers-reduced-motion: reduce) { .card { transition:none; } .metric:hover,.advice-card:hover,.trend-grid article:hover,.ticker-card:hover { transform:none; } }
 
-    @media (max-width:850px) { .market-strip,.hero{grid-template-columns:1fr}.groups,.trend-grid,.advice-grid{grid-template-columns:1fr}.metrics{grid-template-columns:1fr}.bigscore{font-size:5rem}.metric-top{flex-wrap:wrap}.value{text-align:left;white-space:normal}.metric-score{grid-template-columns:1fr}.metric-score small{justify-self:start}.serious-grid{grid-template-columns:1fr}.serious-sources{columns:1}.serious-head{padding:18px}.serious-body{padding:18px} }
+    @media (max-width:850px) { .market-strip,.hero{grid-template-columns:1fr}.groups,.trend-grid,.advice-grid{grid-template-columns:1fr}.metrics{grid-template-columns:1fr}.bigscore{font-size:5rem}.metric-top{flex-wrap:wrap}.value{text-align:left;white-space:normal}.metric-score{grid-template-columns:1fr}.metric-score small{justify-self:start}.scenario-head{display:grid}.scenario-projection{text-align:left}.scenario-body{grid-template-columns:1fr}.scenario-triangle-wrap{max-width:320px;width:100%;margin:0 auto}.serious-grid{grid-template-columns:1fr}.serious-sources{columns:1}.serious-head{padding:18px}.serious-body{padding:18px} }
   </style>
 </head>
 <body>
@@ -249,6 +272,44 @@
   <span class="femoid"><strong id="femoidShare">—</strong> FEMOID BEHAVIOR</span>
 </div>
     <div id="duelStage" class="duel-stage" role="img" aria-label="Animated side-normalized severity comparison between GOONER and FEMOID behavioral buckets"><canvas id="duelCanvas" class="duel-canvas" aria-hidden="true"></canvas></div>
+    <div class="scenario-sandbox" aria-label="GOONER versus FEMOID scenario sandbox">
+      <div class="scenario-head">
+        <div><div class="eyebrow">Counterfactual sandbox</div><h3>Pick your poison</h3></div>
+        <div id="scenarioProjection" class="scenario-projection">Projected split loading<small>EHI projection loading</small></div>
+      </div>
+      <div class="scenario-body">
+        <div class="scenario-triangle-wrap">
+          <svg id="scenarioTriangle" class="scenario-triangle" viewBox="0 0 280 228" role="slider" tabindex="0" aria-label="Scenario mix triangle" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <defs>
+              <linearGradient id="scenarioTriangleFill" x1="20%" y1="6%" x2="82%" y2="94%">
+                <stop offset="0%" stop-color="#8fd6a5" stop-opacity=".28"></stop>
+                <stop offset="52%" stop-color="#c7b7ff" stop-opacity=".18"></stop>
+                <stop offset="100%" stop-color="#ff5cb8" stop-opacity=".24"></stop>
+              </linearGradient>
+              <radialGradient id="scenarioHandleGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#ffffff" stop-opacity=".96"></stop>
+                <stop offset="55%" stop-color="#c7b7ff" stop-opacity=".46"></stop>
+                <stop offset="100%" stop-color="#c7b7ff" stop-opacity="0"></stop>
+              </radialGradient>
+            </defs>
+            <polygon points="140,30 38,184 242,184" fill="url(#scenarioTriangleFill)" stroke="rgba(199,183,255,.58)" stroke-width="1.6"></polygon>
+            <path d="M140 30 L140 184 M38 184 L242 184 M38 184 L140 107 M242 184 L140 107" stroke="rgba(238,242,247,.16)" stroke-width="1"></path>
+            <circle id="scenarioHandleGlowDot" cx="140" cy="133" r="24" fill="url(#scenarioHandleGlow)" opacity=".74"></circle>
+            <circle id="scenarioHandle" cx="140" cy="133" r="8.5" fill="#f5f0ff" stroke="#10151c" stroke-width="2.4"></circle>
+            <text x="140" y="16" text-anchor="middle">Touch Grass</text>
+            <text x="58" y="214" text-anchor="middle">Stop Gooning</text>
+            <text x="222" y="214" text-anchor="middle">Stop Shopping</text>
+          </svg>
+          <button id="scenarioReset" class="scenario-reset" type="button" aria-label="Reset scenario sandbox">Reset</button>
+        </div>
+        <div class="scenario-bars">
+          <div class="scenario-bar"><strong>Touch Grass</strong><div class="scenario-meter touch"><span id="scenarioTouchBar"></span></div><span id="scenarioTouchValue">33%</span></div>
+          <div class="scenario-bar"><strong>Stop Gooning</strong><div class="scenario-meter gooning"><span id="scenarioGooningBar"></span></div><span id="scenarioGooningValue">33%</span></div>
+          <div class="scenario-bar"><strong>Stop Shopping</strong><div class="scenario-meter shopping"><span id="scenarioShoppingBar"></span></div><span id="scenarioShoppingValue">33%</span></div>
+          <div class="scenario-note">Official index stays pinned; this is a counterfactual pressure toy.</div>
+        </div>
+      </div>
+    </div>
     <div id="accountabilitySeverity" class="accountability-severity">Measured severity loading…</div>
     <div id="accountabilityStatus" class="accountability-status"></div>
     <div class="accountability-meta"><span id="accountabilityCoverage">Only behavior-attributable signals vote here; EHI outcomes stay neutral.</span><span id="accountabilityNote">Disclaimer: some bitches be goonin, and some dudes be shallow AF.</span></div>
@@ -789,15 +850,29 @@ function setupAccountabilityDuel(stage, canvas, goonerPct, femoidPct, ehiScore) 
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
 
-  const total = Math.max(.001, goonerPct + femoidPct);
-  const goonerShare = Math.max(0, Math.min(1, goonerPct / total));
-  const femoidShare = 1 - goonerShare;
-  const safeEhi = Number.isFinite(ehiScore) ? Math.max(0, Math.min(100, ehiScore)) : 50;
-  const badness = 1 - safeEhi / 100;
-  // EHI controls total hydraulic foolishness, not the left/right result.
-  const pressure = .22 + .78 * Math.pow(badness, .9);
-  const timeScale = .55 + pressure * .95;
-  stage.setAttribute('aria-label', `Animated clash meter: GOONER ${goonerPct.toFixed(1)} versus FEMOID ${femoidPct.toFixed(1)}. Overall animation pressure reflects EHI ${safeEhi.toFixed(1)}.`);
+  const clamp = (n,lo,hi) => Math.min(hi, Math.max(lo, n));
+  const baseGoonerPct = Number.isFinite(goonerPct) ? clamp(goonerPct, 0, 100) : 50;
+  const baseFemoidPct = Number.isFinite(femoidPct) ? clamp(femoidPct, 0, 100) : 50;
+  const baseEhi = Number.isFinite(ehiScore) ? clamp(ehiScore, 0, 100) : 50;
+  let activeGoonerPct = baseGoonerPct;
+  let activeFemoidPct = baseFemoidPct;
+  let activeEhi = baseEhi;
+  let goonerShare = .5;
+  let femoidShare = .5;
+  let pressure = .5;
+  let timeScale = 1;
+
+  function syncHydraulics() {
+    const total = Math.max(.001, activeGoonerPct + activeFemoidPct);
+    goonerShare = clamp(activeGoonerPct / total, 0, 1);
+    femoidShare = 1 - goonerShare;
+    const badness = 1 - activeEhi / 100;
+    // EHI controls total hydraulic foolishness, not the left/right result.
+    pressure = .22 + .78 * Math.pow(badness, .9);
+    timeScale = .55 + pressure * .95;
+    stage.setAttribute('aria-label', `Animated clash meter: GOONER ${activeGoonerPct.toFixed(1)} versus FEMOID ${activeFemoidPct.toFixed(1)}. Overall animation pressure reflects EHI ${activeEhi.toFixed(1)}.`);
+  }
+  syncHydraulics();
 
   const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
   const leftParticles = [];
@@ -1153,6 +1228,176 @@ function setupAccountabilityDuel(stage, canvas, goonerPct, femoidPct, ehiScore) 
   if('ResizeObserver' in window) new ResizeObserver(resize).observe(stage);
   else window.addEventListener('resize',resize,{passive:true});
   resize();
+  return {
+    setScenario(projection={}) {
+      activeGoonerPct = Number.isFinite(projection.gooner) ? clamp(projection.gooner, 0, 100) : baseGoonerPct;
+      activeFemoidPct = Number.isFinite(projection.femoid) ? clamp(projection.femoid, 0, 100) : baseFemoidPct;
+      activeEhi = Number.isFinite(projection.ehi) ? clamp(projection.ehi, 0, 100) : baseEhi;
+      syncHydraulics();
+      drawFrame(clock, true);
+      syncAnimation();
+    },
+    reset() {
+      activeGoonerPct = baseGoonerPct;
+      activeFemoidPct = baseFemoidPct;
+      activeEhi = baseEhi;
+      syncHydraulics();
+      drawFrame(clock, true);
+      syncAnimation();
+    }
+  };
+}
+function setupScenarioSandbox(controller, baseGooner, baseFemoid, baseEhi) {
+  const triangle=document.getElementById('scenarioTriangle');
+  const handle=document.getElementById('scenarioHandle');
+  const glow=document.getElementById('scenarioHandleGlowDot');
+  const reset=document.getElementById('scenarioReset');
+  const projectionEl=document.getElementById('scenarioProjection');
+  const touchBar=document.getElementById('scenarioTouchBar');
+  const gooningBar=document.getElementById('scenarioGooningBar');
+  const shoppingBar=document.getElementById('scenarioShoppingBar');
+  const touchValue=document.getElementById('scenarioTouchValue');
+  const gooningValue=document.getElementById('scenarioGooningValue');
+  const shoppingValue=document.getElementById('scenarioShoppingValue');
+  if(!triangle || !handle || !glow || !projectionEl || !controller?.setScenario) return;
+
+  const clamp=(n,lo,hi)=>Math.min(hi,Math.max(lo,n));
+  const safeBaseGooner=Number.isFinite(baseGooner)?clamp(baseGooner,0,100):50;
+  const safeBaseFemoid=Number.isFinite(baseFemoid)?clamp(baseFemoid,0,100):50;
+  const baseTotal=Math.max(.001,safeBaseGooner+safeBaseFemoid);
+  const officialGooner=safeBaseGooner/baseTotal*100;
+  const officialFemoid=safeBaseFemoid/baseTotal*100;
+  const officialEhi=Number.isFinite(baseEhi)?clamp(baseEhi,0,100):50;
+  const vertices={
+    touch:{x:140,y:30},
+    gooning:{x:38,y:184},
+    shopping:{x:242,y:184}
+  };
+  const center={touch:1/3,gooning:1/3,shopping:1/3};
+  let current={...center};
+  let dragging=false;
+
+  function normalize(weights) {
+    const touch=Math.max(0,weights.touch);
+    const gooning=Math.max(0,weights.gooning);
+    const shopping=Math.max(0,weights.shopping);
+    const total=Math.max(.001,touch+gooning+shopping);
+    return {touch:touch/total,gooning:gooning/total,shopping:shopping/total};
+  }
+  function rawBary(x,y) {
+    const a=vertices.touch, b=vertices.gooning, c=vertices.shopping;
+    const det=(b.y-c.y)*(a.x-c.x)+(c.x-b.x)*(a.y-c.y);
+    const touch=((b.y-c.y)*(x-c.x)+(c.x-b.x)*(y-c.y))/det;
+    const gooning=((c.y-a.y)*(x-c.x)+(a.x-c.x)*(y-c.y))/det;
+    return {touch,gooning,shopping:1-touch-gooning};
+  }
+  function pointFromWeights(weights) {
+    return {
+      x:vertices.touch.x*weights.touch+vertices.gooning.x*weights.gooning+vertices.shopping.x*weights.shopping,
+      y:vertices.touch.y*weights.touch+vertices.gooning.y*weights.gooning+vertices.shopping.y*weights.shopping
+    };
+  }
+  function closestOnSegment(point,a,b) {
+    const dx=b.x-a.x, dy=b.y-a.y;
+    const lengthSq=dx*dx+dy*dy || 1;
+    const t=clamp(((point.x-a.x)*dx+(point.y-a.y)*dy)/lengthSq,0,1);
+    return {x:a.x+dx*t,y:a.y+dy*t};
+  }
+  function distanceSq(a,b) {
+    const dx=a.x-b.x, dy=a.y-b.y;
+    return dx*dx+dy*dy;
+  }
+  function weightsFromPoint(x,y) {
+    const weights=rawBary(x,y);
+    if(weights.touch>=-.001 && weights.gooning>=-.001 && weights.shopping>=-.001) return normalize(weights);
+    const point={x,y};
+    const candidates=[
+      closestOnSegment(point,vertices.touch,vertices.gooning),
+      closestOnSegment(point,vertices.touch,vertices.shopping),
+      closestOnSegment(point,vertices.gooning,vertices.shopping)
+    ].sort((a,b)=>distanceSq(point,a)-distanceSq(point,b));
+    return normalize(rawBary(candidates[0].x,candidates[0].y));
+  }
+  function svgPointFromEvent(event) {
+    const point=triangle.createSVGPoint();
+    point.x=event.clientX;
+    point.y=event.clientY;
+    return point.matrixTransform(triangle.getScreenCTM().inverse());
+  }
+  function project(weights) {
+    const distance=clamp(Math.hypot(weights.touch-center.touch,weights.gooning-center.gooning,weights.shopping-center.shopping)/Math.sqrt(2/3),0,1);
+    const sharedRelief=1-distance*weights.touch*.38;
+    const goonerRaw=Math.max(.1,officialGooner*sharedRelief-distance*weights.gooning*38+distance*weights.shopping*14);
+    const femoidRaw=Math.max(.1,officialFemoid*sharedRelief-distance*weights.shopping*38+distance*weights.gooning*14);
+    const total=Math.max(.001,goonerRaw+femoidRaw);
+    const ehi=clamp(officialEhi+distance*(weights.touch*18+weights.gooning*12+weights.shopping*12),0,100);
+    return {gooner:goonerRaw/total*100,femoid:femoidRaw/total*100,ehi,lift:ehi-officialEhi,distance};
+  }
+  function setBar(bar,valueEl,value) {
+    if(bar) bar.style.width=`${clamp(value,0,100).toFixed(1)}%`;
+    if(valueEl) valueEl.textContent=`${Math.round(value)}%`;
+  }
+  function updateProjectionText(projected) {
+    const lift=projected.lift>=0?`+${projected.lift.toFixed(1)}`:projected.lift.toFixed(1);
+    const small=document.createElement('small');
+    small.textContent=`EHI ${lift} pts`;
+    projectionEl.replaceChildren(document.createTextNode(`GOONER ${projected.gooner.toFixed(1)} / FEMOID ${projected.femoid.toFixed(1)} `),small);
+  }
+  function render(weights) {
+    current=normalize(weights);
+    const point=pointFromWeights(current);
+    const projected=project(current);
+    handle.setAttribute('cx',point.x.toFixed(1));
+    handle.setAttribute('cy',point.y.toFixed(1));
+    glow.setAttribute('cx',point.x.toFixed(1));
+    glow.setAttribute('cy',point.y.toFixed(1));
+    setBar(touchBar,touchValue,current.touch*100);
+    setBar(gooningBar,gooningValue,current.gooning*100);
+    setBar(shoppingBar,shoppingValue,current.shopping*100);
+    updateProjectionText(projected);
+    triangle.setAttribute('aria-valuenow',String(Math.round(projected.distance*100)));
+    triangle.setAttribute('aria-valuetext',`Touch Grass ${Math.round(current.touch*100)}%, Stop Gooning ${Math.round(current.gooning*100)}%, Stop Shopping ${Math.round(current.shopping*100)}%. Projected GOONER ${projected.gooner.toFixed(1)}, FEMOID ${projected.femoid.toFixed(1)}.`);
+    controller.setScenario(projected);
+  }
+  function renderFromEvent(event) {
+    const point=svgPointFromEvent(event);
+    render(weightsFromPoint(point.x,point.y));
+  }
+  function blendToward(key,amount) {
+    const target={touch:0,gooning:0,shopping:0};
+    target[key]=1;
+    render({
+      touch:current.touch*(1-amount)+target.touch*amount,
+      gooning:current.gooning*(1-amount)+target.gooning*amount,
+      shopping:current.shopping*(1-amount)+target.shopping*amount
+    });
+  }
+
+  triangle.addEventListener('pointerdown',event=>{
+    event.preventDefault();
+    triangle.focus({preventScroll:true});
+    dragging=true;
+    triangle.setPointerCapture?.(event.pointerId);
+    renderFromEvent(event);
+  });
+  triangle.addEventListener('pointermove',event=>{ if(dragging) renderFromEvent(event); });
+  triangle.addEventListener('pointerup',event=>{
+    dragging=false;
+    triangle.releasePointerCapture?.(event.pointerId);
+  });
+  triangle.addEventListener('pointercancel',event=>{
+    dragging=false;
+    triangle.releasePointerCapture?.(event.pointerId);
+  });
+  triangle.addEventListener('keydown',event=>{
+    const amount=event.shiftKey?.075:.04;
+    if(event.key==='ArrowUp'){ event.preventDefault(); blendToward('touch',amount); }
+    else if(event.key==='ArrowLeft'){ event.preventDefault(); blendToward('gooning',amount); }
+    else if(event.key==='ArrowRight'){ event.preventDefault(); blendToward('shopping',amount); }
+    else if(event.key==='Home' || event.key==='ArrowDown'){ event.preventDefault(); render(center); }
+  });
+  reset?.addEventListener('click',()=>render(center));
+  render(center);
 }
 function loadErosData() {
   const freshJson=()=>fetch(`data.json?ts=${Date.now()}`,{cache:'no-store'})
@@ -1240,7 +1485,8 @@ dataPromise.then(data=>{
   document.getElementById('goonerShare').textContent=safeGooner.toFixed(1);
   document.getElementById('femoidShare').textContent=safeFemoid.toFixed(1);
   const safeEhi=Number.isFinite(Number(data.index))?Math.max(0,Math.min(100,Number(data.index))):50;
-  setupAccountabilityDuel(document.getElementById('duelStage'),document.getElementById('duelCanvas'),safeGooner,safeFemoid,safeEhi);
+  const duelController=setupAccountabilityDuel(document.getElementById('duelStage'),document.getElementById('duelCanvas'),safeGooner,safeFemoid,safeEhi);
+  setupScenarioSandbox(duelController,safeGooner,safeFemoid,safeEhi);
   document.getElementById('accountabilityNote').textContent=accountability.note||'Disclaimer: some bitches be goonin, and some dudes be shallow AF.';
   const gSeverity=Number(accountability.gooner_severity);
   const fSeverity=Number(accountability.femoid_severity);
