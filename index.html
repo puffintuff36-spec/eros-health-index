@@ -133,6 +133,7 @@
     .scenario-lens-track::before { content:''; position:absolute; left:50%; top:3px; bottom:3px; width:1px; background:rgba(238,242,247,.22); }
     .scenario-lens-fill { position:absolute; top:4px; bottom:4px; left:50%; width:0; border-radius:999px; background:linear-gradient(90deg,#e8c47a,#c7b7ff,#ff5cb8); opacity:.82; }
     .scenario-lens-thumb { position:absolute; left:50%; top:50%; width:16px; height:16px; border-radius:50%; transform:translate(-50%,-50%); background:#f5f0ff; border:2px solid #10151c; box-shadow:0 0 0 3px rgba(199,183,255,.18),0 4px 16px rgba(0,0,0,.38); }
+    .scenario-lens-marks { display:flex; justify-content:space-between; gap:6px; flex-wrap:wrap; margin-top:7px; color:#7f8a99; font-size:.58rem; line-height:1.15; text-transform:uppercase; letter-spacing:.04em; }
     .scenario-note { color:var(--muted); font-size:.72rem; line-height:1.45; margin-top:12px; }
     .scenario-tip { position:absolute; z-index:5; width:min(276px, calc(100% - 20px)); padding:10px 11px; border:1px solid rgba(199,183,255,.34); border-radius:12px; background:rgba(13,17,23,.96); color:#dfe5ee; box-shadow:0 16px 46px rgba(0,0,0,.48); font-size:.74rem; line-height:1.38; opacity:0; transform:translateY(4px); pointer-events:none; transition:opacity .12s ease, transform .12s ease; }
     .scenario-tip.show { opacity:1; transform:translateY(0); }
@@ -298,7 +299,7 @@
       </div>
       <div class="scenario-body">
         <div class="scenario-polygon-wrap">
-          <svg id="scenarioPolygon" class="scenario-polygon" viewBox="0 0 320 270" role="slider" tabindex="0" aria-label="Scenario mix pentagon" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <svg id="scenarioPolygon" class="scenario-polygon" viewBox="0 0 320 270" role="slider" tabindex="0" aria-label="Scenario mix pentagon" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-describedby="scenarioTip" data-tip-title="Scenario Pentagon" data-tip-body="Drag the handle toward the life pressure you want to test. Center is the official baseline; corners go all-in; edges blend neighboring fixes." data-tip-action="Goblin-grade read: this does not rewrite the real index. It previews how a behavior change could move the projected split and EHI lift.">
             <defs>
               <linearGradient id="scenarioPolygonFill" x1="18%" y1="4%" x2="84%" y2="96%">
                 <stop offset="0%" stop-color="#8fd6a5" stop-opacity=".28"></stop>
@@ -315,23 +316,23 @@
             <path class="scenario-spoke" d="M160 137 L160 42 M160 137 L252 106 M160 137 L218 214 M160 137 L102 214 M160 137 L68 106"></path>
             <circle id="scenarioHandleGlowDot" cx="160" cy="137" r="25" fill="url(#scenarioHandleGlow)" opacity=".74"></circle>
             <circle id="scenarioHandle" cx="160" cy="137" r="8.5" fill="#f5f0ff" stroke="#10151c" stroke-width="2.4"></circle>
-            <g class="scenario-point-label" tabindex="0" data-scenario-key="meaning" data-tip-title="Find God" data-tip-body="Meaning, ritual, community, and a chosen moral frame. The point is not one creed; it is not drifting through desire with no steering wheel." data-tip-action="Blunt move: pick one practice you respect and do it weekly. Channel the heat into making, serving, training, praying, building, or showing up." aria-describedby="scenarioTip" aria-label="Find God. Meaning, ritual, community, and a chosen moral frame.">
+            <g class="scenario-point-label" tabindex="0" data-scenario-key="meaning" data-tip-title="Find God" data-tip-body="Meaning, ritual, community, and a chosen moral frame. The point is not one creed; it is not drifting through desire with no steering wheel." data-tip-action="Goblin-grade fix: pick one practice you respect and do it weekly. Turn heat into making, serving, training, prayer, or showing up." aria-describedby="scenarioTip" aria-label="Find God. Meaning, ritual, community, and a chosen moral frame.">
               <rect x="124" y="7" width="72" height="24" rx="10"></rect>
               <text x="160" y="23" text-anchor="middle">Find God</text>
             </g>
-            <g class="scenario-point-label" tabindex="0" data-scenario-key="touch" data-tip-title="Touch Grass" data-tip-body="Embodied life: sleep, sunlight, movement, face-to-face friendship, and places where your body is not just a meat cursor." data-tip-action="Blunt move: schedule two offline anchors this week. Walk, lift, eat with a human, join a thing, and protect the appointment like rent is due." aria-describedby="scenarioTip" aria-label="Touch Grass. Embodied life, sleep, movement, and real-world community.">
+            <g class="scenario-point-label" tabindex="0" data-scenario-key="touch" data-tip-title="Touch Grass" data-tip-body="Embodied life: sleep, sunlight, movement, face-to-face friendship, and places where your body is not just a meat cursor." data-tip-action="Goblin-grade fix: put two offline anchors on the calendar. Walk, lift, eat with a human, join a thing. Guard it like rent." aria-describedby="scenarioTip" aria-label="Touch Grass. Embodied life, sleep, movement, and real-world community.">
               <rect x="226" y="78" width="88" height="24" rx="10"></rect>
               <text x="270" y="94" text-anchor="middle">Touch Grass</text>
             </g>
-            <g class="scenario-point-label" tabindex="0" data-scenario-key="shopping" data-tip-title="Stop Shopping" data-tip-body="Reduce swipe-market disposability, comparison loops, and treating people like inventory with prettier thumbnails." data-tip-action="Blunt move: shrink the apps, choose fewer better conversations, and stop browsing when you already know you are not actually available." aria-describedby="scenarioTip" aria-label="Stop Shopping. Reduce swipe-market disposability and comparison loops.">
+            <g class="scenario-point-label" tabindex="0" data-scenario-key="shopping" data-tip-title="Stop Shopping" data-tip-body="Reduce swipe-market disposability, comparison loops, and treating people like inventory with prettier thumbnails." data-tip-action="Goblin-grade fix: cut the app buffet. Choose fewer better conversations. Stop browsing when you are not actually available." aria-describedby="scenarioTip" aria-label="Stop Shopping. Reduce swipe-market disposability and comparison loops.">
               <rect x="176" y="236" width="106" height="24" rx="10"></rect>
               <text x="229" y="252" text-anchor="middle">Stop Shopping</text>
             </g>
-            <g class="scenario-point-label" tabindex="0" data-scenario-key="bonds" data-tip-title="Build Bonds" data-tip-body="Commitment, reciprocity, repair, partner wellbeing, and relationship satisfaction instead of vibes duct-taped over avoidant nonsense." data-tip-action="Blunt move: ask one honest satisfaction question, listen without lawyering, and fix one small repeating grievance this week." aria-describedby="scenarioTip" aria-label="Build Bonds. Commitment, reciprocity, repair, and partner wellbeing.">
+            <g class="scenario-point-label" tabindex="0" data-scenario-key="bonds" data-tip-title="Build Bonds" data-tip-body="Commitment, reciprocity, repair, partner wellbeing, and relationship satisfaction instead of vibes duct-taped over avoidant nonsense." data-tip-action="Goblin-grade fix: ask one honest satisfaction question. Listen without lawyering. Repair one repeating grievance this week." aria-describedby="scenarioTip" aria-label="Build Bonds. Commitment, reciprocity, repair, and partner wellbeing.">
               <rect x="57" y="236" width="90" height="24" rx="10"></rect>
               <text x="102" y="252" text-anchor="middle">Build Bonds</text>
             </g>
-            <g class="scenario-point-label" tabindex="0" data-scenario-key="gooning" data-tip-title="Stop Gooning" data-tip-body="Reduce compulsive synthetic or parasocial substitution: the loop where pixels, novelty, and pretend intimacy eat the life you meant to live." data-tip-action="Blunt move: remove cues, add friction, cap sessions, and when the urge spikes spend ten minutes on something physical or creative before screens." aria-describedby="scenarioTip" aria-label="Stop Gooning. Reduce compulsive synthetic or parasocial substitution.">
+            <g class="scenario-point-label" tabindex="0" data-scenario-key="gooning" data-tip-title="Stop Gooning" data-tip-body="Reduce compulsive synthetic or parasocial substitution: the loop where pixels, novelty, and pretend intimacy eat the life you meant to live." data-tip-action="Goblin-grade fix: kill cues, add friction, cap sessions. When the urge spikes, spend ten minutes on motion or making before screens." aria-describedby="scenarioTip" aria-label="Stop Gooning. Reduce compulsive synthetic or parasocial substitution.">
               <rect x="6" y="78" width="108" height="24" rx="10"></rect>
               <text x="60" y="94" text-anchor="middle">Stop Gooning</text>
             </g>
@@ -345,11 +346,12 @@
           <div class="scenario-bar"><strong>Build Bonds</strong><div class="scenario-meter bonds"><span id="scenarioBondsBar"></span></div><span id="scenarioBondsValue">20%</span></div>
           <div class="scenario-bar"><strong>Find God</strong><div class="scenario-meter meaning"><span id="scenarioMeaningBar"></span></div><span id="scenarioMeaningValue">20%</span></div>
           <div class="scenario-lens">
-            <div class="scenario-lens-labels"><span>Puritanical</span><strong id="scenarioLensValue">Mixed doctrine</strong><span>Anthrofox In Heat</span></div>
-            <div id="scenarioLensTrack" class="scenario-lens-track" role="slider" tabindex="0" aria-label="Moral lens from puritanical to anthrofox in heat" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Mixed doctrine">
+            <div class="scenario-lens-labels"><span>Puritanical</span><strong id="scenarioLensValue">Vanilla</strong><span>Anthrofox In Heat</span></div>
+            <div id="scenarioLensTrack" class="scenario-lens-track" role="slider" tabindex="0" aria-label="Moral lens from puritanical to anthrofox in heat" aria-valuemin="-100" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Vanilla">
               <span id="scenarioLensFill" class="scenario-lens-fill" aria-hidden="true"></span>
               <span id="scenarioLensThumb" class="scenario-lens-thumb" aria-hidden="true"></span>
             </div>
+            <div class="scenario-lens-marks" aria-hidden="true"><span>Chaste</span><span>Vanilla</span><span>Spicy Vanilla</span><span>Weird-Curious</span><span>Weird But Trying</span><span>Feral But Accountable</span><span>Horny Mystic</span></div>
           </div>
           <div class="scenario-note">Official index stays pinned; this is a counterfactual pressure toy.</div>
         </div>
@@ -1348,6 +1350,18 @@ function setupScenarioSandbox(controller, baseGooner, baseFemoid, baseEhi) {
   let dragging=false;
   let lensDragging=false;
   let activeTipTarget=null;
+  const lensCategories=[
+    {max:-.82,label:'Puritanical'},
+    {max:-.62,label:'Chaste'},
+    {max:-.38,label:'Proper Vanilla'},
+    {max:.12,label:'Vanilla'},
+    {max:.32,label:'Spicy Vanilla'},
+    {max:.50,label:'Weird-Curious'},
+    {max:.66,label:'Weird But Trying'},
+    {max:.82,label:'Feral But Accountable'},
+    {max:.94,label:'Horny Mystic'},
+    {max:1.01,label:'Anthrofox In Heat'}
+  ];
 
   function normalize(weights) {
     const clean=keys.reduce((map,key)=>{ map[key]=Math.max(0,weights[key]||0); return map; },{});
@@ -1470,7 +1484,7 @@ function setupScenarioSandbox(controller, baseGooner, baseFemoid, baseEhi) {
     projectionEl.replaceChildren(document.createTextNode(`GOONER ${projected.gooner.toFixed(1)} / FEMOID ${projected.femoid.toFixed(1)} `),small);
   }
   function updateLensLabel() {
-    const label=lens<-0.45?'Puritanical':lens>0.45?'Anthrofox In Heat':lens<-0.15?'Chastened':lens>0.15?'Weird But Trying':'Mixed doctrine';
+    const label=(lensCategories.find(category=>lens<=category.max)||lensCategories[lensCategories.length-1]).label;
     if(lensValue) lensValue.textContent=label;
     if(lensTrack) {
       lensTrack.setAttribute('aria-valuenow',String(Math.round(lens*100)));
@@ -1555,6 +1569,10 @@ function setupScenarioSandbox(controller, baseGooner, baseFemoid, baseEhi) {
     tip?.setAttribute('aria-hidden','true');
     activeTipTarget=null;
   }
+  polygon.addEventListener('pointerenter',event=>{ if(event.pointerType==='mouse') showTip(polygon); });
+  polygon.addEventListener('pointerleave',event=>{ if(event.pointerType==='mouse') hideTip(polygon); });
+  polygon.addEventListener('focus',()=>showTip(polygon));
+  polygon.addEventListener('blur',()=>hideTip(polygon));
   polygon.querySelectorAll('.scenario-point-label').forEach(label=>{
     label.addEventListener('pointerenter',event=>{ if(event.pointerType==='mouse') showTip(label); });
     label.addEventListener('pointerleave',event=>{ if(event.pointerType==='mouse') hideTip(label); });
@@ -1586,6 +1604,7 @@ function setupScenarioSandbox(controller, baseGooner, baseFemoid, baseEhi) {
     if(event.target.closest?.('.scenario-point-label')) return;
     event.preventDefault();
     polygon.focus({preventScroll:true});
+    showTip(polygon);
     dragging=true;
     polygon.setPointerCapture?.(event.pointerId);
     renderFromEvent(event);
