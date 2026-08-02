@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-08-01T11:53:41.164534+00:00",
+  "generated_at": "2026-08-02T11:48:36.104637+00:00",
   "title": "Eros Health Index",
   "subtitle": "A transparent prototype for tracking embodied connection, synthetic substitution, relational reciprocity, and generativity.",
   "metrics": [
@@ -1535,11 +1535,15 @@
       }
     ],
     "value": 49.7,
-    "change_24h": -0.0
+    "change_24h": -0.0,
+    "carried_forward": true,
+    "carry_forward_reason": "Current refresh did not produce a usable live GOON signal; retaining the previous aggregate instead of replacing it with demo data."
   },
   "refresh_errors": [
     "CDC marriage rate: HTTP Error 403: Forbidden",
-    "CDC fertility rate: HTTP Error 403: Forbidden"
+    "CDC fertility rate: HTTP Error 403: Forbidden",
+    "Tranco GOON pulse: The read operation timed out",
+    "GOON: retained previous live aggregate because the current refresh was incomplete."
   ],
   "correlation_firewall": {
     "method_version": "proportional-cluster-cap-v1",
@@ -2171,6 +2175,13 @@
     },
     {
       "timestamp": "2026-08-01T11:53:41.164534+00:00",
+      "value": 32.4,
+      "kind": "observed",
+      "coverage": 1.0,
+      "method_version": "headline-ehi-v2"
+    },
+    {
+      "timestamp": "2026-08-02T11:48:36.104637+00:00",
       "value": 32.4,
       "kind": "observed",
       "coverage": 1.0,
