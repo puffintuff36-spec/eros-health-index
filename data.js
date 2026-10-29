@@ -1,5 +1,5 @@
 window.EROS_DATA = {
-  "generated_at": "2026-10-28T15:11:06.311552+00:00",
+  "generated_at": "2026-10-29T15:16:47.715147+00:00",
   "title": "Eros Health Index",
   "subtitle": "A transparent prototype for tracking embodied connection, synthetic substitution, relational reciprocity, and generativity.",
   "metrics": [
@@ -373,6 +373,10 @@ window.EROS_DATA = {
       {
         "year": 2024,
         "value": 35.31
+      },
+      {
+        "year": 2025,
+        "value": 34.46
       }
     ],
     "young_adult_living_alone_pct": [
@@ -411,6 +415,10 @@ window.EROS_DATA = {
       {
         "year": 2024,
         "value": 9.8
+      },
+      {
+        "year": 2025,
+        "value": 9.87
       }
     ],
     "us_total_fertility_rate": [
@@ -830,7 +838,7 @@ window.EROS_DATA = {
     "description": "One category-balanced daily digital-pressure signal derived from a private stratified basket and Tranco rank histories. Absolute popularity dominates; a smaller own-history trend term and conservative novelty/intensity/interaction/extremity weighting add resolution. The pressure line shows aggregate GOON movement; the muted ribbon visualizes the middle 50% of adjusted domain pressure. Higher is worse for Eros; individual domains and ranks are not published.",
     "source_name": "Tranco",
     "source_url": "https://tranco-list.eu/api_documentation",
-    "last_updated": "2026-10-27T00:00:00Z",
+    "last_updated": "2026-10-28T00:00:00Z",
     "basket_size": 21,
     "domains_reporting": 21,
     "categories_reporting": 4,
@@ -2045,27 +2053,27 @@ window.EROS_DATA = {
       },
       {
         "timestamp": "2026-09-21T00:00:00Z",
-        "open": 49.49,
-        "high": 52.62,
+        "open": 49.5,
+        "high": 52.61,
         "low": 44.12,
-        "close": 49.49,
-        "value": 49.49,
+        "close": 49.5,
+        "value": 49.5,
         "coverage": 21,
         "category_coverage": 4
       },
       {
         "timestamp": "2026-09-22T00:00:00Z",
-        "open": 49.49,
+        "open": 49.5,
         "high": 52.58,
         "low": 44.13,
-        "close": 49.46,
-        "value": 49.46,
+        "close": 49.47,
+        "value": 49.47,
         "coverage": 21,
         "category_coverage": 4
       },
       {
         "timestamp": "2026-09-23T00:00:00Z",
-        "open": 49.46,
+        "open": 49.47,
         "high": 52.63,
         "low": 44.13,
         "close": 49.49,
@@ -2076,37 +2084,37 @@ window.EROS_DATA = {
       {
         "timestamp": "2026-09-24T00:00:00Z",
         "open": 49.49,
-        "high": 52.65,
+        "high": 52.64,
         "low": 44.11,
-        "close": 49.52,
-        "value": 49.52,
+        "close": 49.53,
+        "value": 49.53,
         "coverage": 21,
         "category_coverage": 4
       },
       {
         "timestamp": "2026-09-25T00:00:00Z",
-        "open": 49.52,
-        "high": 52.7,
+        "open": 49.53,
+        "high": 52.69,
         "low": 44.06,
-        "close": 49.52,
-        "value": 49.52,
+        "close": 49.53,
+        "value": 49.53,
         "coverage": 21,
         "category_coverage": 4
       },
       {
         "timestamp": "2026-09-26T00:00:00Z",
-        "open": 49.52,
-        "high": 52.7,
+        "open": 49.53,
+        "high": 52.69,
         "low": 44.05,
-        "close": 49.62,
-        "value": 49.62,
+        "close": 49.63,
+        "value": 49.63,
         "coverage": 21,
         "category_coverage": 4
       },
       {
         "timestamp": "2026-09-27T00:00:00Z",
-        "open": 49.62,
-        "high": 52.65,
+        "open": 49.63,
+        "high": 52.64,
         "low": 44.04,
         "close": 49.63,
         "value": 49.63,
@@ -2116,7 +2124,7 @@ window.EROS_DATA = {
       {
         "timestamp": "2026-09-28T00:00:00Z",
         "open": 49.63,
-        "high": 52.81,
+        "high": 52.8,
         "low": 44.06,
         "close": 49.63,
         "value": 49.63,
@@ -2126,8 +2134,8 @@ window.EROS_DATA = {
       {
         "timestamp": "2026-09-29T00:00:00Z",
         "open": 49.63,
-        "high": 52.7,
-        "low": 44.05,
+        "high": 52.69,
+        "low": 44.06,
         "close": 49.58,
         "value": 49.58,
         "coverage": 21,
@@ -2136,7 +2144,7 @@ window.EROS_DATA = {
       {
         "timestamp": "2026-09-30T00:00:00Z",
         "open": 49.58,
-        "high": 52.68,
+        "high": 52.67,
         "low": 44.16,
         "close": 49.55,
         "value": 49.55,
@@ -2146,7 +2154,7 @@ window.EROS_DATA = {
       {
         "timestamp": "2026-10-01T00:00:00Z",
         "open": 49.55,
-        "high": 52.68,
+        "high": 52.67,
         "low": 44.14,
         "close": 49.58,
         "value": 49.58,
@@ -2156,8 +2164,8 @@ window.EROS_DATA = {
       {
         "timestamp": "2026-10-02T00:00:00Z",
         "open": 49.58,
-        "high": 52.62,
-        "low": 44.12,
+        "high": 52.61,
+        "low": 44.13,
         "close": 49.56,
         "value": 49.56,
         "coverage": 21,
@@ -2167,7 +2175,7 @@ window.EROS_DATA = {
         "timestamp": "2026-10-03T00:00:00Z",
         "open": 49.56,
         "high": 52.71,
-        "low": 44.09,
+        "low": 44.1,
         "close": 49.53,
         "value": 49.53,
         "coverage": 21,
@@ -2186,7 +2194,7 @@ window.EROS_DATA = {
       {
         "timestamp": "2026-10-05T00:00:00Z",
         "open": 49.47,
-        "high": 52.62,
+        "high": 52.61,
         "low": 44.26,
         "close": 49.47,
         "value": 49.47,
@@ -2196,7 +2204,7 @@ window.EROS_DATA = {
       {
         "timestamp": "2026-10-06T00:00:00Z",
         "open": 49.47,
-        "high": 52.6,
+        "high": 52.59,
         "low": 44.26,
         "close": 49.45,
         "value": 49.45,
@@ -2227,7 +2235,7 @@ window.EROS_DATA = {
         "timestamp": "2026-10-09T00:00:00Z",
         "open": 49.4,
         "high": 52.49,
-        "low": 44.27,
+        "low": 44.28,
         "close": 49.39,
         "value": 49.39,
         "coverage": 21,
@@ -2236,8 +2244,8 @@ window.EROS_DATA = {
       {
         "timestamp": "2026-10-10T00:00:00Z",
         "open": 49.39,
-        "high": 52.52,
-        "low": 44.2,
+        "high": 52.51,
+        "low": 44.21,
         "close": 49.37,
         "value": 49.37,
         "coverage": 21,
@@ -2266,7 +2274,7 @@ window.EROS_DATA = {
       {
         "timestamp": "2026-10-13T00:00:00Z",
         "open": 49.35,
-        "high": 52.7,
+        "high": 52.69,
         "low": 44.16,
         "close": 49.4,
         "value": 49.4,
@@ -2276,8 +2284,8 @@ window.EROS_DATA = {
       {
         "timestamp": "2026-10-14T00:00:00Z",
         "open": 49.4,
-        "high": 52.81,
-        "low": 44.22,
+        "high": 52.8,
+        "low": 44.21,
         "close": 49.42,
         "value": 49.42,
         "coverage": 21,
@@ -2296,7 +2304,7 @@ window.EROS_DATA = {
       {
         "timestamp": "2026-10-16T00:00:00Z",
         "open": 49.42,
-        "high": 52.81,
+        "high": 52.8,
         "low": 44.13,
         "close": 49.4,
         "value": 49.4,
@@ -2316,7 +2324,7 @@ window.EROS_DATA = {
       {
         "timestamp": "2026-10-18T00:00:00Z",
         "open": 49.38,
-        "high": 52.81,
+        "high": 52.8,
         "low": 44.2,
         "close": 49.36,
         "value": 49.36,
@@ -2326,7 +2334,7 @@ window.EROS_DATA = {
       {
         "timestamp": "2026-10-19T00:00:00Z",
         "open": 49.36,
-        "high": 52.83,
+        "high": 52.82,
         "low": 44.19,
         "close": 49.41,
         "value": 49.41,
@@ -2336,7 +2344,7 @@ window.EROS_DATA = {
       {
         "timestamp": "2026-10-20T00:00:00Z",
         "open": 49.41,
-        "high": 52.83,
+        "high": 52.82,
         "low": 44.07,
         "close": 49.39,
         "value": 49.39,
@@ -2346,7 +2354,7 @@ window.EROS_DATA = {
       {
         "timestamp": "2026-10-21T00:00:00Z",
         "open": 49.39,
-        "high": 52.86,
+        "high": 52.85,
         "low": 44.06,
         "close": 49.42,
         "value": 49.42,
@@ -2356,7 +2364,7 @@ window.EROS_DATA = {
       {
         "timestamp": "2026-10-22T00:00:00Z",
         "open": 49.42,
-        "high": 52.88,
+        "high": 52.87,
         "low": 44.07,
         "close": 49.38,
         "value": 49.38,
@@ -2377,7 +2385,7 @@ window.EROS_DATA = {
         "timestamp": "2026-10-24T00:00:00Z",
         "open": 49.37,
         "high": 52.89,
-        "low": 44.07,
+        "low": 44.08,
         "close": 49.39,
         "value": 49.39,
         "coverage": 21,
@@ -2386,7 +2394,7 @@ window.EROS_DATA = {
       {
         "timestamp": "2026-10-25T00:00:00Z",
         "open": 49.39,
-        "high": 52.86,
+        "high": 52.87,
         "low": 44.1,
         "close": 49.38,
         "value": 49.38,
@@ -2396,7 +2404,7 @@ window.EROS_DATA = {
       {
         "timestamp": "2026-10-26T00:00:00Z",
         "open": 49.38,
-        "high": 52.8,
+        "high": 52.82,
         "low": 44.12,
         "close": 49.36,
         "value": 49.36,
@@ -2406,16 +2414,26 @@ window.EROS_DATA = {
       {
         "timestamp": "2026-10-27T00:00:00Z",
         "open": 49.36,
-        "high": 52.5,
+        "high": 52.53,
         "low": 44.14,
         "close": 49.35,
         "value": 49.35,
         "coverage": 21,
         "category_coverage": 4
+      },
+      {
+        "timestamp": "2026-10-28T00:00:00Z",
+        "open": 49.35,
+        "high": 52.46,
+        "low": 44.13,
+        "close": 49.36,
+        "value": 49.36,
+        "coverage": 21,
+        "category_coverage": 4
       }
     ],
     "value": 49.4,
-    "change_24h": -0.0
+    "change_24h": 0.0
   },
   "refresh_errors": [
     "CDC marriage rate: HTTP Error 403: Forbidden",
@@ -2843,7 +2861,7 @@ window.EROS_DATA = {
     },
     {
       "timestamp": "2025-07-01T00:00:00Z",
-      "value": 38.2,
+      "value": 36.8,
       "kind": "backcast",
       "coverage": 1.0,
       "components": [
@@ -2853,7 +2871,7 @@ window.EROS_DATA = {
         "almost_constant_online"
       ],
       "component_values": {
-        "young_adult_partnered_pct": 35.31,
+        "young_adult_partnered_pct": 34.46,
         "us_total_fertility_rate": 1.627,
         "marriage_rate": 6.1,
         "almost_constant_online": 40.0
@@ -3667,6 +3685,13 @@ window.EROS_DATA = {
     },
     {
       "timestamp": "2026-10-28T15:11:06.311552+00:00",
+      "value": 32.4,
+      "kind": "observed",
+      "coverage": 1.0,
+      "method_version": "headline-ehi-v2"
+    },
+    {
+      "timestamp": "2026-10-29T15:16:47.715147+00:00",
       "value": 32.4,
       "kind": "observed",
       "coverage": 1.0,
