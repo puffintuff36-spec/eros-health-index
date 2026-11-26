@@ -1,5 +1,5 @@
 window.EROS_DATA = {
-  "generated_at": "2026-11-25T18:41:04.566605+00:00",
+  "generated_at": "2026-11-26T18:28:32.974540+00:00",
   "title": "Eros Health Index",
   "subtitle": "A transparent prototype for tracking embodied connection, synthetic substitution, relational reciprocity, and generativity.",
   "metrics": [
@@ -838,7 +838,7 @@ window.EROS_DATA = {
     "description": "One category-balanced daily digital-pressure signal derived from a private stratified basket and Tranco rank histories. Absolute popularity dominates; a smaller own-history trend term and conservative novelty/intensity/interaction/extremity weighting add resolution. The pressure line shows aggregate GOON movement; the muted ribbon visualizes the middle 50% of adjusted domain pressure. Higher is worse for Eros; individual domains and ranks are not published.",
     "source_name": "Tranco",
     "source_url": "https://tranco-list.eu/api_documentation",
-    "last_updated": "2026-11-24T00:00:00Z",
+    "last_updated": "2026-11-25T00:00:00Z",
     "basket_size": 21,
     "domains_reporting": 21,
     "categories_reporting": 4,
@@ -2555,7 +2555,7 @@ window.EROS_DATA = {
         "timestamp": "2026-11-10T00:00:00Z",
         "open": 49.46,
         "high": 52.36,
-        "low": 44.35,
+        "low": 44.36,
         "close": 49.43,
         "value": 49.43,
         "coverage": 21,
@@ -2595,7 +2595,7 @@ window.EROS_DATA = {
         "timestamp": "2026-11-14T00:00:00Z",
         "open": 49.41,
         "high": 52.44,
-        "low": 44.01,
+        "low": 44.0,
         "close": 49.45,
         "value": 49.45,
         "coverage": 21,
@@ -2635,7 +2635,7 @@ window.EROS_DATA = {
         "timestamp": "2026-11-18T00:00:00Z",
         "open": 49.48,
         "high": 52.58,
-        "low": 44.0,
+        "low": 43.99,
         "close": 49.45,
         "value": 49.45,
         "coverage": 21,
@@ -2655,7 +2655,7 @@ window.EROS_DATA = {
         "timestamp": "2026-11-20T00:00:00Z",
         "open": 49.45,
         "high": 52.58,
-        "low": 44.04,
+        "low": 44.03,
         "close": 49.38,
         "value": 49.38,
         "coverage": 21,
@@ -2685,25 +2685,35 @@ window.EROS_DATA = {
         "timestamp": "2026-11-23T00:00:00Z",
         "open": 49.36,
         "high": 52.72,
-        "low": 44.07,
-        "close": 49.37,
-        "value": 49.37,
+        "low": 44.06,
+        "close": 49.38,
+        "value": 49.38,
         "coverage": 21,
         "category_coverage": 4
       },
       {
         "timestamp": "2026-11-24T00:00:00Z",
-        "open": 49.37,
+        "open": 49.38,
         "high": 52.81,
-        "low": 44.09,
+        "low": 44.08,
         "close": 49.38,
         "value": 49.38,
         "coverage": 21,
         "category_coverage": 4
+      },
+      {
+        "timestamp": "2026-11-25T00:00:00Z",
+        "open": 49.38,
+        "high": 52.81,
+        "low": 44.05,
+        "close": 49.33,
+        "value": 49.33,
+        "coverage": 21,
+        "category_coverage": 4
       }
     ],
-    "value": 49.4,
-    "change_24h": 0.0
+    "value": 49.3,
+    "change_24h": -0.1
   },
   "refresh_errors": [
     "CDC marriage rate: HTTP Error 403: Forbidden",
@@ -4151,6 +4161,13 @@ window.EROS_DATA = {
     },
     {
       "timestamp": "2026-11-25T18:41:04.566605+00:00",
+      "value": 32.4,
+      "kind": "observed",
+      "coverage": 1.0,
+      "method_version": "headline-ehi-v2"
+    },
+    {
+      "timestamp": "2026-11-26T18:28:32.974540+00:00",
       "value": 32.4,
       "kind": "observed",
       "coverage": 1.0,
